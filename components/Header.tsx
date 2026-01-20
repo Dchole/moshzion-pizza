@@ -37,25 +37,25 @@ export default function Header() {
                 >
                   <Link
                     href="/"
-                    className="text-sm font-medium text-[#2D1B0E] hover:text-[#5D3A1A] transition-colors"
+                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     Home
                   </Link>
                   <Link
                     href="/about"
-                    className="text-sm font-medium text-[#2D1B0E] hover:text-[#5D3A1A] transition-colors"
+                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     About Us
                   </Link>
                   <Link
                     href="/contacts"
-                    className="text-sm font-medium text-[#2D1B0E] hover:text-[#5D3A1A] transition-colors"
+                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     Contacts
                   </Link>
                   <Link
                     href="/faqs"
-                    className="text-sm font-medium text-[#2D1B0E] hover:text-[#5D3A1A] transition-colors"
+                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     FAQs
                   </Link>
