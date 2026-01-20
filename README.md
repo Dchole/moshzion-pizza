@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍕 Mostrizza - Pizza Restaurant E-Commerce Website
 
-## Getting Started
+A modern, responsive pizza restaurant e-commerce website built with **Next.js 16**, **Tailwind CSS 4**, and **TypeScript**. Features a complete ordering system with shopping cart functionality and multiple payment options.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16.1.4-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)
+
+## ✨ Features
+
+### 🎨 User Interface
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Modern UI**: Beautiful beige/tan color scheme with brown accents
+- **Smooth Animations**: Transitions and hover effects throughout
+- **Accessibility**: Semantic HTML, ARIA labels, keyboard navigation support
+- **SEO Optimized**: Proper meta tags, semantic structure, and Next.js optimization
+
+### 🏠 Pages & Features
+1. **Homepage**
+   - Hero section with call-to-action
+   - Featured pizzas showcase
+   - Delivery service information
+   - "Why Buy From Us" section with icons
+   - Customer testimonials carousel
+   - Newsletter subscription
+
+2. **Store/Product Listing**
+   - Grid view of all pizzas
+   - Real-time search functionality
+   - Filter by category (New, Vegan, Hot, Promo)
+   - Responsive product cards
+
+3. **Product Detail**
+   - Size selection (Small, Medium, Large, Mega)
+   - Customizable toppings
+   - Dynamic price calculation
+   - Add to cart & direct checkout options
+
+4. **Shopping Cart**
+   - Cart item management
+   - Quantity controls
+   - Size modification
+   - Empty cart state with illustration
+   - Order summary sidebar
+
+5. **Checkout**
+   - Multiple payment methods (Credit Card, Mobile Money, Cash on Delivery)
+   - Order summary
+   - Form validation
+   - Responsive multi-step design
+
+## 🚀 Getting Started
+
+### Installation
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **app/** - Next.js 16 App Router pages
+- **components/** - Reusable React components
+- **lib/** - Utilities and cart context
+- **types/** - TypeScript definitions
+- **public/assets/** - Static images and icons
 
-## Learn More
+## 🎨 Design System
 
-To learn more about Next.js, take a look at the following resources:
+**Colors:**
+- Primary Beige: #E5D4C1
+- Brown Dark: #5D3A1A
+- Brown Medium: #8B5A2B
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Fonts:**
+- Display: Miniver (headings)
+- Body: Inter
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠 Tech Stack
 
-## Deploy on Vercel
+- Next.js 16 with App Router
+- TypeScript
+- Tailwind CSS 4
+- React 19
+- Context API for state management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📝 Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev      # Development server
+npm run build    # Build for production
+npm start        # Start production server
+npm run lint     # Run ESLint
+```
+
+## 🔮 Next Steps
+
+- Add user authentication
+- Integrate payment processing
+- Connect to backend API
+- Add pizza images
+- Implement order tracking
+- Create admin dashboard
+
+## ♿ Accessibility
+
+- Semantic HTML5
+- ARIA labels
+- Keyboard navigation
+- Focus states
+- Screen reader friendly
+
+---
+
+Built with ❤️ using Next.js, TypeScript, and Tailwind CSS
