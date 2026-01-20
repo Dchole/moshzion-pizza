@@ -17,7 +17,7 @@ export default function Header() {
       <header className="absolute top-0 left-0 right-0 z-40 bg-transparent">
         {/* Desktop Navigation */}
         <div className="hidden md:block">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               {/* Logo and Navigation Links */}
               <div className="flex items-center gap-8">
@@ -27,7 +27,7 @@ export default function Header() {
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-10 w-10" />
+                  <Logo className="h-16 w-16" />
                 </Link>
 
                 {/* Navigation Links */}
@@ -37,25 +37,25 @@ export default function Header() {
                 >
                   <Link
                     href="/"
-                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
+                    className="text-base font-medium text-[#A9D0DB] hover:text-gray-200 transition-colors"
                   >
                     Home
                   </Link>
                   <Link
                     href="/about"
-                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
+                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     About Us
                   </Link>
                   <Link
                     href="/contacts"
-                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
+                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     Contacts
                   </Link>
                   <Link
                     href="/faqs"
-                    className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
+                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
                   >
                     FAQs
                   </Link>
@@ -99,7 +99,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         <div className="md:hidden">
-          <div className="mx-auto max-w-7xl px-4">
+          <div className="mx-auto max-w-[1536px] px-4">
             <div className="flex h-14 items-center justify-between">
               {/* Logo */}
               <Link

@@ -24,12 +24,12 @@ export default function Hero() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
-        <div className="max-w-2xl">
-          <h1 className="font-display text-4xl tracking-tight sm:text-5xl lg:text-6xl mb-6">
+      <div className="relative z-10 mx-auto max-w-[1536px] px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-48">
+        <div className="max-w-3xl">
+          <h1 className="font-display text-5xl tracking-tight sm:text-6xl lg:text-8xl mb-8">
             Brighten your day with a delicious pizza
           </h1>
-          <p className="text-lg text-gray-200 mb-8 max-w-lg">
+          <p className="text-2xl text-[#A9D0DB] mb-10 max-w-lg">
             Make an order now and have it delivered at our doorstep
           </p>
 
