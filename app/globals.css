@@ -18,8 +18,8 @@
   --color-secondary: var(--secondary-beige);
   --color-brown-dark: var(--brown-dark);
   --color-brown-medium: var(--brown-medium);
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-miniver);
+  --font-sans: var(--font-open-sans);
+  --font-display: var(--font-lobster);
 }
 
 body {
@@ -29,7 +29,7 @@ body {
 
 /* Custom utility classes */
 .font-display {
-  font-family: var(--font-miniver), cursive;
+  font-family: var(--font-lobster), cursive;
 }
 
 /* Ensure better focus states for accessibility */

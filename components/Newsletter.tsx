@@ -20,7 +20,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-[#8B2E2E] to-[#5D1F1F] py-16 sm:py-24 text-white">
+    <section className="bg-linear-to-br from-[#8B2E2E] to-[#5D1F1F] py-16 sm:py-24 text-white">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
         {/* Section Header */}
         <h2 className="font-display text-4xl sm:text-5xl mb-6">Get Notified</h2>

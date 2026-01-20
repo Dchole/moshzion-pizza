@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Miniver, Inter } from "next/font/google";
+import { Lobster, Open_Sans } from "next/font/google";
 import "./globals.css";
 
-const miniver = Miniver({
+const lobster = Lobster({
   weight: "400",
-  variable: "--font-miniver",
+  variable: "--font-lobster",
   subsets: ["latin"],
   display: "swap"
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
   display: "swap"
 });
@@ -39,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${miniver.variable} antialiased font-sans`}
+        className={`${openSans.variable} ${lobster.variable} antialiased font-sans`}
       >
         <CartProvider>
           <Header />
