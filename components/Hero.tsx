@@ -74,36 +74,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Navigation - Desktop Only */}
-      <div className="absolute right-8 top-1/2 z-10 hidden -translate-y-1/2 transform md:block">
-        <nav className="flex flex-col gap-2" aria-label="Secondary navigation">
-          <Link
-            href="/"
-            className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
-          >
-            About Us
-          </Link>
-          <Link
-            href="/contacts"
-            className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
-          >
-            Contacts
-          </Link>
-          <Link
-            href="/faqs"
-            className="text-sm font-medium text-white hover:text-gray-200 transition-colors"
-          >
-            FAQs
-          </Link>
-        </nav>
-      </div>
     </section>
   );
 }
