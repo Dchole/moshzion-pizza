@@ -5,8 +5,8 @@ import Link from "next/link";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { useCart } from "@/lib/cart-context";
-import LocalMallOutlinedIcon from "@mui/icons-material/LocalMallOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import PersonIcon from "@mui/icons-material/Person";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -63,14 +63,14 @@ export default function Header() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-[#E5D4C1] p-1">
                 {/* Shopping Cart */}
                 <Link
                   href="/cart"
-                  className="relative rounded-full bg-white p-2 shadow-md hover:shadow-lg transition-shadow"
+                  className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
                   aria-label={`Shopping cart with ${totalItems} items`}
                 >
-                  <LocalMallOutlinedIcon
+                  <LocalMallIcon
                     className="text-[#2D1B0E]"
                     sx={{ fontSize: 20 }}
                   />
@@ -84,11 +84,11 @@ export default function Header() {
                 {/* User Account */}
                 <Link
                   href="/account"
-                  className="rounded-full bg-[#8B5A2B] p-2 shadow-md hover:shadow-lg transition-shadow"
+                  className="flex items-center justify-center rounded-full bg-[#E5D4C1] p-2 hover:bg-[#d4c3b0] transition-colors"
                   aria-label="User account"
                 >
-                  <PersonOutlineOutlinedIcon
-                    className="text-white"
+                  <PersonIcon
+                    className="text-[#2D1B0E]"
                     sx={{ fontSize: 20 }}
                   />
                 </Link>
@@ -111,14 +111,14 @@ export default function Header() {
               </Link>
 
               {/* Mobile Action Buttons */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-[#E5D4C1] p-1">
                 {/* Shopping Cart */}
                 <Link
                   href="/cart"
-                  className="relative rounded-full bg-white p-2 shadow-md"
+                  className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
                   aria-label={`Shopping cart with ${totalItems} items`}
                 >
-                  <LocalMallOutlinedIcon
+                  <LocalMallIcon
                     className="text-[#2D1B0E]"
                     sx={{ fontSize: 20 }}
                   />
@@ -131,12 +131,12 @@ export default function Header() {
 
                 {/* User Menu Button */}
                 <button
-                  className="rounded-full bg-[#8B5A2B] p-2 shadow-md"
+                  className="flex items-center justify-center rounded-full bg-[#E5D4C1] p-2 hover:bg-[#d4c3b0] transition-colors"
                   aria-label="Open menu"
                   onClick={() => setIsMobileMenuOpen(true)}
                 >
-                  <PersonOutlineOutlinedIcon
-                    className="text-white"
+                  <PersonIcon
+                    className="text-[#2D1B0E]"
                     sx={{ fontSize: 20 }}
                   />
                 </button>
