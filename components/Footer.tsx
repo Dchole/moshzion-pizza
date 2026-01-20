@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand Section */}
           <div className="lg:col-span-2">
-            <h3 className="font-display text-3xl text-white mb-4">Mostrizza</h3>
+            <h3 className="font-display text-3xl text-white mb-4">Moshzion</h3>
             <p className="text-sm text-gray-300 max-w-md mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
               cursus ut verus ut vehicula. Maecenas faucibus elit id urna at
@@ -197,7 +197,7 @@ export default function Footer() {
 
             {/* Copyright */}
             <p className="text-sm text-gray-400">
-              All rights reserved &copy; Copyright by Mostrizza Pizza
+              All rights reserved &copy; Copyright by Moshzion Pizza
             </p>
           </div>
         </div>

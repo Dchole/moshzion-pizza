@@ -9,7 +9,7 @@ export default function Logo({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
-      aria-label="Mostrizza Pizza Logo"
+      aria-label="Moshzion Pizza Logo"
     >
       {/* Intertwined rings representing pizza dough */}
       <circle

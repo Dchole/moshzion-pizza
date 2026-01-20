@@ -16,12 +16,12 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Mostrizza - Brighten your day with a delicious pizza",
+  title: "Moshzion - Brighten your day with a delicious pizza",
   description:
     "Make an order now and have it delivered at our doorstep. Get the best pizza in town right at your doorstep with just a few clicks.",
   keywords: ["pizza", "delivery", "restaurant", "food", "online ordering"],
   openGraph: {
-    title: "Mostrizza - Delicious Pizza Delivery",
+    title: "Moshzion - Delicious Pizza Delivery",
     description: "Make an order now and have it delivered at our doorstep",
     type: "website"
   }

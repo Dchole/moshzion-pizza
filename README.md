@@ -1,4 +1,4 @@
-# 🍕 Mostrizza - Pizza Restaurant E-Commerce Website
+# 🍕 Moshzion - Pizza Restaurant E-Commerce Website
 
 A modern, responsive pizza restaurant e-commerce website built with **Next.js 16**, **Tailwind CSS 4**, and **TypeScript**. Features a complete ordering system with shopping cart functionality and multiple payment options.
 
@@ -9,6 +9,7 @@ A modern, responsive pizza restaurant e-commerce website built with **Next.js 16
 ## ✨ Features
 
 ### 🎨 User Interface
+
 - **Responsive Design**: Optimized for mobile, tablet, and desktop
 - **Modern UI**: Beautiful beige/tan color scheme with brown accents
 - **Smooth Animations**: Transitions and hover effects throughout
@@ -16,6 +17,7 @@ A modern, responsive pizza restaurant e-commerce website built with **Next.js 16
 - **SEO Optimized**: Proper meta tags, semantic structure, and Next.js optimization
 
 ### 🏠 Pages & Features
+
 1. **Homepage**
    - Hero section with call-to-action
    - Featured pizzas showcase
@@ -71,11 +73,13 @@ Open [http://localhost:3000](http://localhost:3000)
 ## 🎨 Design System
 
 **Colors:**
+
 - Primary Beige: #E5D4C1
 - Brown Dark: #5D3A1A
 - Brown Medium: #8B5A2B
 
 **Fonts:**
+
 - Display: Miniver (headings)
 - Body: Inter
 

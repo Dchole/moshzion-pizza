@@ -21,7 +21,7 @@ export default function Header() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="Mostrizza Home"
+                aria-label="Moshzion Home"
               >
                 <Logo className="h-10 w-10" />
               </Link>
@@ -116,7 +116,7 @@ export default function Header() {
               <Link
                 href="/"
                 className="flex items-center gap-2"
-                aria-label="Mostrizza Home"
+                aria-label="Moshzion Home"
               >
                 <Logo className="h-8 w-8" />
               </Link>
