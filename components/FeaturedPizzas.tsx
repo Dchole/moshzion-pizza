@@ -7,20 +7,23 @@ export default function FeaturedPizzas() {
   const featuredPizza = pizzas[0]; // All Seasoned Pizza
 
   return (
-    <section className="bg-linear-to-b from-[#FFF5E6] to-white py-16 sm:py-24">
+    <section
+      id="featured"
+      className="bg-linear-to-b from-[#FFF5E6] to-white py-16 sm:py-24"
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="font-display text-4xl sm:text-5xl text-[#5D3A1A] mb-4">
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[#5D3A1A] mb-4">
             Our Customers&apos; favourites
           </h2>
-          <p className="text-gray-700 max-w-2xl mx-auto mb-2">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto mb-2">
             These are most loved choices by our lovely customers.
           </p>
-          <p className="text-gray-700 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto">
             Make a delicious choice and never regret it.
           </p>
-          <p className="text-gray-600 mt-4">
+          <p className="text-lg sm:text-xl text-gray-600 mt-4">
             Get the best pizza in town right at your doorstep with just a few
             clicks.
           </p>

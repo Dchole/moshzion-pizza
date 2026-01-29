@@ -3,7 +3,10 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative bg-linear-to-br from-gray-800 to-gray-900 text-white overflow-hidden min-h-[80vh] flex items-start">
+    <section
+      id="hero"
+      className="relative bg-linear-to-br from-gray-800 to-gray-900 text-white overflow-hidden min-h-[85vh] flex items-start"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image

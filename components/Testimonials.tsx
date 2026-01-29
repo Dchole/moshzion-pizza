@@ -32,11 +32,14 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="bg-linear-to-b from-white to-[#FFF5E6] py-16 sm:py-24">
+    <section
+      id="testimonials"
+      className="bg-linear-to-b from-white to-[#FFF5E6] py-16 sm:py-24"
+    >
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="font-display text-4xl sm:text-5xl text-[#5D3A1A]">
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[#5D3A1A]">
             What our customers are saying
           </h2>
         </div>
@@ -58,7 +61,7 @@ export default function Testimonials() {
 
             {/* Quote */}
             <blockquote className="text-center">
-              <p className="text-lg text-gray-700 leading-relaxed mb-8">
+              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8">
                 &ldquo;{testimonials[currentIndex].quote}&rdquo;
               </p>
               <footer>

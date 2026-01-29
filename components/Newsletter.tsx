@@ -20,11 +20,16 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="bg-linear-to-br from-[#8B2E2E] to-[#5D1F1F] py-16 sm:py-24 text-white">
+    <section
+      id="newsletter"
+      className="bg-linear-to-br from-[#8B2E2E] to-[#5D1F1F] py-16 sm:py-24 text-white"
+    >
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
         {/* Section Header */}
-        <h2 className="font-display text-4xl sm:text-5xl mb-6">Get Notified</h2>
-        <p className="text-gray-200 mb-8 max-w-xl mx-auto">
+        <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl mb-6">
+          Get Notified
+        </h2>
+        <p className="text-lg sm:text-xl text-gray-200 mb-8 max-w-xl mx-auto">
           Get up to date with our services, Get notified when we have new deals
           and updates to our store and services.
         </p>

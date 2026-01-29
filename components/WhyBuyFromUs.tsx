@@ -23,11 +23,11 @@ const features = [
 
 export default function WhyBuyFromUs() {
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section id="why-us" className="bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="font-display text-4xl sm:text-5xl text-[#5D3A1A]">
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[#5D3A1A]">
             Why buy from Us
           </h2>
         </div>
@@ -49,12 +49,12 @@ export default function WhyBuyFromUs() {
               </div>
 
               {/* Title */}
-              <h3 className="font-display text-2xl text-[#5D3A1A] mb-4">
+              <h3 className="font-display text-3xl sm:text-4xl text-[#5D3A1A] mb-4">
                 {feature.title}
               </h3>
 
               {/* Description */}
-              <p className="text-gray-700 leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed">
                 {feature.description}
               </p>
             </div>
