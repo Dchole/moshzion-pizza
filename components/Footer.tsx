@@ -67,7 +67,7 @@ export default function Footer() {
                 <svg
                   className="h-5 w-5"
                   fill="currentColor"
-                  shrink-0
+                  shrink-0="true"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
                 >
