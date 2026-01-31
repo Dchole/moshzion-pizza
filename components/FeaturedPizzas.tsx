@@ -33,13 +33,13 @@ export default function FeaturedPizzas() {
         <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto">
           {/* Pizza Image */}
           <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
-            <div className="absolute top-4 left-4 z-10">
+            <div className="absolute top-0 left-0 z-10">
               <button
-                className="rounded-full bg-[#E5D4C1] p-2 shadow-md hover:bg-[#d4c3b0] transition-colors"
+                className="bg-white p-3 shadow-md hover:bg-gray-100 transition-colors"
                 aria-label="Add to cart"
               >
                 <svg
-                  className="h-5 w-5 text-[#5D3A1A]"
+                  className="h-8 w-8 text-[#5D3A1A]"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -107,23 +107,20 @@ export default function FeaturedPizzas() {
         {/* Other Featured Pizzas Grid */}
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {pizzas.slice(1, 4).map(pizza => (
-            <Link
-              key={pizza.id}
-              href={`/product/${pizza.id}`}
-              className="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-xl transition-shadow"
-            >
-              {/* Add to Cart Icon */}
-              <div className="absolute top-4 left-4 z-10">
+            <div key={pizza.id} className="group relative">
+              {/* Add to Cart Icon - positioned outside image */}
+              <div className="absolute -top-1 -left-1 z-10">
                 <button
-                  className="rounded-full bg-[#E5D4C1] p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="rounded-sm bg-[#E5D4C1] p-2 shadow-md hover:bg-[#d4c3b0] transition-colors"
                   aria-label={`Add ${pizza.name} to cart`}
                   onClick={e => {
                     e.preventDefault();
+                    e.stopPropagation();
                     // Handle add to cart
                   }}
                 >
                   <svg
-                    className="h-5 w-5 text-[#5D3A1A]"
+                    className="h-6 w-6 text-[#5D3A1A]"
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -137,22 +134,24 @@ export default function FeaturedPizzas() {
               </div>
 
               {/* Pizza Image */}
-              <div className="relative aspect-square bg-gray-200">
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                  Pizza Image
+              <Link href={`/product/${pizza.id}`}>
+                <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    Pizza Image
+                  </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Pizza Info */}
-              <div className="p-4 text-center">
-                <h4 className="font-display text-xl text-[#5D3A1A] mb-2">
+              <div className="mt-3 text-center">
+                <h4 className="font-display text-xl text-[#5D3A1A] mb-1">
                   {pizza.name}
                 </h4>
                 <p className="text-lg font-semibold text-[#5D3A1A]">
                   ${pizza.price}
                 </p>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
