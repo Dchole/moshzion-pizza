@@ -17,13 +17,13 @@ export default function FeaturedPizzas() {
           <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[#5D3A1A] mb-4">
             Our Customers&apos; favourites
           </h2>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto mb-2 leading-tight">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto mb-2 leading-tight text-left sm:text-center">
             These are most loved choices by our lovely customers.
           </p>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto text-left sm:text-center">
             Make a delicious choice and never regret it.
           </p>
-          <p className="text-lg sm:text-xl text-gray-600 mt-6 max-w-lg mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 mt-6 max-w-lg mx-auto text-left sm:text-center">
             Get the best pizza in town right at your doorstep with just a few
             clicks.
           </p>
