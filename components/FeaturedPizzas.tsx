@@ -92,13 +92,13 @@ export default function FeaturedPizzas() {
         </div>
 
         {/* Other Featured Pizzas Grid */}
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           {pizzas.slice(1, 4).map(pizza => (
             <div key={pizza.id} className="group relative">
               {/* Add to Cart Icon */}
-              <div className="absolute -top-2 -left-2 z-10">
+              <div className="absolute -top-3 -left-3 z-10">
                 <button
-                  className="rounded-sm bg-[#E5D4C1] p-1.5 shadow-md hover:bg-[#d4c3b0] transition-colors"
+                  className="bg-[#E5D4C1] p-2 shadow-md hover:bg-[#d4c3b0] transition-colors"
                   aria-label={`Add ${pizza.name} to cart`}
                   onClick={e => {
                     e.preventDefault();
@@ -107,7 +107,7 @@ export default function FeaturedPizzas() {
                   }}
                 >
                   <AddShoppingCartIcon
-                    sx={{ fontSize: 18, color: "#5D3A1A" }}
+                    sx={{ fontSize: 20, color: "#5D3A1A" }}
                   />
                 </button>
               </div>
@@ -122,11 +122,11 @@ export default function FeaturedPizzas() {
               </Link>
 
               {/* Pizza Info */}
-              <div className="mt-3 text-center">
-                <h4 className="font-display text-xl text-[#5D3A1A] mb-1">
+              <div className="mt-4 text-center">
+                <h4 className="font-display text-2xl text-[#5D3A1A] mb-1">
                   {pizza.name}
                 </h4>
-                <p className="text-lg font-semibold text-[#5D3A1A]">
+                <p className="text-lg font-display text-[#836F6F]">
                   ${pizza.price}
                 </p>
               </div>
