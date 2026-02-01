@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { pizzas } from "@/lib/data";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 
 export default function FeaturedPizzas() {
   const featuredPizza = pizzas[0]; // All Seasoned Pizza
@@ -38,17 +41,7 @@ export default function FeaturedPizzas() {
                 className="bg-white p-3 shadow-md hover:bg-gray-100 transition-colors"
                 aria-label="Add to cart"
               >
-                <svg
-                  className="h-8 w-8 text-[#5D3A1A]"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
+                <AddShoppingCartIcon sx={{ fontSize: 28, color: "#5D3A1A" }} />
               </button>
             </div>
             {/* Placeholder - replace with actual image */}
@@ -59,23 +52,25 @@ export default function FeaturedPizzas() {
 
           {/* Pizza Details */}
           <div>
-            <h3 className="font-display text-3xl sm:text-4xl text-[#5D3A1A] mb-4">
-              {featuredPizza.name}
+            <h3 className="font-display text-4xl sm:text-5xl text-[#5D3A1A] mb-4">
+              All Seasoned Pizza ✨
             </h3>
-            <div className="flex items-baseline gap-2 mb-6">
-              <span className="text-sm text-gray-600">Start from</span>
-              <span className="text-3xl font-bold text-[#5D3A1A]">
+            <div className="flex items-baseline gap-3 mb-8">
+              <span className="text-3xl text-[#C4B8A8] line-through font-display">
+                $80
+              </span>
+              <span className="text-3xl font-display text-[#836F6F]">
                 ${featuredPizza.price}
               </span>
             </div>
 
             {/* Toppings */}
-            <div className="mb-6">
+            <div className="mb-8">
               <div className="flex flex-wrap gap-2">
                 {featuredPizza.toppings.slice(0, 7).map(topping => (
                   <span
                     key={topping}
-                    className="rounded-full border border-[#8B5A2B] px-3 py-1 text-sm text-[#5D3A1A]"
+                    className="rounded-md border border-[#817D59] bg-[#F0EEDE] px-3 py-1 text-sm text-[#4B4611]"
                   >
                     {topping}
                   </span>
@@ -86,20 +81,12 @@ export default function FeaturedPizzas() {
             {/* Checkout Button */}
             <Link
               href={`/product/${featuredPizza.id}`}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#E5D4C1] px-8 py-3 text-base font-medium text-[#5D3A1A] hover:bg-[#d4c3b0] transition-colors"
+              className="inline-flex items-center justify-center gap-3 rounded-md bg-[#E5D4C1] px-12 py-4 text-base font-semibold tracking-wider text-[#5D3A1A] hover:bg-[#d4c3b0] transition-colors"
             >
               CHECKOUT
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M9 5l7 7-7 7" />
-              </svg>
+              <ShoppingCartCheckoutIcon
+                sx={{ fontSize: 22, color: "#5D3A1A" }}
+              />
             </Link>
           </div>
         </div>
@@ -108,10 +95,10 @@ export default function FeaturedPizzas() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {pizzas.slice(1, 4).map(pizza => (
             <div key={pizza.id} className="group relative">
-              {/* Add to Cart Icon - positioned outside image */}
-              <div className="absolute -top-1 -left-1 z-10">
+              {/* Add to Cart Icon */}
+              <div className="absolute -top-2 -left-2 z-10">
                 <button
-                  className="rounded-sm bg-[#E5D4C1] p-2 shadow-md hover:bg-[#d4c3b0] transition-colors"
+                  className="rounded-sm bg-[#E5D4C1] p-1.5 shadow-md hover:bg-[#d4c3b0] transition-colors"
                   aria-label={`Add ${pizza.name} to cart`}
                   onClick={e => {
                     e.preventDefault();
@@ -119,17 +106,9 @@ export default function FeaturedPizzas() {
                     // Handle add to cart
                   }}
                 >
-                  <svg
-                    className="h-6 w-6 text-[#5D3A1A]"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+                  <AddShoppingCartIcon
+                    sx={{ fontSize: 18, color: "#5D3A1A" }}
+                  />
                 </button>
               </div>
 
@@ -159,20 +138,13 @@ export default function FeaturedPizzas() {
         <div className="mt-12 text-center">
           <Link
             href="/store"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#5D3A1A] px-8 py-3 text-base font-medium text-[#5D3A1A] hover:bg-[#5D3A1A] hover:text-white transition-colors"
+            className="group inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#5D3A1A] px-8 py-3 text-base font-medium text-[#5D3A1A] hover:bg-[#5D3A1A] hover:text-white transition-colors"
           >
             Go to our store
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
+            <StorefrontIcon
+              className="group-hover:text-white"
+              sx={{ fontSize: 20, color: "#5D3A1A" }}
+            />
           </Link>
         </div>
       </div>
