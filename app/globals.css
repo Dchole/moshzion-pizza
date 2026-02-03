@@ -1,12 +1,44 @@
 @import "tailwindcss";
 
 :root {
+  /* Primary Colors */
   --primary-beige: #e5d4c1;
+  --primary-beige-hover: #d4c3b0;
   --secondary-beige: #f5f0e8;
+  --gradient-cream: #fff5e6;
+
+  /* Brown Palette */
   --brown-dark: #5d3a1a;
   --brown-medium: #8b5a2b;
   --brown-light: #a67c52;
   --text-dark: #2d1b0e;
+
+  /* Footer & Contact Colors */
+  --footer-bg: #332625;
+  --footer-copyright-bg: #24110f;
+  --contact-bar-bg: #5a4543;
+  --footer-pink: #ffa9a9;
+  --footer-muted: #bda8a8;
+  --hiring-pink: #e8b4b4;
+  --hiring-pink-hover: #f0c4c4;
+
+  /* Newsletter Colors */
+  --newsletter-bg: #8b2e2e;
+  --newsletter-input-bg: #6b2222;
+  --newsletter-heading: #ffdbdb;
+  --newsletter-body: #e9c6c3;
+
+  /* Featured Section Colors */
+  --chip-border: #817d59;
+  --chip-bg: #f0eede;
+  --chip-text: #4b4611;
+  --price-color: #836f6f;
+  --price-strikethrough: #c4b8a8;
+
+  /* Hero Colors */
+  --hero-accent: #a9d0db;
+
+  /* Base */
   --background: #ffffff;
   --foreground: #2d1b0e;
 }
@@ -20,6 +52,7 @@
   --color-brown-medium: var(--brown-medium);
   --font-sans: var(--font-rubik);
   --font-display: var(--font-lobster);
+  --font-open-sans: var(--font-open-sans);
 }
 
 body {
@@ -30,6 +63,10 @@ body {
 /* Custom utility classes */
 .font-display {
   font-family: var(--font-lobster), cursive;
+}
+
+.font-open-sans {
+  font-family: var(--font-open-sans), sans-serif;
 }
 
 /* Ensure better focus states for accessibility */

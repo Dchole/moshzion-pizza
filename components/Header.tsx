@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { useCart } from "@/lib/cart-context";
+import { NAV_LINKS } from "@/lib/constants";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
+
+  const handleOpenMenu = useCallback(() => {
+    setIsMobileMenuOpen(true);
+  }, []);
+
+  const handleCloseMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+  }, []);
 
   return (
     <>
@@ -35,35 +44,22 @@ export default function Header() {
                   className="flex items-center gap-8"
                   aria-label="Main navigation"
                 >
-                  <Link
-                    href="/"
-                    className="text-base font-medium text-[#A9D0DB] hover:text-gray-200 transition-colors"
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
-                  >
-                    About Us
-                  </Link>
-                  <Link
-                    href="/contacts"
-                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
-                  >
-                    Contacts
-                  </Link>
-                  <Link
-                    href="/faqs"
-                    className="text-base font-medium text-white hover:text-gray-200 transition-colors"
-                  >
-                    FAQs
-                  </Link>
+                  {NAV_LINKS.map((link, index) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`text-base font-medium transition-colors hover:text-gray-200 ${
+                        index === 0 ? "text-(--hero-accent)" : "text-white"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </nav>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-[#E5D4C1] p-1">
+              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
                 {/* Shopping Cart */}
                 <Link
                   href="/cart"
@@ -71,11 +67,10 @@ export default function Header() {
                   aria-label={`Shopping cart with ${totalItems} items`}
                 >
                   <LocalMallIcon
-                    className="text-[#2D1B0E]"
-                    sx={{ fontSize: 20 }}
+                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
                   {totalItems > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8B5A2B] text-xs font-bold text-white">
+                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brown-medium text-xs font-bold text-white">
                       {totalItems}
                     </span>
                   )}
@@ -84,12 +79,11 @@ export default function Header() {
                 {/* User Account */}
                 <Link
                   href="/account"
-                  className="flex items-center justify-center rounded-full bg-[#E5D4C1] p-2 hover:bg-[#d4c3b0] transition-colors"
+                  className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
                   aria-label="User account"
                 >
                   <PersonIcon
-                    className="text-[#2D1B0E]"
-                    sx={{ fontSize: 20 }}
+                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
                 </Link>
               </div>
@@ -99,7 +93,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         <div className="md:hidden">
-          <div className="mx-auto max-w-[1536px] px-4">
+          <div className="mx-auto max-w-384 px-4">
             <div className="flex h-14 items-center justify-between">
               {/* Logo */}
               <Link
@@ -111,7 +105,7 @@ export default function Header() {
               </Link>
 
               {/* Mobile Action Buttons */}
-              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-[#E5D4C1] p-1">
+              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
                 {/* Shopping Cart */}
                 <Link
                   href="/cart"
@@ -119,11 +113,10 @@ export default function Header() {
                   aria-label={`Shopping cart with ${totalItems} items`}
                 >
                   <LocalMallIcon
-                    className="text-[#2D1B0E]"
-                    sx={{ fontSize: 20 }}
+                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
                   {totalItems > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#8B5A2B] text-xs font-bold text-white">
+                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brown-medium text-xs font-bold text-white">
                       {totalItems}
                     </span>
                   )}
@@ -131,13 +124,12 @@ export default function Header() {
 
                 {/* User Menu Button */}
                 <button
-                  className="flex items-center justify-center rounded-full bg-[#E5D4C1] p-2 hover:bg-[#d4c3b0] transition-colors"
+                  className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
                   aria-label="Open menu"
-                  onClick={() => setIsMobileMenuOpen(true)}
+                  onClick={handleOpenMenu}
                 >
                   <PersonIcon
-                    className="text-[#2D1B0E]"
-                    sx={{ fontSize: 20 }}
+                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
                 </button>
               </div>
@@ -147,10 +139,7 @@ export default function Header() {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
+      <MobileMenu isOpen={isMobileMenuOpen} onClose={handleCloseMenu} />
     </>
   );
 }

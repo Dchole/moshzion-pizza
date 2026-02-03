@@ -188,3 +188,50 @@ export const pizzas: Pizza[] = [
     toppings: ["Ham", "Pineapple", "Cheese"]
   }
 ];
+
+// Testimonials data
+export const testimonials = [
+  {
+    id: "1",
+    quote:
+      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque ab dolor alias explicabo similique molestiae ultrices proin bibendum varius eleifend integer lorem.",
+    author: "John Doe"
+  },
+  {
+    id: "2",
+    quote:
+      "Amazing pizza! The quality and taste are exceptional. Fast delivery and great customer service. Highly recommended!",
+    author: "Jane Smith"
+  },
+  {
+    id: "3",
+    quote:
+      "Best pizza in town! Fresh ingredients, perfect crust, and the toppings are always generous. Will order again!",
+    author: "Mike Johnson"
+  }
+];
+
+// Why Buy From Us features
+export const features = [
+  {
+    id: "1",
+    icon: "/assets/badge.svg",
+    title: "Quality food",
+    description:
+      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+  },
+  {
+    id: "2",
+    icon: "/assets/handshake.svg",
+    title: "Customer Service",
+    description:
+      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+  },
+  {
+    id: "3",
+    icon: "/assets/bike.svg",
+    title: "Fast Delivery",
+    description:
+      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+  }
+];

@@ -2,7 +2,7 @@
 
 import { useCart } from "@/lib/cart-context";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, clearCart, totalPrice } =

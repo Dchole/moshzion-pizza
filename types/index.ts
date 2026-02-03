@@ -17,12 +17,6 @@ export interface PizzaSize {
   priceMultiplier: number;
 }
 
-export interface Topping {
-  id: string;
-  name: string;
-  price?: number;
-}
-
 // Cart Types
 export interface CartItem {
   id: string;
@@ -35,8 +29,17 @@ export interface CartItem {
   image: string;
 }
 
-// Navigation Types
-export interface NavLink {
-  label: string;
-  href: string;
+// Testimonial Type
+export interface Testimonial {
+  id: string;
+  quote: string;
+  author: string;
+}
+
+// Feature Type (Why Buy From Us)
+export interface Feature {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
 }
