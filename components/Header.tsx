@@ -33,9 +33,15 @@ export default function Header({
       ? [{ label: "Store", href: "/store" }, ...NAV_LINKS.slice(1)]
       : NAV_LINKS;
 
+  const headerPosition = variant === "app" ? "fixed" : "absolute";
+  const headerBg = variant === "app" ? "bg-primary" : "bg-transparent";
+  const headerZIndex = variant === "app" ? "z-40" : "z-30";
+
   return (
     <>
-      <header className="absolute top-0 left-0 right-0 z-30 bg-transparent">
+      <header
+        className={`${headerPosition} top-0 left-0 right-0 ${headerZIndex} ${headerBg}`}
+      >
         <div className="hidden md:block">
           <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
