@@ -127,7 +127,14 @@ export default function StorePage() {
       {filteredPizzas.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {featuredPizza && (
-            <FeaturedPizzaCard pizza={featuredPizza} variant="compact" />
+            <>
+              <div className="sm:hidden">
+                <PizzaCard pizza={featuredPizza} />
+              </div>
+              <div className="hidden sm:block sm:col-span-2">
+                <FeaturedPizzaCard pizza={featuredPizza} variant="compact" />
+              </div>
+            </>
           )}
 
           {regularPizzas.map(pizza => (
