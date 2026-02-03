@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
@@ -13,24 +13,21 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
 
-  const handleOpenMenu = useCallback(() => {
+  const handleOpenMenu = () => {
     setIsMobileMenuOpen(true);
-  }, []);
+  };
 
-  const handleCloseMenu = useCallback(() => {
+  const handleCloseMenu = () => {
     setIsMobileMenuOpen(false);
-  }, []);
+  };
 
   return (
     <>
       <header className="absolute top-0 left-0 right-0 z-40 bg-transparent">
-        {/* Desktop Navigation */}
         <div className="hidden md:block">
           <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
-              {/* Logo and Navigation Links */}
               <div className="flex items-center gap-8">
-                {/* Logo */}
                 <Link
                   href="/"
                   className="flex items-center gap-2"
@@ -39,7 +36,6 @@ export default function Header() {
                   <Logo className="h-16 w-16" />
                 </Link>
 
-                {/* Navigation Links */}
                 <nav
                   className="flex items-center gap-8"
                   aria-label="Main navigation"
@@ -58,9 +54,7 @@ export default function Header() {
                 </nav>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
-                {/* Shopping Cart */}
                 <Link
                   href="/cart"
                   className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
@@ -76,7 +70,6 @@ export default function Header() {
                   )}
                 </Link>
 
-                {/* User Account */}
                 <Link
                   href="/account"
                   className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
@@ -91,11 +84,9 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         <div className="md:hidden">
           <div className="mx-auto max-w-384 px-4">
             <div className="flex h-14 items-center justify-between">
-              {/* Logo */}
               <Link
                 href="/"
                 className="flex items-center gap-2"
@@ -104,9 +95,7 @@ export default function Header() {
                 <Logo className="h-8 w-8" />
               </Link>
 
-              {/* Mobile Action Buttons */}
               <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
-                {/* Shopping Cart */}
                 <Link
                   href="/cart"
                   className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
@@ -122,7 +111,6 @@ export default function Header() {
                   )}
                 </Link>
 
-                {/* User Menu Button */}
                 <button
                   className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
                   aria-label="Open menu"
@@ -138,7 +126,6 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
       <MobileMenu isOpen={isMobileMenuOpen} onClose={handleCloseMenu} />
     </>
   );

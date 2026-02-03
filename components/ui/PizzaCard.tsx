@@ -23,7 +23,6 @@ export function PizzaCard({
 
   return (
     <div className={`group relative ${className}`}>
-      {/* Add to Cart Icon */}
       <div className="absolute -top-3 -left-3 z-10">
         <IconButton
           variant="filled"
@@ -39,7 +38,6 @@ export function PizzaCard({
         />
       </div>
 
-      {/* Pizza Image */}
       <Link href={`/product/${pizza.id}`}>
         <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
           {pizza.image ? (
@@ -58,7 +56,6 @@ export function PizzaCard({
         </div>
       </Link>
 
-      {/* Pizza Info */}
       <div className="mt-4 text-center">
         <h4 className="font-display text-2xl text-brown-dark mb-1">
           {pizza.name}

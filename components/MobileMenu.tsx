@@ -74,21 +74,18 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
   return (
     <>
-      {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Menu Panel */}
       <div
         className="fixed right-0 top-0 z-50 h-full w-80 max-w-[85vw] bg-primary shadow-2xl"
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation menu"
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 rounded-full p-2 text-brown-dark hover:bg-(--primary-beige-hover) transition-colors"
@@ -97,12 +94,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           <CloseIcon sx={{ fontSize: 24 }} />
         </button>
 
-        {/* Menu Content */}
         <nav
           className="flex h-full flex-col px-6 py-16"
           aria-label="Mobile menu"
         >
-          {/* User Section */}
           <div className="space-y-4 border-b border-(--brown-dark)/20 pb-6">
             {MOBILE_MENU_SECTIONS.user.map(link => (
               <MenuLink
@@ -115,7 +110,6 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ))}
           </div>
 
-          {/* Navigation Links */}
           <div className="space-y-4 border-b border-(--brown-dark)/20 py-6">
             {MOBILE_MENU_SECTIONS.navigation.map(link => (
               <MenuLink
@@ -128,7 +122,6 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ))}
           </div>
 
-          {/* Other Links (Jobs, etc.) */}
           <div className="py-6">
             {MOBILE_MENU_SECTIONS.other.map(link => (
               <MenuLink
@@ -141,7 +134,6 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ))}
           </div>
 
-          {/* Logout */}
           <div className="mt-auto border-t border-(--brown-dark)/20 pt-6">
             <button
               onClick={onClose}

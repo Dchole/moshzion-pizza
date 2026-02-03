@@ -33,10 +33,8 @@ export default function Testimonials() {
           className="mb-12"
         />
 
-        {/* Testimonial Card */}
         <div className="relative">
           <div className="rounded-2xl bg-white p-8 sm:p-12 shadow-lg">
-            {/* Quote Icon */}
             <div className="mb-6 flex justify-center">
               <FormatQuoteIcon
                 sx={{ fontSize: 48, color: "var(--primary-beige)" }}
@@ -44,7 +42,6 @@ export default function Testimonials() {
               />
             </div>
 
-            {/* Quote */}
             <blockquote className="text-center">
               <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8">
                 &ldquo;{testimonials[currentIndex].quote}&rdquo;
@@ -57,7 +54,6 @@ export default function Testimonials() {
             </blockquote>
           </div>
 
-          {/* Navigation Arrows */}
           <IconButton
             variant="filled"
             color="white"
@@ -87,7 +83,6 @@ export default function Testimonials() {
           />
         </div>
 
-        {/* Dots Indicator */}
         <div className="mt-8 flex justify-center gap-2" role="tablist">
           {testimonials.map((testimonial, index) => (
             <button

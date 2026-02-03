@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -16,27 +16,21 @@ export default function Newsletter() {
   const [status, setStatus] = useState<SubmitStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleEmailChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(e.target.value);
-      // Reset status when user starts typing again
-      if (status === "error" || status === "success") {
-        setStatus("idle");
-      }
-    },
-    [status]
-  );
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (status === "error" || status === "success") {
+      setStatus("idle");
+    }
+  };
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
     setErrorMessage("");
 
     try {
-      // Simulate API call
       await new Promise((resolve, reject) => {
         setTimeout(() => {
-          // Simulate random success/failure for demo
           if (Math.random() > 0.1) {
             resolve(true);
           } else {
@@ -55,7 +49,7 @@ export default function Newsletter() {
           : "Something went wrong. Please try again."
       );
     }
-  }, []);
+  };
 
   return (
     <>
@@ -71,7 +65,6 @@ export default function Newsletter() {
             className="mb-8"
           />
 
-          {/* Newsletter Form */}
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
             <div className="flex flex-col gap-4 items-center">
               <label htmlFor="email-newsletter" className="sr-only">
@@ -91,7 +84,6 @@ export default function Newsletter() {
                 }
               />
 
-              {/* Status Messages */}
               {status === "success" && (
                 <div
                   className="flex items-center gap-2 text-green-300"
@@ -127,7 +119,6 @@ export default function Newsletter() {
         </div>
       </section>
 
-      {/* Contact Bar - Floating (hidden on mobile) */}
       <div className="hidden sm:block relative z-10 -mt-12 -mb-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="bg-(--contact-bar-bg) rounded-lg py-5 px-8">

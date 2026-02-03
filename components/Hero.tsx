@@ -9,7 +9,6 @@ export default function Hero() {
       id="hero"
       className="relative bg-linear-to-br from-gray-800 to-gray-900 text-white overflow-hidden min-h-[85vh] flex items-start"
     >
-      {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/assets/hero-cover.png"

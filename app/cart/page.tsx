@@ -12,7 +12,6 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="text-center max-w-md">
-          {/* Empty Cart Icon */}
           <div className="mb-8 flex justify-center">
             <div className="relative h-48 w-48">
               <svg
@@ -21,7 +20,6 @@ export default function CartPage() {
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-full w-full"
               >
-                {/* Cart illustration */}
                 <ellipse
                   cx="100"
                   cy="140"
@@ -77,7 +75,6 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <h1 className="font-display text-3xl sm:text-4xl text-[#5D3A1A]">
             Shopping Cart
@@ -102,7 +99,6 @@ export default function CartPage() {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map(item => (
               <div
@@ -110,14 +106,12 @@ export default function CartPage() {
                 className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
               >
                 <div className="flex gap-4">
-                  {/* Image */}
                   <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-200">
                     <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
                       Pizza
                     </div>
                   </div>
 
-                  {/* Details */}
                   <div className="flex flex-1 flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between">
@@ -150,7 +144,6 @@ export default function CartPage() {
                         </button>
                       </div>
 
-                      {/* Size Selector */}
                       <div className="mt-3 flex gap-2">
                         {["S", "M", "L", "M+"].map(size => (
                           <button
@@ -168,7 +161,6 @@ export default function CartPage() {
                       </div>
                     </div>
 
-                    {/* Quantity Controls */}
                     <div className="mt-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <button
@@ -223,7 +215,6 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">

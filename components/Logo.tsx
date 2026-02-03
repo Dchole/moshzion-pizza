@@ -11,7 +11,6 @@ export default function Logo({
       className={className}
       aria-label="Moshzion Pizza Logo"
     >
-      {/* Intertwined rings representing pizza dough */}
       <circle
         cx="35"
         cy="50"
@@ -28,7 +27,6 @@ export default function Logo({
         strokeWidth="6"
         fill="none"
       />
-      {/* Center overlap accent */}
       <path
         d="M 50 30 Q 50 40, 50 50 Q 50 60, 50 70"
         stroke="#8B5A2B"

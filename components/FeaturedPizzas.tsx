@@ -14,11 +14,9 @@ export default function FeaturedPizzas() {
     FEATURED_CONFIG.gridStartIndex + FEATURED_CONFIG.gridCount
   );
 
-  // Handler for add to cart - to be connected to cart context later
   const handleAddToCart = (e: React.MouseEvent, pizzaId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    // TODO: Connect to cart context
     console.log("Add to cart:", pizzaId);
   };
 
@@ -28,7 +26,6 @@ export default function FeaturedPizzas() {
       className="bg-linear-to-b from-(--gradient-cream) to-white py-16 sm:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-brown-dark mb-4">
             Our Customers&apos; favourites
@@ -45,9 +42,7 @@ export default function FeaturedPizzas() {
           </p>
         </div>
 
-        {/* Featured Pizza Card */}
         <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto">
-          {/* Pizza Image */}
           <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
             <div className="absolute top-0 left-0 z-10">
               <IconButton
@@ -64,13 +59,11 @@ export default function FeaturedPizzas() {
                 className="rounded-none"
               />
             </div>
-            {/* Placeholder - replace with actual image */}
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
               Pizza Image
             </div>
           </div>
 
-          {/* Pizza Details */}
           <div>
             <h3 className="font-display text-4xl sm:text-5xl text-brown-dark mb-4">
               All Seasoned Pizza ✨
@@ -84,7 +77,6 @@ export default function FeaturedPizzas() {
               </span>
             </div>
 
-            {/* Toppings */}
             <div className="mb-8">
               <div className="flex flex-wrap gap-2">
                 {featuredPizza.toppings
@@ -95,7 +87,6 @@ export default function FeaturedPizzas() {
               </div>
             </div>
 
-            {/* Checkout Button */}
             <Button
               href={`/product/${featuredPizza.id}`}
               variant="primary"
@@ -105,14 +96,12 @@ export default function FeaturedPizzas() {
                   sx={{ fontSize: 22, color: "var(--brown-dark)" }}
                 />
               }
-              className="tracking-wider font-semibold"
             >
-              CHECKOUT
+              Checkout
             </Button>
           </div>
         </div>
 
-        {/* Other Featured Pizzas Grid */}
         <div className="mt-16 -mx-4 px-4 pt-4 flex gap-6 overflow-x-auto pb-4 sm:mx-0 sm:px-0 sm:pt-0 sm:grid sm:grid-cols-2 sm:gap-12 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
           {gridPizzas.map(pizza => (
             <PizzaCard
@@ -124,7 +113,6 @@ export default function FeaturedPizzas() {
           ))}
         </div>
 
-        {/* View All Button */}
         <div className="mt-12 text-center">
           <Button
             href="/store"

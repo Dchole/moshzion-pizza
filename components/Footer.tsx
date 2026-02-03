@@ -9,24 +9,17 @@ export default function Footer() {
   return (
     <footer className="bg-(--footer-bg) text-white pt-12 sm:pt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
         <div className="flex flex-col lg:flex-row justify-between gap-8">
-          {/* Brand Section */}
           <div className="lg:max-w-sm">
             <h3 className="font-display text-5xl text-(--footer-pink) mb-4">
               Moshzion
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-(--footer-muted) mb-6">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mollis
               blandit sit varius in vitae viverra.
             </p>
-
-            {/* Social Media Links */}
             <SocialLinks size="lg" className="mb-8 sm:mb-0" />
-
-            {/* Mobile Contact Info */}
             <div className="sm:hidden space-y-6">
-              {/* Contact us via */}
               <div>
                 <p className="text-sm text-gray-400 mb-2">Contact us via</p>
                 <div className="flex items-center gap-2 text-(--footer-pink) mb-1">
@@ -40,8 +33,6 @@ export default function Footer() {
                 </div>
                 <p className="text-white">{CONTACT_INFO.email}</p>
               </div>
-
-              {/* Or come visit us at */}
               <div>
                 <p className="text-sm text-gray-400 mb-2">
                   Or come visit us at
@@ -52,8 +43,6 @@ export default function Footer() {
                 </div>
                 <p className="text-white">{CONTACT_INFO.address}</p>
               </div>
-
-              {/* Hours - Mobile */}
               <div className="mt-6">
                 <p className="text-sm text-(--footer-muted) mb-1">
                   Available every
@@ -65,8 +54,6 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          {/* Hours - Desktop */}
           <div className="hidden sm:block text-right">
             <p className="text-sm text-left text-(--footer-muted) mb-1">
               Available every
@@ -77,11 +64,8 @@ export default function Footer() {
             <p className="text-gray-400">{BUSINESS_HOURS.hours}</p>
           </div>
         </div>
-
-        {/* Bottom Footer */}
         <div className="mt-12 border-t border-white/10 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-            {/* Links */}
             <nav
               className="flex flex-wrap justify-center gap-6 text-sm"
               aria-label="Footer navigation"
@@ -105,8 +89,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Copyright */}
       <div className="bg-(--footer-copyright-bg) mt-12 py-6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500">
           <p className="text-(--footer-muted)">All rights reserved</p>

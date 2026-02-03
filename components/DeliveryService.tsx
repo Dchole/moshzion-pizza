@@ -14,16 +14,14 @@ export default function DeliveryService() {
           className="mb-8"
         />
 
-        {/* CTA Button */}
         <div className="text-center">
           <Button
             href="/about"
-            variant="ghost"
+            variant="outline"
             color="brown"
-            size="sm"
             icon={
               <OpenInNewIcon
-                sx={{ fontSize: 16, color: "var(--brown-medium)" }}
+                sx={{ fontSize: 18, color: "var(--brown-medium)" }}
               />
             }
           >

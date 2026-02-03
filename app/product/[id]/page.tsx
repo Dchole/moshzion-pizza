@@ -40,18 +40,17 @@ export default function ProductPage() {
   };
 
   const handleAddToCart = () => {
-    // Handle add to cart logic
+    // TODO: Handle add to cart logic
     alert(`Added ${pizza.name} (${selectedSize}) to cart!`);
   };
 
   const handleCheckout = () => {
-    // Handle direct checkout
+    // TODO: Handle direct checkout
     alert(`Proceeding to checkout with ${pizza.name} (${selectedSize})`);
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Mobile Header */}
       <div className="sticky top-14 z-30 bg-[#E5D4C1] px-4 py-3 md:hidden">
         <Link href="/store" className="flex items-center gap-2 text-[#5D3A1A]">
           <svg
@@ -71,16 +70,13 @@ export default function ProductPage() {
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          {/* Pizza Image */}
           <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-200">
             <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-lg">
               Pizza Image
             </div>
           </div>
 
-          {/* Pizza Details */}
           <div>
-            {/* Title & Price */}
             <h1 className="font-display text-4xl sm:text-5xl text-[#5D3A1A] mb-4">
               {pizza.name}
             </h1>
@@ -88,12 +84,10 @@ export default function ProductPage() {
               ${finalPrice}
             </p>
 
-            {/* Description */}
             <p className="text-gray-700 mb-8 leading-relaxed">
               {pizza.description}
             </p>
 
-            {/* Size Selection */}
             <div className="mb-8">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Select Size
@@ -119,7 +113,6 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Toppings */}
             <div className="mb-8">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Toppings
@@ -142,7 +135,6 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={handleAddToCart}
@@ -181,7 +173,6 @@ export default function ProductPage() {
               </button>
             </div>
 
-            {/* Desktop Back Link */}
             <div className="mt-8 hidden md:block">
               <Link
                 href="/store"

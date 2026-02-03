@@ -44,7 +44,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Mobile Header */}
       <div className="sticky top-14 z-30 bg-white border-b px-4 py-3 md:hidden">
         <div className="flex items-center justify-between">
           <button
@@ -64,12 +63,10 @@ export default function CheckoutPage() {
             </svg>
           </button>
           <h1 className="font-display text-2xl text-[#5D3A1A]">Checkout</h1>
-          <div className="w-10" /> {/* Spacer */}
         </div>
       </div>
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Desktop Header */}
         <div className="mb-8 hidden md:flex items-center justify-between">
           <h1 className="font-display text-4xl text-[#5D3A1A]">Checkout</h1>
           <div className="flex gap-4">
@@ -105,9 +102,7 @@ export default function CheckoutPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="grid gap-8 lg:grid-cols-3">
-          {/* Payment Form */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Order Summary Toggle (Mobile) */}
             <div className="md:hidden">
               <button
                 type="button"
@@ -156,14 +151,12 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* Payment Method Selection */}
             <div className="rounded-lg border bg-white p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 Payment Method
               </h2>
 
               <div className="space-y-3">
-                {/* Credit Card */}
                 <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors has-checked:border-[#5D3A1A] has-checked:bg-[#FFF5E6]">
                   <input
                     type="radio"
@@ -191,7 +184,6 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
-                {/* Mobile Money */}
                 <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors has-checked:border-[#5D3A1A] has-checked:bg-[#FFF5E6]">
                   <input
                     type="radio"
@@ -219,7 +211,6 @@ export default function CheckoutPage() {
                   </div>
                 </label>
 
-                {/* Cash on Delivery */}
                 <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 p-4 transition-colors has-checked:border-[#5D3A1A] has-checked:bg-[#FFF5E6]">
                   <input
                     type="radio"
@@ -249,7 +240,6 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Payment Details */}
             {paymentMethod === "credit-card" && (
               <div className="rounded-lg border bg-white p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -323,7 +313,6 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Order Summary (Desktop) */}
           <div className="hidden md:block lg:col-span-1">
             <div className="sticky top-24 rounded-lg border bg-white p-6 shadow-sm">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
@@ -374,7 +363,6 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Mobile Submit Button */}
           <div className="md:hidden lg:col-span-2">
             <button
               type="submit"

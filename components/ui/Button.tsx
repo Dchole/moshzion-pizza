@@ -31,9 +31,9 @@ interface ButtonAsLink extends ButtonBaseProps {
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-6 py-3 text-base",
-  lg: "px-8 py-4 text-lg"
+  sm: "px-2 py-1 text-sm",
+  md: "px-4 py-2 text-base",
+  lg: "px-6 py-3 text-lg"
 };
 
 const getVariantClasses = (
@@ -79,7 +79,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors whitespace-nowrap";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer";
 
   const disabledClasses = disabled
     ? "opacity-50 cursor-not-allowed pointer-events-none"
@@ -106,7 +106,6 @@ export function Button({
     </>
   );
 
-  // Render as Link if href is provided
   if ("href" in props && props.href) {
     const { href, onClick } = props as ButtonAsLink;
     return (
@@ -116,7 +115,6 @@ export function Button({
     );
   }
 
-  // Render as button
   const { type = "button", onClick } = props as ButtonAsButton;
   return (
     <button

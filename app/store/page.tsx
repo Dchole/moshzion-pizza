@@ -37,13 +37,10 @@ export default function StorePage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Page Header */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="font-display text-4xl text-[#5D3A1A]">Store</h1>
 
-          {/* Search & Filter Mobile Toggle */}
           <div className="flex flex-1 gap-2 sm:max-w-md">
-            {/* Search Input */}
             <div className="relative flex-1">
               <label htmlFor="search" className="sr-only">
                 Search pizzas
@@ -72,7 +69,6 @@ export default function StorePage() {
               />
             </div>
 
-            {/* Filter Toggle (Mobile) */}
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
               className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 lg:hidden"
@@ -94,7 +90,6 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className={`mb-8 ${isFilterOpen ? "block" : "hidden"} lg:block`}>
           <div className="flex flex-wrap gap-3">
             {categories.map(category => (
@@ -122,13 +117,11 @@ export default function StorePage() {
           </div>
         </div>
 
-        {/* Results Count */}
         <p className="mb-6 text-sm text-gray-600">
           Showing {filteredPizzas.length}{" "}
           {filteredPizzas.length === 1 ? "pizza" : "pizzas"}
         </p>
 
-        {/* Pizza Grid */}
         {filteredPizzas.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredPizzas.map(pizza => (
@@ -162,7 +155,6 @@ function PizzaCard({ pizza }: { pizza: Pizza }) {
       href={`/product/${pizza.id}`}
       className="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-xl transition-shadow"
     >
-      {/* Add to Cart Icon */}
       <div className="absolute left-4 top-4 z-10">
         <button
           className="rounded-full bg-[#E5D4C1] p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
@@ -186,12 +178,11 @@ function PizzaCard({ pizza }: { pizza: Pizza }) {
         </button>
       </div>
 
-      {/* Pizza Image */}
       <div className="relative aspect-square bg-gray-200">
         <div className="absolute inset-0 flex items-center justify-center text-gray-400">
           Pizza Image
         </div>
-        {/* Size indicators */}
+
         <div className="absolute bottom-4 right-4 flex gap-1">
           {pizza.sizes.map(size => (
             <span
@@ -204,19 +195,15 @@ function PizzaCard({ pizza }: { pizza: Pizza }) {
         </div>
       </div>
 
-      {/* Pizza Info */}
       <div className="p-4">
-        {/* Name */}
         <h3 className="font-display text-xl text-[#5D3A1A] mb-1">
           {pizza.name}
         </h3>
 
-        {/* Price */}
         <p className="text-lg font-semibold text-[#5D3A1A] mb-3">
           ${pizza.price}
         </p>
 
-        {/* Categories */}
         <div className="flex flex-wrap gap-1">
           {pizza.category.map(cat => (
             <span
