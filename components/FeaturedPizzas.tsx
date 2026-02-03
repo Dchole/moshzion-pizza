@@ -92,9 +92,9 @@ export default function FeaturedPizzas() {
         </div>
 
         {/* Other Featured Pizzas Grid */}
-        <div className="mt-16 grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-16 -mx-4 px-4 pt-4 flex gap-6 overflow-x-auto pb-4 sm:mx-0 sm:px-0 sm:pt-0 sm:grid sm:grid-cols-2 sm:gap-12 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
           {pizzas.slice(1, 4).map(pizza => (
-            <div key={pizza.id} className="group relative">
+            <div key={pizza.id} className="group relative min-w-70 sm:min-w-0">
               {/* Add to Cart Icon */}
               <div className="absolute -top-3 -left-3 z-10">
                 <button
