@@ -3,8 +3,7 @@
 import { Pizza } from "@/types";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
-import { Button, Chip } from "@/components/ui";
+import { Chip } from "@/components/ui";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import Link from "next/link";
 
