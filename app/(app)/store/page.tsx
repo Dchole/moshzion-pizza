@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { pizzas } from "@/lib/data";
 import type { Pizza } from "@/types";
+import { PizzaCard } from "@/components/ui";
+import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 
 const categories = ["New", "Vegan", "Hot", "Promo"];
 
@@ -20,12 +22,10 @@ export default function StorePage() {
 
   const filteredPizzas = useMemo(() => {
     return pizzas.filter(pizza => {
-      // Search filter
       const matchesSearch = pizza.name
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
 
-      // Category filter
       const matchesCategory =
         selectedFilters.length === 0 ||
         selectedFilters.some(filter => pizza.category.includes(filter));
@@ -33,6 +33,9 @@ export default function StorePage() {
       return matchesSearch && matchesCategory;
     });
   }, [searchQuery, selectedFilters]);
+
+  const featuredPizza = filteredPizzas.find(p => p.id === "1");
+  const regularPizzas = filteredPizzas.filter(p => p.id !== "1");
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -123,7 +126,11 @@ export default function StorePage() {
 
       {filteredPizzas.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredPizzas.map(pizza => (
+          {featuredPizza && (
+            <FeaturedPizzaCard pizza={featuredPizza} variant="compact" />
+          )}
+
+          {regularPizzas.map(pizza => (
             <PizzaCard key={pizza.id} pizza={pizza} />
           ))}
         </div>
@@ -144,75 +151,5 @@ export default function StorePage() {
         </div>
       )}
     </div>
-  );
-}
-
-function PizzaCard({ pizza }: { pizza: Pizza }) {
-  return (
-    <Link
-      href={`/product/${pizza.id}`}
-      className="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-xl transition-shadow"
-    >
-      <div className="absolute left-4 top-4 z-10">
-        <button
-          className="rounded-full bg-[#E5D4C1] p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-          aria-label={`Add ${pizza.name} to cart`}
-          onClick={e => {
-            e.preventDefault();
-            // Handle add to cart
-          }}
-        >
-          <svg
-            className="h-5 w-5 text-[#5D3A1A]"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="relative aspect-square bg-gray-200">
-        <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-          Pizza Image
-        </div>
-
-        <div className="absolute bottom-4 right-4 flex gap-1">
-          {pizza.sizes.map(size => (
-            <span
-              key={size.name}
-              className="rounded bg-white/90 px-2 py-1 text-xs font-medium text-gray-700"
-            >
-              {size.name.charAt(0)}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="p-4">
-        <h3 className="font-display text-xl text-[#5D3A1A] mb-1">
-          {pizza.name}
-        </h3>
-
-        <p className="text-lg font-semibold text-[#5D3A1A] mb-3">
-          ${pizza.price}
-        </p>
-
-        <div className="flex flex-wrap gap-1">
-          {pizza.category.map(cat => (
-            <span
-              key={cat}
-              className="rounded-full border border-[#8B5A2B] px-2 py-0.5 text-xs text-[#5D3A1A]"
-            >
-              {cat}
-            </span>
-          ))}
-        </div>
-      </div>
-    </Link>
   );
 }

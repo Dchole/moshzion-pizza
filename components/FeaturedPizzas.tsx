@@ -1,10 +1,8 @@
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import { Button, Chip, PizzaCard } from "@/components/ui";
-import { AddToCartButton } from "@/components/AddToCartButton";
+import { Button, PizzaCard } from "@/components/ui";
+import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 
 export default function FeaturedPizzas() {
   const featuredPizza = pizzas[0];
@@ -35,70 +33,7 @@ export default function FeaturedPizzas() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto">
-          <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
-            <div className="absolute top-0 left-0 z-10">
-              <AddToCartButton
-                pizza={{
-                  id: featuredPizza.id,
-                  name: featuredPizza.name,
-                  price: featuredPizza.price,
-                  image: featuredPizza.image
-                }}
-                variant="filled"
-                color="white"
-                size="lg"
-                icon={
-                  <AddShoppingCartIcon
-                    sx={{ fontSize: 28, color: "var(--brown-dark)" }}
-                  />
-                }
-              />
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-              Pizza Image
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-display text-4xl sm:text-5xl text-brown-dark mb-4">
-              All Seasoned Pizza ✨
-            </h3>
-            <div className="flex items-baseline gap-3 mb-8">
-              <span className="text-3xl text-(--price-strikethrough) line-through font-display">
-                ${FEATURED_CONFIG.originalPrice}
-              </span>
-              <span className="text-3xl font-display text-(--price-color)">
-                ${featuredPizza.price}
-              </span>
-            </div>
-
-            <div className="mb-8">
-              <div className="flex flex-wrap gap-2">
-                {featuredPizza.toppings
-                  .slice(0, FEATURED_CONFIG.maxToppingsDisplay)
-                  .map(topping => (
-                    <Chip key={topping} label={topping} />
-                  ))}
-              </div>
-            </div>
-
-            <Button
-              href={`/product/${featuredPizza.id}`}
-              variant="primary"
-              color="beige"
-              size="lg"
-              className="font-semibold px-12 rounded-sm"
-              icon={
-                <ShoppingCartCheckoutIcon
-                  sx={{ fontSize: 22, color: "var(--brown-dark)" }}
-                />
-              }
-            >
-              CHECKOUT
-            </Button>
-          </div>
-        </div>
+        <FeaturedPizzaCard pizza={featuredPizza} variant="hero" />
 
         <div className="mt-16 -mx-4 px-4 pt-4 flex gap-6 overflow-x-auto pb-4 sm:mx-0 sm:px-0 sm:pt-0 sm:grid sm:grid-cols-2 sm:gap-12 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
           {gridPizzas.map(pizza => (
