@@ -7,6 +7,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { CONTACT_INFO } from "@/lib/constants";
+import { Button, SectionHeader, ContactItem } from "@/components/ui";
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
@@ -63,14 +64,12 @@ export default function Newsletter() {
         className="bg-(--newsletter-bg) py-16 sm:py-20 pb-24 text-white"
       >
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 text-center">
-          {/* Section Header */}
-          <h2 className="font-display text-5xl sm:text-6xl mb-6 text-(--newsletter-heading)">
-            Get Notified
-          </h2>
-          <p className="text-lg text-(--newsletter-body) mb-8 max-w-lg mx-auto">
-            Get up to date with our services. Get notified with updates to our
-            store and services
-          </p>
+          <SectionHeader
+            title="Get Notified"
+            subtitle="Get up to date with our services. Get notified with updates to our store and services"
+            color="red"
+            className="mb-8"
+          />
 
           {/* Newsletter Form */}
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
@@ -114,13 +113,15 @@ export default function Newsletter() {
                 </div>
               )}
 
-              <button
+              <Button
                 type="submit"
+                variant="primary"
+                color="red"
                 disabled={status === "loading"}
-                className="rounded-sm border border-gray-300 bg-white px-10 py-2.5 font-medium text-(--newsletter-bg) hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="rounded-sm"
               >
                 {status === "loading" ? "Subscribing..." : "Subscribe"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -131,38 +132,26 @@ export default function Newsletter() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="bg-(--contact-bar-bg) rounded-lg py-5 px-8">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 text-white">
-              {/* Phone */}
-              <div className="flex items-center gap-3">
-                <PhoneIcon sx={{ fontSize: 32, color: "var(--footer-pink)" }} />
-                <div>
-                  <p className="text-sm text-(--footer-pink)">Give us a call</p>
-                  <p className="text-lg font-semibold">{CONTACT_INFO.phone}</p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-center gap-3">
-                <EmailIcon sx={{ fontSize: 32, color: "var(--footer-pink)" }} />
-                <div>
-                  <p className="text-sm text-(--footer-pink)">
-                    Send Us A Message
-                  </p>
-                  <p className="text-lg font-semibold">{CONTACT_INFO.email}</p>
-                </div>
-              </div>
-
-              {/* Location */}
-              <div className="flex items-center gap-3">
-                <LocationOnIcon
-                  sx={{ fontSize: 32, color: "var(--footer-pink)" }}
-                />
-                <div>
-                  <p className="text-sm text-(--footer-pink)">Location</p>
-                  <p className="text-lg font-semibold">
-                    {CONTACT_INFO.address}
-                  </p>
-                </div>
-              </div>
+              <ContactItem
+                icon={<PhoneIcon sx={{ fontSize: 32 }} />}
+                label="Give us a call"
+                value={CONTACT_INFO.phone}
+                href={`tel:${CONTACT_INFO.phone.replace(/\D/g, "")}`}
+                size="lg"
+              />
+              <ContactItem
+                icon={<EmailIcon sx={{ fontSize: 32 }} />}
+                label="Send Us A Message"
+                value={CONTACT_INFO.email}
+                href={`mailto:${CONTACT_INFO.email}`}
+                size="lg"
+              />
+              <ContactItem
+                icon={<LocationOnIcon sx={{ fontSize: 32 }} />}
+                label="Location"
+                value={CONTACT_INFO.address}
+                size="lg"
+              />
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PhoneIcon from "@mui/icons-material/Phone";
+import { Button } from "@/components/ui";
 
 export default function Hero() {
   return (
@@ -39,21 +39,27 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-row flex-wrap gap-4">
-            <Link
+            <Button
               href="/store"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-medium text-brown-dark shadow-lg hover:bg-gray-100 transition-colors whitespace-nowrap"
+              variant="primary"
+              color="white"
+              icon={
+                <ShoppingCartIcon sx={{ fontSize: 20 }} aria-hidden="true" />
+              }
+              className="flex-1 sm:flex-initial"
             >
               Go to our store
-              <ShoppingCartIcon sx={{ fontSize: 20 }} aria-hidden="true" />
-            </Link>
+            </Button>
 
-            <Link
+            <Button
               href="tel:0233456789"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white px-6 py-3 text-base font-medium text-white hover:bg-white/10 transition-colors whitespace-nowrap"
+              variant="outline"
+              color="white"
+              icon={<PhoneIcon sx={{ fontSize: 20 }} aria-hidden="true" />}
+              className="flex-1 sm:flex-initial"
             >
               Call Us
-              <PhoneIcon sx={{ fontSize: 20 }} aria-hidden="true" />
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

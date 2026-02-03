@@ -5,6 +5,7 @@ import { testimonials } from "@/lib/data";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { SectionHeader, IconButton } from "@/components/ui";
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,12 +28,10 @@ export default function Testimonials() {
       className="bg-linear-to-b from-white to-(--gradient-cream) py-16 sm:py-24"
     >
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-brown-dark">
-            What our customers are saying
-          </h2>
-        </div>
+        <SectionHeader
+          title="What our customers are saying"
+          className="mb-12"
+        />
 
         {/* Testimonial Card */}
         <div className="relative">
@@ -59,25 +58,33 @@ export default function Testimonials() {
           </div>
 
           {/* Navigation Arrows */}
-          <button
-            onClick={handlePrevious}
-            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg hover:bg-gray-50 transition-colors"
+          <IconButton
+            variant="filled"
+            color="white"
+            size="lg"
+            icon={
+              <ChevronLeftIcon
+                sx={{ fontSize: 24, color: "var(--brown-dark)" }}
+              />
+            }
             aria-label="Previous testimonial"
-          >
-            <ChevronLeftIcon
-              sx={{ fontSize: 24, color: "var(--brown-dark)" }}
-            />
-          </button>
+            onClick={handlePrevious}
+            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg"
+          />
 
-          <button
-            onClick={handleNext}
-            className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 rounded-full bg-white p-3 shadow-lg hover:bg-gray-50 transition-colors"
+          <IconButton
+            variant="filled"
+            color="white"
+            size="lg"
+            icon={
+              <ChevronRightIcon
+                sx={{ fontSize: 24, color: "var(--brown-dark)" }}
+              />
+            }
             aria-label="Next testimonial"
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, color: "var(--brown-dark)" }}
-            />
-          </button>
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 shadow-lg"
+          />
         </div>
 
         {/* Dots Indicator */}

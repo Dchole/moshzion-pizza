@@ -1,16 +1,9 @@
 import Link from "next/link";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import {
-  CONTACT_INFO,
-  BUSINESS_HOURS,
-  SOCIAL_LINKS,
-  FOOTER_LINKS
-} from "@/lib/constants";
+import { CONTACT_INFO, BUSINESS_HOURS, FOOTER_LINKS } from "@/lib/constants";
+import { SocialLinks } from "@/components/ui";
 
 export default function Footer() {
   return (
@@ -29,38 +22,7 @@ export default function Footer() {
             </p>
 
             {/* Social Media Links */}
-            <nav
-              className="flex gap-3 mb-8 sm:mb-0"
-              aria-label="Social media links"
-            >
-              <a
-                href={SOCIAL_LINKS.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-gray-300 transition-colors"
-                aria-label="Facebook"
-              >
-                <FacebookIcon sx={{ fontSize: 28 }} />
-              </a>
-              <a
-                href={SOCIAL_LINKS.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-gray-300 transition-colors"
-                aria-label="WhatsApp"
-              >
-                <WhatsAppIcon sx={{ fontSize: 28 }} />
-              </a>
-              <a
-                href={SOCIAL_LINKS.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-gray-300 transition-colors"
-                aria-label="Instagram"
-              >
-                <InstagramIcon sx={{ fontSize: 28 }} />
-              </a>
-            </nav>
+            <SocialLinks size="lg" className="mb-8 sm:mb-0" />
 
             {/* Mobile Contact Info */}
             <div className="sm:hidden space-y-6">

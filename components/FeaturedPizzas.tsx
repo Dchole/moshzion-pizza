@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { useCallback } from "react";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import StorefrontIcon from "@mui/icons-material/Storefront";
+import { Button, IconButton, Chip, PizzaCard } from "@/components/ui";
 
 export default function FeaturedPizzas() {
   const featuredPizza = pizzas[0];
@@ -15,12 +16,15 @@ export default function FeaturedPizzas() {
   );
 
   // Handler for add to cart - to be connected to cart context later
-  const handleAddToCart = (e: React.MouseEvent, pizzaId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // TODO: Connect to cart context
-    console.log("Add to cart:", pizzaId);
-  };
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent, pizzaId: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // TODO: Connect to cart context
+      console.log("Add to cart:", pizzaId);
+    },
+    []
+  );
 
   return (
     <section
@@ -50,15 +54,19 @@ export default function FeaturedPizzas() {
           {/* Pizza Image */}
           <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
             <div className="absolute top-0 left-0 z-10">
-              <button
-                className="bg-white p-3 shadow-md hover:bg-gray-100 transition-colors"
+              <IconButton
+                variant="filled"
+                color="white"
+                size="lg"
+                icon={
+                  <AddShoppingCartIcon
+                    sx={{ fontSize: 28, color: "var(--brown-dark)" }}
+                  />
+                }
                 aria-label="Add to cart"
                 onClick={e => handleAddToCart(e, featuredPizza.id)}
-              >
-                <AddShoppingCartIcon
-                  sx={{ fontSize: 28, color: "var(--brown-dark)" }}
-                />
-              </button>
+                className="rounded-none"
+              />
             </div>
             {/* Placeholder - replace with actual image */}
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -86,80 +94,56 @@ export default function FeaturedPizzas() {
                 {featuredPizza.toppings
                   .slice(0, FEATURED_CONFIG.maxToppingsDisplay)
                   .map(topping => (
-                    <span
-                      key={topping}
-                      className="rounded-md border border-(--chip-border) bg-(--chip-bg) px-3 py-1 text-sm text-(--chip-text)"
-                    >
-                      {topping}
-                    </span>
+                    <Chip key={topping} label={topping} />
                   ))}
               </div>
             </div>
 
             {/* Checkout Button */}
-            <Link
+            <Button
               href={`/product/${featuredPizza.id}`}
-              className="inline-flex items-center justify-center gap-3 rounded-md bg-primary px-12 py-4 text-base font-semibold tracking-wider text-brown-dark hover:bg-(--primary-beige-hover) transition-colors"
+              variant="primary"
+              color="beige"
+              icon={
+                <ShoppingCartCheckoutIcon
+                  sx={{ fontSize: 22, color: "var(--brown-dark)" }}
+                />
+              }
+              className="tracking-wider font-semibold"
             >
               CHECKOUT
-              <ShoppingCartCheckoutIcon
-                sx={{ fontSize: 22, color: "var(--brown-dark)" }}
-              />
-            </Link>
+            </Button>
           </div>
         </div>
 
         {/* Other Featured Pizzas Grid */}
         <div className="mt-16 -mx-4 px-4 pt-4 flex gap-6 overflow-x-auto pb-4 sm:mx-0 sm:px-0 sm:pt-0 sm:grid sm:grid-cols-2 sm:gap-12 sm:overflow-visible sm:pb-0 lg:grid-cols-3">
           {gridPizzas.map(pizza => (
-            <div key={pizza.id} className="group relative min-w-70 sm:min-w-0">
-              {/* Add to Cart Icon */}
-              <div className="absolute -top-3 -left-3 z-10">
-                <button
-                  className="bg-primary p-2 shadow-md hover:bg-(--primary-beige-hover) transition-colors"
-                  aria-label={`Add ${pizza.name} to cart`}
-                  onClick={e => handleAddToCart(e, pizza.id)}
-                >
-                  <AddShoppingCartIcon
-                    sx={{ fontSize: 20, color: "var(--brown-dark)" }}
-                  />
-                </button>
-              </div>
-
-              {/* Pizza Image */}
-              <Link href={`/product/${pizza.id}`}>
-                <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                    Pizza Image
-                  </div>
-                </div>
-              </Link>
-
-              {/* Pizza Info */}
-              <div className="mt-4 text-center">
-                <h4 className="font-display text-2xl text-brown-dark mb-1">
-                  {pizza.name}
-                </h4>
-                <p className="text-lg font-display text-(--price-color)">
-                  ${pizza.price}
-                </p>
-              </div>
-            </div>
+            <PizzaCard
+              key={pizza.id}
+              pizza={pizza}
+              onAddToCart={handleAddToCart}
+              className="min-w-70 sm:min-w-0"
+            />
           ))}
         </div>
 
         {/* View All Button */}
         <div className="mt-12 text-center">
-          <Link
+          <Button
             href="/store"
-            className="group inline-flex items-center justify-center gap-2 rounded-lg border-2 border-brown-dark px-8 py-3 text-base font-medium text-brown-dark hover:bg-brown-dark hover:text-white transition-colors"
+            variant="outline"
+            color="brown"
+            icon={
+              <StorefrontIcon
+                sx={{ fontSize: 20, color: "var(--brown-dark)" }}
+                className="group-hover:text-white"
+              />
+            }
+            className="group"
           >
             Go to our store
-            <StorefrontIcon
-              className="group-hover:text-white"
-              sx={{ fontSize: 20, color: "var(--brown-dark)" }}
-            />
-          </Link>
+          </Button>
         </div>
       </div>
     </section>
