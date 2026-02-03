@@ -1,4 +1,3 @@
-import { memo } from "react";
 import Link from "next/link";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
@@ -46,7 +45,7 @@ const SOCIAL_ITEMS = [
   }
 ] as const;
 
-export const SocialLinks = memo(function SocialLinks({
+export function SocialLinks({
   variant = "dark",
   size = "md",
   className = ""
@@ -73,6 +72,6 @@ export const SocialLinks = memo(function SocialLinks({
       ))}
     </nav>
   );
-});
+}
 
 export default SocialLinks;

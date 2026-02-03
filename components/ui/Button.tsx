@@ -1,4 +1,3 @@
-import { memo } from "react";
 import Link from "next/link";
 
 type ButtonVariant = "primary" | "outline" | "ghost";
@@ -67,7 +66,7 @@ const getVariantClasses = (
   return variants[variant][color];
 };
 
-export const Button = memo(function Button({
+export function Button({
   variant = "primary",
   color = "brown",
   size = "md",
@@ -129,6 +128,6 @@ export const Button = memo(function Button({
       {content}
     </button>
   );
-});
+}
 
 export default Button;

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import Link from "next/link";
 
 type IconButtonVariant = "filled" | "outline" | "ghost";
 type IconButtonColor = "white" | "brown" | "beige";
@@ -61,7 +61,7 @@ const getVariantClasses = (
   return variants[variant][color];
 };
 
-export const IconButton = memo(function IconButton({
+export function IconButton({
   variant = "filled",
   color = "beige",
   size = "md",
@@ -90,7 +90,6 @@ export const IconButton = memo(function IconButton({
 
   // Render as Link if href is provided
   if ("href" in props && props.href) {
-    const Link = require("next/link").default;
     const { href, onClick } = props as IconButtonAsLink;
     return (
       <Link
@@ -117,6 +116,6 @@ export const IconButton = memo(function IconButton({
       {icon}
     </button>
   );
-});
+}
 
 export default IconButton;

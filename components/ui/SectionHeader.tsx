@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 type SectionHeaderAlignment = "left" | "center";
 type SectionHeaderColor = "brown" | "white" | "red";
 
@@ -34,7 +32,7 @@ const alignmentClasses: Record<SectionHeaderAlignment, string> = {
   center: "text-center"
 };
 
-export const SectionHeader = memo(function SectionHeader({
+export function SectionHeader({
   title,
   subtitle,
   alignment = "center",
@@ -68,6 +66,6 @@ export const SectionHeader = memo(function SectionHeader({
       ))}
     </div>
   );
-});
+}
 
 export default SectionHeader;

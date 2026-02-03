@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback } from "react";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -16,15 +15,12 @@ export default function FeaturedPizzas() {
   );
 
   // Handler for add to cart - to be connected to cart context later
-  const handleAddToCart = useCallback(
-    (e: React.MouseEvent, pizzaId: string) => {
-      e.preventDefault();
-      e.stopPropagation();
-      // TODO: Connect to cart context
-      console.log("Add to cart:", pizzaId);
-    },
-    []
-  );
+  const handleAddToCart = (e: React.MouseEvent, pizzaId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // TODO: Connect to cart context
+    console.log("Add to cart:", pizzaId);
+  };
 
   return (
     <section

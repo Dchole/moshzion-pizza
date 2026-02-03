@@ -1,4 +1,3 @@
-import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Pizza } from "@/types";
@@ -11,7 +10,7 @@ interface PizzaCardProps {
   className?: string;
 }
 
-export const PizzaCard = memo(function PizzaCard({
+export function PizzaCard({
   pizza,
   onAddToCart,
   className = ""
@@ -70,6 +69,6 @@ export const PizzaCard = memo(function PizzaCard({
       </div>
     </div>
   );
-});
+}
 
 export default PizzaCard;

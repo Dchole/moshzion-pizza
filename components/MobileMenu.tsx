@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, memo } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonIcon from "@mui/icons-material/Person";
@@ -33,12 +33,7 @@ interface MenuLinkProps {
   onClick: () => void;
 }
 
-const MenuLink = memo(function MenuLink({
-  href,
-  icon,
-  label,
-  onClick
-}: MenuLinkProps) {
+function MenuLink({ href, icon, label, onClick }: MenuLinkProps) {
   const IconComponent = ICON_MAP[icon];
 
   return (
@@ -51,7 +46,7 @@ const MenuLink = memo(function MenuLink({
       <span className="font-medium">{label}</span>
     </Link>
   );
-});
+}
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -71,9 +66,9 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     };
   }, [isOpen]);
 
-  const handleLinkClick = useCallback(() => {
+  const handleLinkClick = () => {
     onClose();
-  }, [onClose]);
+  };
 
   if (!isOpen) return null;
 

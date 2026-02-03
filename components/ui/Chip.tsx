@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 type ChipVariant = "default" | "outline";
 type ChipSize = "sm" | "md";
 
@@ -20,7 +18,7 @@ const variantClasses: Record<ChipVariant, string> = {
   outline: "border border-gray-300 bg-transparent text-gray-700"
 };
 
-export const Chip = memo(function Chip({
+export function Chip({
   label,
   variant = "default",
   size = "md",
@@ -36,6 +34,6 @@ export const Chip = memo(function Chip({
     .join(" ");
 
   return <span className={classes}>{label}</span>;
-});
+}
 
 export default Chip;

@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 type ContactItemVariant = "dark" | "light";
 type ContactItemSize = "sm" | "md" | "lg";
 
@@ -50,7 +48,7 @@ const variantClasses: Record<
   }
 };
 
-export const ContactItem = memo(function ContactItem({
+export function ContactItem({
   icon,
   label,
   value,
@@ -81,6 +79,6 @@ export const ContactItem = memo(function ContactItem({
   }
 
   return content;
-});
+}
 
 export default ContactItem;
