@@ -9,7 +9,11 @@ import { NAV_LINKS } from "@/lib/constants";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 
-export default function Header() {
+export default function Header({
+  variant = "landing"
+}: {
+  variant?: "landing" | "app";
+}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleOpenMenu = () => {
@@ -20,9 +24,13 @@ export default function Header() {
     setIsMobileMenuOpen(false);
   };
 
+  const textColor = variant === "app" ? "text-[#5D3A1A]" : "text-white";
+  const hoverColor =
+    variant === "app" ? "hover:text-[#8B5A2B]" : "hover:text-gray-200";
+
   return (
     <>
-      <header className="absolute top-0 left-0 right-0 z-40 bg-transparent">
+      <header className="absolute top-0 left-0 right-0 z-30 bg-transparent">
         <div className="hidden md:block">
           <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
@@ -43,8 +51,10 @@ export default function Header() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`text-base font-medium transition-colors hover:text-gray-200 ${
-                        index === 0 ? "text-(--hero-accent)" : "text-white"
+                      className={`text-base font-medium transition-colors ${hoverColor} ${
+                        index === 0 && variant === "landing"
+                          ? "text-(--hero-accent)"
+                          : textColor
                       }`}
                     >
                       {link.label}

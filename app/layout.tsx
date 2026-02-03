@@ -33,7 +33,6 @@ export const metadata: Metadata = {
   }
 };
 
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export default function RootLayout({
@@ -52,8 +51,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <Header />
-        <main id="main-content">{children}</main>
+        {children}
         <Footer />
       </body>
     </html>
