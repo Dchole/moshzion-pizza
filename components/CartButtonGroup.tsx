@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
@@ -13,6 +13,10 @@ interface AddedItem {
   price: number;
 }
 
+interface AddedItemWithCount extends AddedItem {
+  count: number;
+}
+
 interface CartButtonGroupProps {
   showAccount?: boolean;
   onAccountClick?: () => void;
@@ -22,25 +26,59 @@ export function CartButtonGroup({
   showAccount = true,
   onAccountClick
 }: CartButtonGroupProps) {
-  const [showAddedItem, setShowAddedItem] = useState(false);
-  const [addedItem, setAddedItem] = useState<AddedItem | null>(null);
+  const [showAddedItems, setShowAddedItems] = useState(false);
+  const [addedItems, setAddedItems] = useState<AddedItemWithCount[]>([]);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleCartUpdate = (e: Event) => {
       const customEvent = e as CustomEvent<AddedItem>;
 
       if (customEvent.detail) {
-        setAddedItem(customEvent.detail);
-        setShowAddedItem(true);
+        const newItem = customEvent.detail;
 
-        setTimeout(() => {
-          setShowAddedItem(false);
+        setAddedItems(prev => {
+          const existingIndex = prev.findIndex(
+            item => item.name === newItem.name
+          );
+
+          if (existingIndex !== -1) {
+            // Item exists, increment count
+            const updated = [...prev];
+            updated[existingIndex] = {
+              ...updated[existingIndex],
+              count: updated[existingIndex].count + 1
+            };
+            return updated;
+          } else {
+            // New item, add to array
+            return [...prev, { ...newItem, count: 1 }];
+          }
+        });
+
+        setShowAddedItems(true);
+
+        // Clear existing timeout and set new one
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setShowAddedItems(false);
+          setTimeout(() => {
+            setAddedItems([]);
+          }, 300); // Wait for animation to finish
         }, 2000);
       }
     };
 
     window.addEventListener("cart-updated", handleCartUpdate);
-    return () => window.removeEventListener("cart-updated", handleCartUpdate);
+    return () => {
+      window.removeEventListener("cart-updated", handleCartUpdate);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -57,21 +95,36 @@ export function CartButtonGroup({
       </Link>
 
       <div
-        className={`flex items-center overflow-hidden transition-all duration-300 ${showAddedItem ? "w-10 pr-2" : "w-0"}`}
+        className={`flex items-center gap-1 overflow-hidden transition-all duration-300 ${
+          showAddedItems ? `pr-2` : "w-0"
+        }`}
+        style={{
+          width: showAddedItems ? `${addedItems.length * 36 + 8}px` : "0px"
+        }}
       >
-        {addedItem && (
+        {addedItems.map((item, index) => (
           <div
-            className={`relative h-8 w-8 rounded-md overflow-hidden shrink-0 border-2 border-primary transition-transform duration-300 ${showAddedItem ? "scale-100" : "scale-0"}`}
+            key={`${item.name}-${index}`}
+            className={`relative h-8 w-8 shrink-0 transition-transform duration-300 ${
+              showAddedItems ? "scale-100" : "scale-0"
+            }`}
           >
-            <Image
-              src={addedItem.image}
-              alt={addedItem.name}
-              fill
-              className="object-cover"
-              sizes="32px"
-            />
+            <div className="relative h-full w-full rounded-md overflow-hidden border-2 border-primary">
+              <Image
+                src={item.image}
+                alt={item.name}
+                fill
+                className="object-cover"
+                sizes="32px"
+              />
+            </div>
+            {item.count > 1 && (
+              <div className="absolute -top-1 -right-1 bg-brown-dark text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center border border-white shadow-sm">
+                +{item.count}
+              </div>
+            )}
           </div>
-        )}
+        ))}
       </div>
 
       {showAccount &&
