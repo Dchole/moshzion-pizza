@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Lobster, Open_Sans } from "next/font/google";
+import { Lobster, Rubik, Open_Sans } from "next/font/google";
 import "./globals.css";
 
 const lobster = Lobster({
   weight: "400",
   variable: "--font-lobster",
+  subsets: ["latin"],
+  display: "swap"
+});
+
+const rubik = Rubik({
+  variable: "--font-rubik",
   subsets: ["latin"],
   display: "swap"
 });
@@ -39,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${openSans.variable} ${lobster.variable} antialiased font-sans`}
+        className={`${rubik.variable} ${lobster.variable} ${openSans.variable} antialiased font-sans`}
       >
         <CartProvider>
           <Header />
