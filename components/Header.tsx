@@ -28,6 +28,11 @@ export default function Header({
   const hoverColor =
     variant === "app" ? "hover:text-[#8B5A2B]" : "hover:text-gray-200";
 
+  const navLinks =
+    variant === "app"
+      ? [{ label: "Store", href: "/store" }, ...NAV_LINKS.slice(1)]
+      : NAV_LINKS;
+
   return (
     <>
       <header className="absolute top-0 left-0 right-0 z-30 bg-transparent">
@@ -47,11 +52,11 @@ export default function Header({
                   className="flex items-center gap-8"
                   aria-label="Main navigation"
                 >
-                  {NAV_LINKS.map((link, index) => (
+                  {navLinks.map((link, index) => (
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`text-base font-medium transition-colors ${hoverColor} ${
+                      className={`text-base font-medium font-open-sans transition-colors ${hoverColor} ${
                         index === 0 && variant === "landing"
                           ? "text-(--hero-accent)"
                           : textColor
