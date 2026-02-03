@@ -19,7 +19,7 @@ export function FeaturedPizzaCard({
   if (variant === "compact") {
     return (
       <div
-        className={`sm:col-span-2 rounded-lg border border-[#D4C4B0] bg-linear-to-br from-[#FDF8F3] to-[#F5EFE7] p-4 shadow-md ${className}`}
+        className={`sm:col-span-2 rounded-lg border border-[#D4C4B0] bg-linear-to-br from-[#FDF8F3] to-[#F5EFE7] p-4 shadow-md h-full ${className}`}
       >
         <div className="grid grid-cols-[minmax(200px,300px)_1fr] gap-4 h-full">
           <div className="relative h-full min-h-70 w-full bg-gray-200 rounded-lg overflow-hidden group">
