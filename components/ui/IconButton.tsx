@@ -88,7 +88,6 @@ export function IconButton({
     .filter(Boolean)
     .join(" ");
 
-  // Render as Link if href is provided
   if ("href" in props && props.href) {
     const { href, onClick } = props as IconButtonAsLink;
     return (
@@ -103,7 +102,6 @@ export function IconButton({
     );
   }
 
-  // Render as button
   const { type = "button", onClick } = props as IconButtonAsButton;
   return (
     <button

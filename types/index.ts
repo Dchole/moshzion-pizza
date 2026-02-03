@@ -1,4 +1,3 @@
-// Product Types
 export interface Pizza {
   id: string;
   name: string;
@@ -17,7 +16,6 @@ export interface PizzaSize {
   priceMultiplier: number;
 }
 
-// Cart Types
 export interface CartItem {
   id: string;
   pizzaId: string;
@@ -29,14 +27,12 @@ export interface CartItem {
   image: string;
 }
 
-// Testimonial Type
 export interface Testimonial {
   id: string;
   quote: string;
   author: string;
 }
 
-// Feature Type (Why Buy From Us)
 export interface Feature {
   id: string;
   icon: string;

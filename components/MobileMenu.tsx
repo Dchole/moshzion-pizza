@@ -13,7 +13,6 @@ import WorkIcon from "@mui/icons-material/Work";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { MOBILE_MENU_SECTIONS } from "@/lib/constants";
 
-// Icon mapping for dynamic rendering
 const ICON_MAP = {
   Person: PersonIcon,
   ReceiptLong: ReceiptLongIcon,

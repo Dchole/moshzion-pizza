@@ -1,6 +1,5 @@
 import { Pizza } from "@/types";
 
-// Mock data for pizzas
 export const pizzas: Pizza[] = [
   {
     id: "1",
@@ -189,7 +188,6 @@ export const pizzas: Pizza[] = [
   }
 ];
 
-// Testimonials data
 export const testimonials = [
   {
     id: "1",
@@ -211,7 +209,6 @@ export const testimonials = [
   }
 ];
 
-// Why Buy From Us features
 export const features = [
   {
     id: "1",
