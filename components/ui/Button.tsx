@@ -79,7 +79,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-medium font-open-sans transition-colors whitespace-nowrap cursor-pointer";
 
   const disabledClasses = disabled
     ? "opacity-50 cursor-not-allowed pointer-events-none"

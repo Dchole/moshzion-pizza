@@ -72,7 +72,7 @@ export function IconButton({
   ...props
 }: IconButtonProps) {
   const baseClasses =
-    "inline-flex items-center justify-center rounded-full transition-colors";
+    "inline-flex items-center justify-center rounded-none transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-(--brown-dark)";
 
   const disabledClasses = disabled
     ? "opacity-50 cursor-not-allowed pointer-events-none"

@@ -56,7 +56,6 @@ export default function FeaturedPizzas() {
                 }
                 aria-label="Add to cart"
                 onClick={e => handleAddToCart(e, featuredPizza.id)}
-                className="rounded-none"
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -91,13 +90,15 @@ export default function FeaturedPizzas() {
               href={`/product/${featuredPizza.id}`}
               variant="primary"
               color="beige"
+              size="lg"
+              className="font-semibold px-12 rounded-sm"
               icon={
                 <ShoppingCartCheckoutIcon
                   sx={{ fontSize: 22, color: "var(--brown-dark)" }}
                 />
               }
             >
-              Checkout
+              CHECKOUT
             </Button>
           </div>
         </div>

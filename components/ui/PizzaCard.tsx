@@ -23,7 +23,7 @@ export function PizzaCard({
 
   return (
     <div className={`group relative ${className}`}>
-      <div className="absolute -top-3 -left-3 z-10">
+      <div className="absolute -top-1 -left-1 z-10">
         <IconButton
           variant="filled"
           color="beige"

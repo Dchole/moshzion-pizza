@@ -1,7 +1,7 @@
 import Image from "next/image";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Button } from "@/components/ui";
+import { StorefrontOutlined } from "@mui/icons-material";
 
 export default function Hero() {
   return (
@@ -43,7 +43,7 @@ export default function Hero() {
               variant="primary"
               color="white"
               icon={
-                <ShoppingCartIcon sx={{ fontSize: 20 }} aria-hidden="true" />
+                <StorefrontOutlined sx={{ fontSize: 20 }} aria-hidden="true" />
               }
               className="flex-1 sm:flex-initial"
             >
