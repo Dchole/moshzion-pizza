@@ -30,13 +30,28 @@ export const FEATURED_CONFIG = {
   originalPrice: 80
 } as const;
 
-// Navigation Links
+// Navigation Links (Header)
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Contacts", href: "/contacts" },
   { label: "FAQs", href: "/faqs" }
 ] as const;
+
+// Mobile Menu Links (organized by section)
+export const MOBILE_MENU_SECTIONS = {
+  user: [
+    { label: "Account", href: "/account", icon: "Person" },
+    { label: "Orders", href: "/orders", icon: "ReceiptLong" },
+    { label: "Store", href: "/store", icon: "ShoppingCart" }
+  ],
+  navigation: [
+    { label: "About Us", href: "/about", icon: "Info" },
+    { label: "Contact Us", href: "/contacts", icon: "Phone" },
+    { label: "FAQs", href: "/faqs", icon: "QuestionAnswer" }
+  ],
+  other: [{ label: "Jobs", href: "/jobs", icon: "Work" }]
+} as const;
 
 // Footer Links
 export const FOOTER_LINKS = [
