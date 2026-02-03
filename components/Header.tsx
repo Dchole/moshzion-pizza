@@ -4,14 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
-import { useCart } from "@/lib/cart-context";
+import { CartCount } from "@/components/CartCount";
 import { NAV_LINKS } from "@/lib/constants";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { totalItems } = useCart();
 
   const handleOpenMenu = () => {
     setIsMobileMenuOpen(true);
@@ -58,16 +57,12 @@ export default function Header() {
                 <Link
                   href="/cart"
                   className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
-                  aria-label={`Shopping cart with ${totalItems} items`}
+                  aria-label="Shopping cart"
                 >
                   <LocalMallIcon
                     sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
-                  {totalItems > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brown-medium text-xs font-bold text-white">
-                      {totalItems}
-                    </span>
-                  )}
+                  <CartCount />
                 </Link>
 
                 <Link
@@ -99,16 +94,12 @@ export default function Header() {
                 <Link
                   href="/cart"
                   className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
-                  aria-label={`Shopping cart with ${totalItems} items`}
+                  aria-label="Shopping cart"
                 >
                   <LocalMallIcon
                     sx={{ fontSize: 20, color: "var(--text-dark)" }}
                   />
-                  {totalItems > 0 && (
-                    <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brown-medium text-xs font-bold text-white">
-                      {totalItems}
-                    </span>
-                  )}
+                  <CartCount />
                 </Link>
 
                 <button

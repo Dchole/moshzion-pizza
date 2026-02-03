@@ -35,7 +35,6 @@ export const metadata: Metadata = {
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { CartProvider } from "@/lib/cart-context";
 
 export default function RootLayout({
   children
@@ -47,17 +46,15 @@ export default function RootLayout({
       <body
         className={`${rubik.variable} ${lobster.variable} ${openSans.variable} antialiased font-sans`}
       >
-        <CartProvider>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:text-brown-dark focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            Skip to main content
-          </a>
-          <Header />
-          <main id="main-content">{children}</main>
-          <Footer />
-        </CartProvider>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:text-brown-dark focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary"
+        >
+          Skip to main content
+        </a>
+        <Header />
+        <main id="main-content">{children}</main>
+        <Footer />
       </body>
     </html>
   );

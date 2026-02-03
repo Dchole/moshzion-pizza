@@ -2,29 +2,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Pizza } from "@/types";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { IconButton } from "./IconButton";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 interface PizzaCardProps {
   pizza: Pizza;
-  onAddToCart?: (e: React.MouseEvent, pizzaId: string) => void;
   className?: string;
 }
 
-export function PizzaCard({
-  pizza,
-  onAddToCart,
-  className = ""
-}: PizzaCardProps) {
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onAddToCart?.(e, pizza.id);
-  };
-
+export function PizzaCard({ pizza, className = "" }: PizzaCardProps) {
   return (
     <div className={`group relative ${className}`}>
       <div className="absolute -top-1 -left-1 z-10">
-        <IconButton
+        <AddToCartButton
+          pizza={{
+            id: pizza.id,
+            name: pizza.name,
+            price: pizza.price,
+            image: pizza.image
+          }}
           variant="filled"
           color="beige"
           size="md"
@@ -33,8 +28,6 @@ export function PizzaCard({
               sx={{ fontSize: 20, color: "var(--brown-dark)" }}
             />
           }
-          aria-label={`Add ${pizza.name} to cart`}
-          onClick={handleAddToCart}
         />
       </div>
 

@@ -1,11 +1,10 @@
-"use client";
-
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import { Button, IconButton, Chip, PizzaCard } from "@/components/ui";
+import { Button, Chip, PizzaCard } from "@/components/ui";
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 export default function FeaturedPizzas() {
   const featuredPizza = pizzas[0];
@@ -13,12 +12,6 @@ export default function FeaturedPizzas() {
     FEATURED_CONFIG.gridStartIndex,
     FEATURED_CONFIG.gridStartIndex + FEATURED_CONFIG.gridCount
   );
-
-  const handleAddToCart = (e: React.MouseEvent, pizzaId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("Add to cart:", pizzaId);
-  };
 
   return (
     <section
@@ -45,7 +38,13 @@ export default function FeaturedPizzas() {
         <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto">
           <div className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden group">
             <div className="absolute top-0 left-0 z-10">
-              <IconButton
+              <AddToCartButton
+                pizza={{
+                  id: featuredPizza.id,
+                  name: featuredPizza.name,
+                  price: featuredPizza.price,
+                  image: featuredPizza.image
+                }}
                 variant="filled"
                 color="white"
                 size="lg"
@@ -54,8 +53,6 @@ export default function FeaturedPizzas() {
                     sx={{ fontSize: 28, color: "var(--brown-dark)" }}
                   />
                 }
-                aria-label="Add to cart"
-                onClick={e => handleAddToCart(e, featuredPizza.id)}
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center text-gray-400">
@@ -108,7 +105,6 @@ export default function FeaturedPizzas() {
             <PizzaCard
               key={pizza.id}
               pizza={pizza}
-              onAddToCart={handleAddToCart}
               className="min-w-70 sm:min-w-0"
             />
           ))}
