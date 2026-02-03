@@ -46,8 +46,16 @@ export function AddToCartButton({
 
       await addToCart(cartItem);
 
-      // Trigger event for cart count to update
-      window.dispatchEvent(new Event("cart-updated"));
+      // Trigger event for cart count to update with item details
+      window.dispatchEvent(
+        new CustomEvent("cart-updated", {
+          detail: {
+            name: pizza.name,
+            image: pizza.image,
+            price: pizza.price
+          }
+        })
+      );
     });
   };
 

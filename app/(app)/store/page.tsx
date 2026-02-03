@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { pizzas } from "@/lib/data";
-import type { Pizza } from "@/types";
 import { PizzaCard } from "@/components/ui";
 import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 import { SearchFilter } from "@/components/SearchFilter";

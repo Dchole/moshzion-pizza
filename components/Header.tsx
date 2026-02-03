@@ -4,10 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
-import { CartCount } from "@/components/CartCount";
+import { CartButtonGroup } from "@/components/CartButtonGroup";
 import { NAV_LINKS } from "@/lib/constants";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import PersonIcon from "@mui/icons-material/Person";
 
 export default function Header({
   variant = "landing"
@@ -74,28 +72,7 @@ export default function Header({
                 </nav>
               </div>
 
-              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
-                <Link
-                  href="/cart"
-                  className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
-                  aria-label="Shopping cart"
-                >
-                  <LocalMallIcon
-                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
-                  />
-                  <CartCount />
-                </Link>
-
-                <Link
-                  href="/account"
-                  className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
-                  aria-label="User account"
-                >
-                  <PersonIcon
-                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
-                  />
-                </Link>
-              </div>
+              <CartButtonGroup />
             </div>
           </div>
         </div>
@@ -111,28 +88,7 @@ export default function Header({
                 <Logo className="h-8 w-8" />
               </Link>
 
-              <div className="flex items-center gap-1 rounded-full bg-white border-2 border-primary p-1">
-                <Link
-                  href="/cart"
-                  className="relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 transition-colors"
-                  aria-label="Shopping cart"
-                >
-                  <LocalMallIcon
-                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
-                  />
-                  <CartCount />
-                </Link>
-
-                <button
-                  className="flex items-center justify-center rounded-full bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
-                  aria-label="Open menu"
-                  onClick={handleOpenMenu}
-                >
-                  <PersonIcon
-                    sx={{ fontSize: 20, color: "var(--text-dark)" }}
-                  />
-                </button>
-              </div>
+              <CartButtonGroup showAccount onAccountClick={handleOpenMenu} />
             </div>
           </div>
         </div>

@@ -3,14 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import SearchIcon from "@mui/icons-material/Search";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
+import FilterIcon from "@mui/icons-material/FilterAltOutlined";
 import { IconButton } from "@/components/ui";
-import {
-  Filter1Outlined,
-  Filter2Outlined,
-  FilterAltOutlined
-} from "@mui/icons-material";
 
 const categories = ["New", "Vegan", "Hot", "Promo"];
 
@@ -65,7 +60,7 @@ export function SearchFilter({ onSearchChange }: SearchFilterProps) {
 
   return (
     <div>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-display text-4xl text-[#5D3A1A]">Store</h1>
 
         <div className="flex flex-1 gap-2 sm:max-w-md">
@@ -101,7 +96,7 @@ export function SearchFilter({ onSearchChange }: SearchFilterProps) {
           <IconButton
             variant="outline"
             size="sm"
-            icon={<FilterAltOutlined sx={{ fontSize: 20 }} />}
+            icon={<FilterIcon sx={{ fontSize: 20 }} />}
             aria-label="Toggle filters"
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className="lg:hidden rounded-md! border! border-gray-300! text-gray-500! hover:bg-gray-100!"

@@ -15,7 +15,10 @@ export function CartCount() {
 
     // Listen for cart updates
     const handleCartUpdate = () => {
-      loadCount();
+      // Wait for the animation to finish before updating count
+      setTimeout(() => {
+        loadCount();
+      }, 2000);
     };
 
     window.addEventListener("cart-updated", handleCartUpdate);
