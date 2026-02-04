@@ -90,11 +90,33 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-(--footer-copyright-bg) mt-12 py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500">
-          <p className="text-(--footer-muted)">All rights reserved</p>
-          <p className="text-(--footer-muted)">
-            &copy; Copyright by Moshzion Pizza
-          </p>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-gray-500 mb-4">
+            <p className="text-(--footer-muted)">All rights reserved</p>
+            <p className="text-(--footer-muted)">
+              &copy; Copyright by Moshzion Pizza
+            </p>
+          </div>
+          <div className="text-center border-t border-white/10 pt-4">
+            <p className="text-xs text-gray-500">
+              Images by talented photographers on{" "}
+              <a
+                href="https://unsplash.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white underline transition-colors"
+              >
+                Unsplash
+              </a>
+              {" · "}
+              <Link
+                href="/credits"
+                className="text-gray-400 hover:text-white underline transition-colors"
+              >
+                View all credits
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

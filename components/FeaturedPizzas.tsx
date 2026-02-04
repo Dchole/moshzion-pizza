@@ -5,7 +5,8 @@ import { Button, PizzaCard } from "@/components/ui";
 import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 
 export default function FeaturedPizzas() {
-  const featuredPizza = pizzas[0];
+  const featuredPizza =
+    pizzas.find(p => p.id === FEATURED_CONFIG.pizzaId) || pizzas[0];
   const gridPizzas = pizzas.slice(
     FEATURED_CONFIG.gridStartIndex,
     FEATURED_CONFIG.gridStartIndex + FEATURED_CONFIG.gridCount
