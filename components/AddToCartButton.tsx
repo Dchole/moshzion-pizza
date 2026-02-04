@@ -38,7 +38,7 @@ export function AddToCartButton({
         pizzaId: pizza.id,
         name: pizza.name,
         price: pizza.price,
-        size: "Medium",
+        size: "Small",
         toppings: [],
         quantity: 1,
         image: pizza.image

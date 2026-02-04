@@ -9,6 +9,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
+import { addToCart } from "@/app/actions/cart";
 import { Button, Chip } from "@/components/ui";
 import type { PizzaSize } from "@/types";
 
@@ -23,10 +24,36 @@ export default function ProductPage() {
 
   const [selectedSize, setSelectedSize] = useState<PizzaSize["name"]>("Small");
 
-  const handleAddToCart = useCallback(() => {
-    // TODO: Implement actual cart logic
-    console.log("Add to cart:", { pizza, selectedSize });
-  }, [pizza, selectedSize]);
+  const selectedSizeData = pizza?.sizes.find(s => s.name === selectedSize);
+  const finalPrice =
+    pizza && selectedSizeData
+      ? calculatePrice(pizza.price, selectedSizeData.priceMultiplier)
+      : 0;
+
+  const handleAddToCart = useCallback(async () => {
+    if (!pizza || !selectedSizeData) return;
+
+    await addToCart({
+      pizzaId: pizza.id,
+      name: pizza.name,
+      price: finalPrice,
+      size: selectedSize,
+      toppings: pizza.toppings,
+      quantity: 1,
+      image: pizza.image
+    });
+
+    // Dispatch custom event for cart animation
+    window.dispatchEvent(
+      new CustomEvent("cart-updated", {
+        detail: {
+          name: pizza.name,
+          image: pizza.image,
+          price: finalPrice
+        }
+      })
+    );
+  }, [pizza, selectedSize, selectedSizeData, finalPrice]);
 
   const handleCheckout = useCallback(() => {
     // TODO: Implement actual checkout logic
@@ -51,20 +78,15 @@ export default function ProductPage() {
     );
   }
 
-  const selectedSizeData = pizza.sizes.find(s => s.name === selectedSize)!;
-  const finalPrice = calculatePrice(
-    pizza.price,
-    selectedSizeData.priceMultiplier
-  );
-
   // Check if this is the featured pizza with a discount
   const hasDiscount = pizza.id === FEATURED_CONFIG.pizzaId;
-  const originalPrice = hasDiscount
-    ? calculatePrice(
-        FEATURED_CONFIG.originalPrice,
-        selectedSizeData.priceMultiplier
-      )
-    : null;
+  const originalPrice =
+    hasDiscount && selectedSizeData
+      ? calculatePrice(
+          FEATURED_CONFIG.originalPrice,
+          selectedSizeData.priceMultiplier
+        )
+      : null;
 
   return (
     <div className="min-h-screen">
@@ -111,9 +133,7 @@ export default function ProductPage() {
             </p>
 
             <div className="mb-8">
-              <h2 className="text-base font-semibold text-gray-900 mb-3 font-open-sans">
-                Select Size
-              </h2>
+              <h2 className="sr-only">Select Size</h2>
               <div className="grid grid-cols-4 gap-2 sm:gap-3">
                 {pizza.sizes.map(size => (
                   <button
@@ -136,7 +156,7 @@ export default function ProductPage() {
             </div>
 
             <div className="mb-8">
-              <h2 className="text-base font-semibold text-gray-900 mb-3 font-open-sans">
+              <h2 className="font-display text-2xl text-brown-dark mb-3">
                 Toppings
               </h2>
               <div className="flex flex-wrap gap-2">
