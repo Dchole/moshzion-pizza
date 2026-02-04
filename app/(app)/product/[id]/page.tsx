@@ -5,9 +5,11 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import PaymentIcon from "@mui/icons-material/Payment";
 import { pizzas } from "@/lib/data";
-import { Button } from "@/components/ui";
+import { FEATURED_CONFIG } from "@/lib/constants";
+import { Button, Chip } from "@/components/ui";
 import type { PizzaSize } from "@/types";
 
 const calculatePrice = (basePrice: number, multiplier: number): number => {
@@ -20,20 +22,11 @@ export default function ProductPage() {
   const pizza = pizzas.find(p => p.id === params.id);
 
   const [selectedSize, setSelectedSize] = useState<PizzaSize["name"]>("Small");
-  const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
-
-  const toggleTopping = useCallback((topping: string) => {
-    setSelectedToppings(prev =>
-      prev.includes(topping)
-        ? prev.filter(t => t !== topping)
-        : [...prev, topping]
-    );
-  }, []);
 
   const handleAddToCart = useCallback(() => {
     // TODO: Implement actual cart logic
-    console.log("Add to cart:", { pizza, selectedSize, selectedToppings });
-  }, [pizza, selectedSize, selectedToppings]);
+    console.log("Add to cart:", { pizza, selectedSize });
+  }, [pizza, selectedSize]);
 
   const handleCheckout = useCallback(() => {
     // TODO: Implement actual checkout logic
@@ -64,11 +57,20 @@ export default function ProductPage() {
     selectedSizeData.priceMultiplier
   );
 
+  // Check if this is the featured pizza with a discount
+  const hasDiscount = pizza.id === FEATURED_CONFIG.pizzaId;
+  const originalPrice = hasDiscount
+    ? calculatePrice(
+        FEATURED_CONFIG.originalPrice,
+        selectedSizeData.priceMultiplier
+      )
+    : null;
+
   return (
     <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-200">
+      <div className="mx-auto max-w-7xl lg:px-8">
+        <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:py-8">
+          <div className="relative aspect-square overflow-hidden bg-gray-200 lg:rounded-lg">
             {pizza.image ? (
               <Image
                 src={pizza.image}
@@ -85,73 +87,73 @@ export default function ProductPage() {
             )}
           </div>
 
-          <div>
-            <h1 className="font-display text-4xl sm:text-5xl text-brown-dark mb-4">
+          <div className="px-4 py-6 sm:px-6 lg:px-0 lg:py-0">
+            <h1 className="font-display text-5xl sm:text-6xl text-brown-dark mb-2">
               {pizza.name}
             </h1>
-            <p className="text-3xl font-bold text-brown-dark mb-6">
-              ${finalPrice}
-            </p>
+            {hasDiscount && originalPrice ? (
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="font-display text-xl text-gray-500 line-through">
+                  ${originalPrice}
+                </span>
+                <span className="font-display text-2xl text-brown-dark">
+                  ${finalPrice}
+                </span>
+              </div>
+            ) : (
+              <p className="font-display text-2xl text-brown-dark mb-6">
+                ${finalPrice}
+              </p>
+            )}
 
             <p className="text-gray-700 mb-8 leading-relaxed font-open-sans">
               {pizza.description}
             </p>
 
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 font-open-sans">
+              <h2 className="text-base font-semibold text-gray-900 mb-3 font-open-sans">
                 Select Size
               </h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
                 {pizza.sizes.map(size => (
                   <button
                     key={size.name}
                     onClick={() => setSelectedSize(size.name)}
-                    className={`rounded-lg border-2 p-4 text-center transition-colors font-open-sans ${
+                    className={`rounded-lg border-2 p-3 text-center transition-colors font-open-sans ${
                       selectedSize === size.name
-                        ? "border-brown-dark bg-beige-light"
+                        ? "border-brown-dark bg-[#BCE7FF]"
                         : "border-gray-200 bg-white hover:border-gray-300"
                     }`}
                     aria-pressed={selectedSize === size.name}
                   >
-                    <div className="font-semibold text-gray-900">
+                    <div className="font-semibold text-gray-900 text-sm">
                       {size.name}
                     </div>
-                    <div className="text-sm text-gray-600">{size.size}</div>
+                    <div className="text-xs text-gray-600">{size.size}</div>
                   </button>
                 ))}
               </div>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 font-open-sans">
+              <h2 className="text-base font-semibold text-gray-900 mb-3 font-open-sans">
                 Toppings
               </h2>
               <div className="flex flex-wrap gap-2">
                 {pizza.toppings.map(topping => (
-                  <button
-                    key={topping}
-                    onClick={() => toggleTopping(topping)}
-                    className={`rounded-full border px-4 py-2 text-sm font-medium font-open-sans transition-colors ${
-                      selectedToppings.includes(topping)
-                        ? "border-brown-dark bg-brown-dark text-white"
-                        : "border-gray-300 bg-white text-gray-700 hover:border-brown-medium"
-                    }`}
-                    aria-pressed={selectedToppings.includes(topping)}
-                  >
-                    {topping}
-                  </button>
+                  <Chip key={topping} label={topping} variant="outline" />
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex gap-3">
               <Button
                 onClick={handleAddToCart}
                 variant="outline"
                 color="brown"
                 className="flex-1"
-                icon={<ShoppingCartIcon sx={{ fontSize: 20 }} />}
-                iconPosition="left"
+                icon={<AddShoppingCartIcon sx={{ fontSize: 20 }} />}
+                iconPosition="right"
               >
                 ADD TO CART
               </Button>
@@ -161,7 +163,8 @@ export default function ProductPage() {
                 variant="primary"
                 color="beige"
                 className="flex-1"
-                icon={<ShoppingCartIcon sx={{ fontSize: 20 }} />}
+                icon={<PaymentIcon sx={{ fontSize: 20 }} />}
+                iconPosition="right"
               >
                 CHECKOUT
               </Button>
