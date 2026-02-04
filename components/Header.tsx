@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Logo from "./Logo";
 import MobileMenu from "./MobileMenu";
 import { CartButtonGroup } from "@/components/CartButtonGroup";
@@ -13,6 +15,9 @@ export default function Header({
   variant?: "landing" | "app";
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isProductPage = pathname?.startsWith("/product/");
 
   const handleOpenMenu = () => {
     setIsMobileMenuOpen(true);
@@ -80,13 +85,26 @@ export default function Header({
         <div className="md:hidden">
           <div className="mx-auto max-w-384 px-4">
             <div className="flex h-14 items-center justify-between">
-              <Link
-                href="/"
-                className="flex items-center gap-2"
-                aria-label="Moshzion Home"
-              >
-                <Logo className="h-8 w-8" />
-              </Link>
+              {isProductPage ? (
+                <Link
+                  href="/store"
+                  className={`flex items-center gap-1 ${textColor} hover:opacity-80 transition-opacity`}
+                  aria-label="Back to store"
+                >
+                  <ArrowBackIcon sx={{ fontSize: 20 }} />
+                  <span className="text-sm font-medium font-open-sans">
+                    Back
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  href="/"
+                  className="flex items-center gap-2"
+                  aria-label="Moshzion Home"
+                >
+                  <Logo className="h-8 w-8" />
+                </Link>
+              )}
 
               <CartButtonGroup showAccount onAccountClick={handleOpenMenu} />
             </div>
