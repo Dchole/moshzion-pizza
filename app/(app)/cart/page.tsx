@@ -1,6 +1,10 @@
 import { getCart } from "@/app/actions/cart";
 import Link from "next/link";
+import Image from "next/image";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import PaymentIcon from "@mui/icons-material/Payment";
 import { CartItems } from "@/components/CartItems";
+import { Button } from "@/components/ui";
 
 export default async function CartPage() {
   const cart = await getCart();
@@ -10,35 +14,13 @@ export default async function CartPage() {
       <div className="min-h-screen bg-white flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="mb-8 flex justify-center">
-            <div className="relative h-48 w-48">
-              <svg
-                viewBox="0 0 200 200"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-full w-full"
-              >
-                <ellipse
-                  cx="100"
-                  cy="140"
-                  rx="80"
-                  ry="20"
-                  fill="#FFE5D9"
-                  opacity="0.5"
-                />
-                <path
-                  d="M60 80 L140 80 L150 120 L50 120 Z"
-                  fill="#E5D4C1"
-                  stroke="#5D3A1A"
-                  strokeWidth="3"
-                />
-                <circle cx="70" cy="130" r="8" fill="#5D3A1A" />
-                <circle cx="130" cy="130" r="8" fill="#5D3A1A" />
-                <path
-                  d="M100 60 L100 90 M85 75 L115 75"
-                  stroke="#D4A574"
-                  strokeWidth="3"
-                />
-              </svg>
+            <div className="relative h-64 w-full">
+              <Image
+                src="/assets/Empty Cart.svg"
+                alt="Empty Cart"
+                fill
+                className="object-contain"
+              />
             </div>
           </div>
 
@@ -47,23 +29,15 @@ export default async function CartPage() {
           </h1>
           <p className="text-gray-600 mb-8">Add an item from the store</p>
 
-          <Link
+          <Button
             href="/store"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-8 py-3 font-medium text-brown-dark hover:bg-(--primary-beige-hover) transition-colors"
+            variant="primary"
+            color="beige"
+            icon={<StorefrontIcon sx={{ fontSize: 20 }} />}
+            iconPosition="right"
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
             Go to Store
-          </Link>
+          </Button>
         </div>
       </div>
     );
@@ -110,19 +84,27 @@ export default async function CartPage() {
                 <span>${(totalPrice + 5).toFixed(2)}</span>
               </div>
 
-              <Link
+              <Button
                 href="/checkout"
-                className="block w-full rounded-lg bg-primary px-6 py-3 text-center font-medium text-brown-dark hover:bg-(--primary-beige-hover) transition-colors"
+                variant="primary"
+                color="beige"
+                className="w-full mb-3"
+                icon={<PaymentIcon sx={{ fontSize: 20 }} />}
+                iconPosition="right"
               >
                 Proceed to Checkout
-              </Link>
+              </Button>
 
-              <Link
+              <Button
                 href="/store"
-                className="block w-full mt-3 rounded-lg border-2 border-brown-dark px-6 py-3 text-center font-medium text-brown-dark hover:bg-brown-dark hover:text-white transition-colors"
+                variant="outline"
+                color="brown"
+                className="w-full"
+                icon={<StorefrontIcon sx={{ fontSize: 20 }} />}
+                iconPosition="right"
               >
                 Continue Shopping
-              </Link>
+              </Button>
             </div>
           </div>
         </div>
