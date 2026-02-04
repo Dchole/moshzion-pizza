@@ -23,7 +23,9 @@ export const FEATURED_CONFIG = {
   /** Maximum number of toppings to display on featured pizza */
   maxToppingsDisplay: 7,
   /** Original price for featured pizza (for strikethrough) */
-  originalPrice: 80
+  originalPrice: 80,
+  /** ID of the featured pizza */
+  pizzaId: "1"
 };
 
 export const NAV_LINKS = [

@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import { FloatingCartButton } from "@/components/FloatingCartButton";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,6 +8,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main id="main-content" className="relative z-50 bg-white shadow-2xl">
         {children}
       </main>
+      <FloatingCartButton />
     </div>
   );
 }

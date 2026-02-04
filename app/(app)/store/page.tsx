@@ -2,9 +2,11 @@
 
 import { useState, useMemo, useCallback } from "react";
 import { pizzas } from "@/lib/data";
-import { PizzaCard } from "@/components/ui";
+import { FEATURED_CONFIG } from "@/lib/constants";
+import { PizzaCard, Button } from "@/components/ui";
 import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 import { SearchFilter } from "@/components/SearchFilter";
+import { pluralize } from "@/lib/utils";
 
 export default function StorePage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,6 +15,11 @@ export default function StorePage() {
   const handleSearchChange = useCallback((query: string, filters: string[]) => {
     setSearchQuery(query);
     setSelectedFilters(filters);
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery("");
+    setSelectedFilters([]);
   }, []);
 
   const filteredPizzas = useMemo(() => {
@@ -29,8 +36,12 @@ export default function StorePage() {
     });
   }, [searchQuery, selectedFilters]);
 
-  const featuredPizza = filteredPizzas.find(p => p.id === "1");
-  const regularPizzas = filteredPizzas.filter(p => p.id !== "1");
+  const featuredPizza = filteredPizzas.find(
+    p => p.id === FEATURED_CONFIG.pizzaId
+  );
+  const regularPizzas = filteredPizzas.filter(
+    p => p.id !== FEATURED_CONFIG.pizzaId
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 min-h-dvh">
@@ -38,7 +49,7 @@ export default function StorePage() {
 
       <p className="mb-6 text-sm text-gray-600">
         Showing {filteredPizzas.length}{" "}
-        {filteredPizzas.length === 1 ? "pizza" : "pizzas"}
+        {pluralize(filteredPizzas.length, "pizza", "pizzas")}
       </p>
 
       {filteredPizzas.length > 0 ? (
@@ -63,15 +74,14 @@ export default function StorePage() {
           <p className="text-lg text-gray-600">
             No pizzas found matching your criteria.
           </p>
-          <button
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedFilters([]);
-            }}
-            className="mt-4 text-[#8B5A2B] hover:underline"
+          <Button
+            onClick={handleClearFilters}
+            variant="ghost"
+            color="brown"
+            className="mt-4"
           >
             Clear all filters
-          </button>
+          </Button>
         </div>
       )}
     </div>
