@@ -257,6 +257,46 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
               </div>
             </div>
           )}
+
+          {/* Mobile Money Form */}
+          {paymentMethod === "mobile-money" && (
+            <div>
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
+              >
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="0201234567"
+                pattern="^0[235][0-9]{8}$"
+                maxLength={10}
+                required
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
+                onInput={e => {
+                  const input = e.currentTarget;
+                  input.value = input.value.replace(/\D/g, "").slice(0, 10);
+                }}
+              />
+              <p className="text-xs text-gray-600 mt-1 font-open-sans">
+                Enter your 10-digit number starting with 02, 03, or 05
+              </p>
+            </div>
+          )}
+
+          {/* Cash on Delivery Message */}
+          {paymentMethod === "cash-on-delivery" && (
+            <div className="bg-beige-light border border-brown-dark/10 rounded-lg p-4">
+              <p className="text-sm text-gray-700 font-open-sans">
+                Pay with cash upon delivery. Please have the exact amount ready.
+                Our delivery personnel will confirm your order details before
+                accepting payment.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Mobile Submit Button */}
