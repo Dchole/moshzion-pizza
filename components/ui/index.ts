@@ -4,6 +4,8 @@ export type { ButtonProps } from "./Button";
 export { IconButton } from "./IconButton";
 export type { IconButtonProps } from "./IconButton";
 
+export { SelectButton } from "./SelectButton";
+
 export { SectionHeader } from "./SectionHeader";
 export { Chip } from "./Chip";
 export { ContactItem } from "./ContactItem";
