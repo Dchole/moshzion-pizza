@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import TimelineSection from "@/components/TimelineSection";
+import { Button } from "@/components/ui";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 
 export const metadata: Metadata = {
   title: "About Us | Moshzion - Authentic Pizza Restaurant",
@@ -126,7 +128,7 @@ export default function AboutPage() {
                 pride.
               </p>
             </div>
-            <div className="relative h-96 rounded-lg overflow-hidden shadow-lg">
+            <div className="relative h-96 overflow-hidden">
               <Image
                 src="/assets/drive.jpg"
                 alt="Hands kneading fresh pizza dough"
@@ -154,10 +156,7 @@ export default function AboutPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {values.map(value => (
-              <div
-                key={value.id}
-                className="bg-white rounded-lg p-8 shadow-md hover:shadow-lg transition-shadow"
-              >
+              <div key={value.id}>
                 <div className="mb-4">
                   <Image
                     src={value.icon}
@@ -167,7 +166,7 @@ export default function AboutPage() {
                     className="w-12 h-12"
                   />
                 </div>
-                <h3 className="text-xl font-semibold text-brown-dark mb-3">
+                <h3 className="text-xl font-semibold font-display text-brown-dark mb-3">
                   {value.title}
                 </h3>
                 <p className="text-brown-medium leading-relaxed">
@@ -205,12 +204,16 @@ export default function AboutPage() {
               Experience the passion, quality, and tradition that goes into
               every Moshzion pizza. Order now and become part of our story.
             </p>
-            <a
+            <Button
               href="/store"
-              className="inline-block bg-white text-brown-dark font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-colors"
+              variant="primary"
+              color="white"
+              size="lg"
+              icon={<StorefrontIcon />}
+              iconPosition="right"
             >
               Order Now
-            </a>
+            </Button>
           </div>
         </div>
       </section>
