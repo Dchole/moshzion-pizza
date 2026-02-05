@@ -307,6 +307,8 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
             color="beige"
             className="w-full"
             disabled={isPending}
+            icon={<PaymentIcon sx={{ fontSize: 20 }} />}
+            iconPosition="right"
           >
             {isPending ? "Processing..." : "Buy Now"}
           </Button>
@@ -382,6 +384,8 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
             color="beige"
             className="w-full"
             disabled={isPending}
+            icon={<PaymentIcon sx={{ fontSize: 20 }} />}
+            iconPosition="right"
           >
             {isPending ? "Processing..." : "Buy Now"}
           </Button>
