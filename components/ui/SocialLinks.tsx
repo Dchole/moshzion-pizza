@@ -43,7 +43,7 @@ const SOCIAL_ITEMS = [
     Icon: InstagramIcon,
     label: "Instagram"
   }
-] as const;
+];
 
 export function SocialLinks({
   variant = "dark",

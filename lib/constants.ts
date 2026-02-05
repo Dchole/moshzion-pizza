@@ -49,6 +49,17 @@ export const MOBILE_MENU_SECTIONS = {
   other: [{ label: "Jobs", href: "/jobs", icon: "Work" }]
 };
 
+export const UI_TIMING = {
+  cartNotificationDuration: 2000,
+  cartNotificationCollapseDuration: 300,
+  cartCountUpdateDelay: 2300,
+  checkoutProcessingDelay: 1500
+};
+
+export const SCROLL_THRESHOLDS = {
+  floatingCartButton: 64
+};
+
 export const FOOTER_LINKS = [
   { label: "About Us", href: "/about" },
   { label: "Terms & Conditions", href: "/terms" },

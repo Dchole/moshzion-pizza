@@ -6,6 +6,7 @@ import Image from "next/image";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { CartCount } from "@/components/CartCount";
+import { UI_TIMING } from "@/lib/constants";
 
 interface AddedItem {
   name: string;
@@ -64,8 +65,8 @@ export function CartButtonGroup({
           setShowAddedItems(false);
           setTimeout(() => {
             setAddedItems([]);
-          }, 300);
-        }, 2000);
+          }, UI_TIMING.cartNotificationCollapseDuration);
+        }, UI_TIMING.cartNotificationDuration);
       }
     };
 

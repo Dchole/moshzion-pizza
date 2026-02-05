@@ -21,7 +21,7 @@ const ICON_MAP = {
   Phone: PhoneIcon,
   QuestionAnswer: QuestionAnswerIcon,
   Work: WorkIcon
-} as const;
+};
 
 type IconName = keyof typeof ICON_MAP;
 

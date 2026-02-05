@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { getCartSummary } from "@/app/actions/cart";
+import { UI_TIMING } from "@/lib/constants";
 
 export function CartCount() {
   const [count, setCount] = useState(0);
@@ -21,7 +22,7 @@ export function CartCount() {
 
       timeoutRef.current = setTimeout(() => {
         loadCount();
-      }, 2300);
+      }, UI_TIMING.cartCountUpdateDelay);
     };
 
     window.addEventListener("cart-updated", handleCartUpdate);

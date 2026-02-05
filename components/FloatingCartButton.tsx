@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { CartCount } from "@/components/CartCount";
+import { UI_TIMING, SCROLL_THRESHOLDS } from "@/lib/constants";
 
 interface AddedItem {
   name: string;
@@ -24,7 +25,7 @@ export function FloatingCartButton() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > 64);
+      setIsVisible(window.scrollY > SCROLL_THRESHOLDS.floatingCartButton);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -67,8 +68,8 @@ export function FloatingCartButton() {
           setShowAddedItems(false);
           setTimeout(() => {
             setAddedItems([]);
-          }, 300);
-        }, 2000);
+          }, UI_TIMING.cartNotificationCollapseDuration);
+        }, UI_TIMING.cartNotificationDuration);
       }
     };
 

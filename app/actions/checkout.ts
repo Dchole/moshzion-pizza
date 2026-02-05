@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { clearCart } from "./cart";
+import { UI_TIMING } from "@/lib/constants";
 
 const checkoutSchema = z
   .object({
@@ -59,7 +60,9 @@ export async function processCheckout(formData: FormData) {
     };
   }
 
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  await new Promise(resolve =>
+    setTimeout(resolve, UI_TIMING.checkoutProcessingDelay)
+  );
 
   await clearCart();
 
