@@ -8,8 +8,8 @@ export default function DeliveryService() {
         <SectionHeader
           title="Our delivery service"
           subtitle={[
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Turpis neque fusce fermentum scelerisque amet pulvinar.",
-            "Aenean vulputate mi molestie egestas quisque enim etiam vitae. Tempor orci,"
+            "We bring the taste of authentic pizza right to your door. Every order is carefully prepared and delivered with speed and care.",
+            "Whether you're hosting a party or just craving a delicious meal, we've got you covered with reliable service you can count on."
           ]}
           className="mb-8"
         />

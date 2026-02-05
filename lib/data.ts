@@ -182,7 +182,7 @@ export const testimonials = [
   {
     id: "1",
     quote:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque ab dolor alias explicabo similique molestiae ultrices proin bibendum varius eleifend integer lorem.",
+      "Absolutely love this place! The crust is perfectly crispy, and the toppings are always fresh. It's become our family's go-to spot for pizza night.",
     author: "John Doe"
   },
   {
@@ -205,20 +205,20 @@ export const features = [
     icon: "/assets/badge.svg",
     title: "Quality food",
     description:
-      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+      "We use only the finest ingredients sourced from trusted suppliers. Every pizza is crafted with care, ensuring you get the authentic taste you deserve."
   },
   {
     id: "2",
     icon: "/assets/handshake.svg",
     title: "Customer Service",
     description:
-      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+      "Our friendly team is always ready to help. Whether you have questions about your order or need recommendations, we're here to make your experience great."
   },
   {
     id: "3",
     icon: "/assets/bike.svg",
     title: "Fast Delivery",
     description:
-      "Lorem ipsum dolor sit amet, consectur adipiscing elit. Sed maecenas vitae in phasellus. Vivamus phareta tempus et verus at ornse."
+      "Hot pizza at your doorstep in no time. Our efficient delivery team ensures your order arrives fresh and piping hot, just the way you like it."
   }
 ];

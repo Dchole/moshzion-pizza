@@ -15,8 +15,9 @@ export default function Footer() {
               Moshzion
             </h3>
             <p className="text-(--footer-muted) mb-6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mollis
-              blandit sit varius in vitae viverra.
+              Serving the community with delicious handcrafted pizzas since day
+              one. Quality ingredients, friendly service, and a passion for
+              great food.
             </p>
             <SocialLinks size="lg" className="mb-8 sm:mb-0" />
             <div className="sm:hidden space-y-6">
