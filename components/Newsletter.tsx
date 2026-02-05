@@ -7,7 +7,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { CONTACT_INFO } from "@/lib/constants";
-import { Button, SectionHeader, ContactItem } from "@/components/ui";
+import { Button, SectionHeader, ContactItem, Input } from "@/components/ui";
 
 type SubmitStatus = "idle" | "loading" | "success" | "error";
 
@@ -67,21 +67,19 @@ export default function Newsletter() {
 
           <form onSubmit={handleSubmit} className="max-w-xl mx-auto">
             <div className="flex flex-col gap-4 items-center">
-              <label htmlFor="email-newsletter" className="sr-only">
-                Email address
-              </label>
-              <input
+              <Input
                 id="email-newsletter"
                 type="email"
                 required
                 value={email}
                 onChange={handleEmailChange}
                 placeholder="example@gmail.com"
-                className="w-full rounded-sm border border-gray-400 bg-(--newsletter-input-bg) px-4 py-3 text-white placeholder:text-gray-300 focus:ring-2 focus:ring-primary focus:outline-none disabled:opacity-50"
+                variant="newsletter"
                 disabled={status === "loading"}
-                aria-describedby={
-                  status === "error" ? "newsletter-error" : undefined
-                }
+                label="Email address"
+                labelClassName="sr-only"
+                containerClassName="w-full"
+                style={{ width: "min(100%, 320px)" }}
               />
 
               {status === "success" && (

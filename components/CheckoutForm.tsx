@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { processCheckout } from "@/app/actions/checkout";
 import type { CartItem } from "@/types";
-import { Button, SelectButton } from "@/components/ui";
+import { Button, SelectButton, Input } from "@/components/ui";
 import PaymentIcon from "@mui/icons-material/Payment";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
@@ -24,9 +24,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
   const [isPending, startTransition] = useTransition();
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethod>("credit-card");
-  const [currentStep, setCurrentStep] = useState<"personal" | "payment">(
-    "payment"
-  );
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [orderItems, setOrderItems] = useState<CartItem[]>(items);
 
@@ -90,14 +87,14 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
 
           <div
             className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              showOrderSummary ? "max-h-[2000px] mt-4" : "max-h-0"
+              showOrderSummary ? "max-h-500 mt-4" : "max-h-0"
             }`}
           >
             <div className="bg-white/50 rounded-lg p-4">
               <div className="space-y-3">
                 {orderItems.map(item => (
                   <div key={item.id} className="flex gap-3">
-                    <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                    <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 shrink-0">
                       {item.image && (
                         <Image
                           src={item.image}
@@ -189,102 +186,58 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
           {/* Card Details Form */}
           {paymentMethod === "credit-card" && (
             <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="cardNumber"
-                  className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
-                >
-                  Card number
-                </label>
-                <input
-                  type="text"
-                  id="cardNumber"
-                  name="cardNumber"
-                  placeholder=""
-                  required
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="cardName"
-                  className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
-                >
-                  Card Name
-                </label>
-                <input
-                  type="text"
-                  id="cardName"
-                  name="cardName"
-                  placeholder=""
-                  required
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
-                />
-              </div>
+              <Input
+                id="cardNumber"
+                name="cardNumber"
+                type="text"
+                label="Card number"
+                required
+              />
+              <Input
+                id="cardName"
+                name="cardName"
+                type="text"
+                label="Card Name"
+                required
+              />
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="expiry"
-                    className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
-                  >
-                    Expiry Date
-                  </label>
-                  <input
-                    type="text"
-                    id="expiry"
-                    name="expiry"
-                    placeholder=""
-                    required
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="cvc"
-                    className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
-                  >
-                    CVC
-                  </label>
-                  <input
-                    type="text"
-                    id="cvc"
-                    name="cvc"
-                    placeholder=""
-                    required
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
-                  />
-                </div>
+                <Input
+                  id="expiry"
+                  name="expiry"
+                  type="text"
+                  label="Expiry Date"
+                  placeholder="MM/YY"
+                  required
+                />
+                <Input
+                  id="cvc"
+                  name="cvc"
+                  type="text"
+                  label="CVC"
+                  maxLength={3}
+                  required
+                />
               </div>
             </div>
           )}
 
           {/* Mobile Money Form */}
           {paymentMethod === "mobile-money" && (
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700 mb-1 font-open-sans"
-              >
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phoneNumber"
-                name="phoneNumber"
-                placeholder="0201234567"
-                pattern="^0[235][0-9]{8}$"
-                maxLength={10}
-                required
-                className="w-full rounded-lg border border-gray-300 px-4 py-2 font-open-sans focus:border-brown-medium focus:outline-none focus:ring-1 focus:ring-brown-medium"
-                onInput={e => {
-                  const input = e.currentTarget;
-                  input.value = input.value.replace(/\D/g, "").slice(0, 10);
-                }}
-              />
-              <p className="text-xs text-gray-600 mt-1 font-open-sans">
-                Enter your 10-digit number starting with 02, 03, or 05
-              </p>
-            </div>
+            <Input
+              id="phoneNumber"
+              name="phoneNumber"
+              type="tel"
+              label="Phone Number"
+              placeholder="0201234567"
+              pattern="^0[235][0-9]{8}$"
+              maxLength={10}
+              required
+              helperText="Enter your 10-digit number starting with 02, 03, or 05"
+              onInput={e => {
+                const input = e.currentTarget;
+                input.value = input.value.replace(/\D/g, "").slice(0, 10);
+              }}
+            />
           )}
 
           {/* Cash on Delivery Message */}
@@ -330,7 +283,7 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
           <div className="space-y-4 mb-6">
             {orderItems.map(item => (
               <div key={item.id} className="flex gap-3">
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white flex-shrink-0">
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white shrink-0">
                   {item.image && (
                     <Image
                       src={item.image}
@@ -360,7 +313,7 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
                       <button
                         type="button"
                         onClick={() => handleRemoveItem(item.id)}
-                        className="text-gray-400 hover:text-brown-dark flex-shrink-0"
+                        className="text-gray-400 hover:text-brown-dark shrink-0"
                       >
                         <CloseIcon sx={{ fontSize: 16 }} />
                       </button>

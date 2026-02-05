@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterIcon from "@mui/icons-material/FilterAltOutlined";
-import { IconButton } from "@/components/ui";
+import { IconButton, Input } from "@/components/ui";
 
 const categories = ["New", "Vegan", "Hot", "Promo"];
 
@@ -64,23 +64,17 @@ export function SearchFilter({ onSearchChange }: SearchFilterProps) {
         <h1 className="font-display text-4xl text-[#5D3A1A]">Store</h1>
 
         <div className="flex flex-1 gap-2 sm:max-w-md">
-          <div className="relative flex-1">
-            <label htmlFor="search" className="sr-only">
-              Search pizzas
-            </label>
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <SearchIcon sx={{ fontSize: 20, color: "#9CA3AF" }} />
-            </div>
-            <input
-              id="search"
-              type="search"
-              placeholder="What pizza are you looking for?"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-10 text-sm placeholder:text-gray-500 focus:border-[#8B5A2B] focus:outline-none focus:ring-1 focus:ring-[#8B5A2B]"
-            />
-            {searchQuery && (
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+          <Input
+            id="search"
+            type="search"
+            placeholder="What pizza are you looking for?"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            label="Search pizzas"
+            labelClassName="sr-only"
+            startIcon={<SearchIcon sx={{ fontSize: 20, color: "#9CA3AF" }} />}
+            endIcon={
+              searchQuery ? (
                 <IconButton
                   variant="ghost"
                   color="brown"
@@ -89,9 +83,11 @@ export function SearchFilter({ onSearchChange }: SearchFilterProps) {
                   aria-label="Clear search"
                   onClick={clearSearch}
                 />
-              </div>
-            )}
-          </div>
+              ) : undefined
+            }
+            className="text-sm"
+            containerClassName="flex-1"
+          />
 
           <IconButton
             variant="outline"
