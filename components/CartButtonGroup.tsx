@@ -20,13 +20,9 @@ interface AddedItemWithCount extends AddedItem {
 
 interface CartButtonGroupProps {
   showAccount?: boolean;
-  onAccountClick?: () => void;
 }
 
-export function CartButtonGroup({
-  showAccount = true,
-  onAccountClick
-}: CartButtonGroupProps) {
+export function CartButtonGroup({ showAccount = true }: CartButtonGroupProps) {
   const [showAddedItems, setShowAddedItems] = useState(false);
   const [addedItems, setAddedItems] = useState<AddedItemWithCount[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -123,24 +119,15 @@ export function CartButtonGroup({
         ))}
       </div>
 
-      {showAccount &&
-        (onAccountClick ? (
-          <button
-            className="flex items-center justify-center rounded-md bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
-            aria-label="Open menu"
-            onClick={onAccountClick}
-          >
-            <PersonIcon sx={{ fontSize: 20, color: "var(--text-dark)" }} />
-          </button>
-        ) : (
-          <Link
-            href="/account"
-            className="flex items-center justify-center rounded-md bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
-            aria-label="User account"
-          >
-            <PersonIcon sx={{ fontSize: 20, color: "var(--text-dark)" }} />
-          </Link>
-        ))}
+      {showAccount && (
+        <Link
+          href="/account"
+          className="flex items-center justify-center rounded-md bg-primary p-2 hover:bg-(--primary-beige-hover) transition-colors"
+          aria-label="User account"
+        >
+          <PersonIcon sx={{ fontSize: 20, color: "var(--text-dark)" }} />
+        </Link>
+      )}
     </div>
   );
 }
