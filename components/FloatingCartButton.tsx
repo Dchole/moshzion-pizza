@@ -24,12 +24,11 @@ export function FloatingCartButton() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show floating button when scrolled past header (64px)
       setIsVisible(window.scrollY > 64);
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check initial position
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -47,7 +46,6 @@ export function FloatingCartButton() {
           );
 
           if (existingIndex !== -1) {
-            // Item exists, increment count
             const updated = [...prev];
             updated[existingIndex] = {
               ...updated[existingIndex],
@@ -55,14 +53,12 @@ export function FloatingCartButton() {
             };
             return updated;
           } else {
-            // New item, add to array
             return [...prev, { ...newItem, count: 1 }];
           }
         });
 
         setShowAddedItems(true);
 
-        // Clear existing timeout and set new one
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
@@ -71,7 +67,7 @@ export function FloatingCartButton() {
           setShowAddedItems(false);
           setTimeout(() => {
             setAddedItems([]);
-          }, 300); // Wait for animation to finish
+          }, 300);
         }, 2000);
       }
     };

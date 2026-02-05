@@ -45,6 +45,7 @@ export function ProductDetails({
       image: pizza.image
     });
 
+    router.refresh();
     window.dispatchEvent(
       new CustomEvent("cart-updated", {
         detail: {

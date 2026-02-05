@@ -14,15 +14,11 @@ export function CartCount() {
     }
     loadCount();
 
-    // Listen for cart updates
     const handleCartUpdate = () => {
-      // Clear existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
-      // Wait for the animation to finish before updating count
-      // 2000ms for display + 300ms for collapse animation
       timeoutRef.current = setTimeout(() => {
         loadCount();
       }, 2300);

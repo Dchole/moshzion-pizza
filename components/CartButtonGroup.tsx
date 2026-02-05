@@ -43,7 +43,6 @@ export function CartButtonGroup({
           );
 
           if (existingIndex !== -1) {
-            // Item exists, increment count
             const updated = [...prev];
             updated[existingIndex] = {
               ...updated[existingIndex],
@@ -51,14 +50,12 @@ export function CartButtonGroup({
             };
             return updated;
           } else {
-            // New item, add to array
             return [...prev, { ...newItem, count: 1 }];
           }
         });
 
         setShowAddedItems(true);
 
-        // Clear existing timeout and set new one
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
@@ -67,7 +64,7 @@ export function CartButtonGroup({
           setShowAddedItems(false);
           setTimeout(() => {
             setAddedItems([]);
-          }, 300); // Wait for animation to finish
+          }, 300);
         }, 2000);
       }
     };
@@ -82,9 +79,7 @@ export function CartButtonGroup({
   }, []);
 
   return (
-    <div
-      className={`flex items-center gap-1 rounded-xl bg-white border-2 border-primary p-1 transition-all duration-300`}
-    >
+    <div className="flex items-center gap-1 rounded-xl bg-white border-2 border-primary p-1">
       <Link
         href="/cart"
         className="relative flex items-center justify-center rounded-md p-2 hover:bg-gray-100 transition-colors"

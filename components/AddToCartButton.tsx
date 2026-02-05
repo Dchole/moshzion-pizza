@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { addToCart } from "@/app/actions/cart";
 import { IconButton } from "@/components/ui";
 import type { CartItem } from "@/types";
@@ -28,6 +29,7 @@ export function AddToCartButton({
   className = ""
 }: AddToCartButtonProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -45,8 +47,7 @@ export function AddToCartButton({
       };
 
       await addToCart(cartItem);
-
-      // Trigger event for cart count to update with item details
+      router.refresh();
       window.dispatchEvent(
         new CustomEvent("cart-updated", {
           detail: {
