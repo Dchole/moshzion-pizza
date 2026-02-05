@@ -23,31 +23,29 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section
-      id="testimonials"
-      className="bg-linear-to-b from-white to-(--gradient-cream) py-16 sm:py-24"
-    >
+    <section id="testimonials" className="bg-[#5D3A1A] py-16 sm:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="What our customers are saying"
+          color="white"
           className="mb-12"
         />
 
-        <div className="relative">
-          <div className="rounded-2xl bg-white p-8 sm:p-12 shadow-lg">
+        <div className="relative px-16 sm:px-20">
+          <div className="py-8 sm:py-12">
             <div className="mb-6 flex justify-center">
               <FormatQuoteIcon
-                sx={{ fontSize: 48, color: "var(--primary-beige)" }}
+                sx={{ fontSize: 48, color: "#E5D4C1", opacity: 0.8 }}
                 aria-hidden="true"
               />
             </div>
 
             <blockquote className="text-center">
-              <p className="text-lg sm:text-xl text-gray-700 leading-relaxed mb-8">
-                &ldquo;{testimonials[currentIndex].quote}&rdquo;
+              <p className="text-lg sm:text-xl text-[#E5D4C1] leading-relaxed mb-8 max-w-2xl mx-auto">
+                {testimonials[currentIndex].quote}
               </p>
               <footer>
-                <cite className="not-italic font-medium text-brown-dark">
+                <cite className="not-italic font-medium text-[#E5D4C1]">
                   {testimonials[currentIndex].author}
                 </cite>
               </footer>
@@ -58,28 +56,20 @@ export default function Testimonials() {
             variant="filled"
             color="white"
             size="lg"
-            icon={
-              <ChevronLeftIcon
-                sx={{ fontSize: 24, color: "var(--brown-dark)" }}
-              />
-            }
+            icon={<ChevronLeftIcon sx={{ fontSize: 24 }} />}
             aria-label="Previous testimonial"
             onClick={handlePrevious}
-            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg"
+            className="absolute left-0 top-1/2 -translate-y-1/2 rounded-lg shadow-none hover:bg-gray-100"
           />
 
           <IconButton
             variant="filled"
             color="white"
             size="lg"
-            icon={
-              <ChevronRightIcon
-                sx={{ fontSize: 24, color: "var(--brown-dark)" }}
-              />
-            }
+            icon={<ChevronRightIcon sx={{ fontSize: 24 }} />}
             aria-label="Next testimonial"
             onClick={handleNext}
-            className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 shadow-lg"
+            className="absolute right-0 top-1/2 -translate-y-1/2 rounded-lg shadow-none hover:bg-gray-100"
           />
         </div>
 
@@ -90,8 +80,8 @@ export default function Testimonials() {
               onClick={() => handleDotClick(index)}
               className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-brown-dark w-8"
-                  : "bg-gray-300 hover:bg-gray-400 w-2"
+                  ? "bg-[#E5D4C1] w-8"
+                  : "bg-[#E5D4C1]/40 hover:bg-[#E5D4C1]/60 w-2"
               }`}
               role="tab"
               aria-label={`Go to testimonial ${index + 1}`}

@@ -97,7 +97,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           className="flex h-full flex-col px-6 py-16"
           aria-label="Mobile menu"
         >
-          <div className="space-y-4 border-b border-(--brown-dark)/20 pb-6">
+          <div className="space-y-4 border-b border-brown-dark/20 pb-6">
             {MOBILE_MENU_SECTIONS.user.map(link => (
               <MenuLink
                 key={link.href}
@@ -109,7 +109,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ))}
           </div>
 
-          <div className="space-y-4 border-b border-(--brown-dark)/20 py-6">
+          <div className="space-y-4 border-b border-brown-dark/20 py-6">
             {MOBILE_MENU_SECTIONS.navigation.map(link => (
               <MenuLink
                 key={link.href}
@@ -133,7 +133,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ))}
           </div>
 
-          <div className="mt-auto border-t border-(--brown-dark)/20 pt-6">
+          <div className="mt-auto border-t border-brown-dark/20 pt-6">
             <button
               onClick={onClose}
               className="flex w-full items-center gap-3 rounded-lg py-3 text-(--text-dark) hover:bg-(--primary-beige-hover) transition-colors"

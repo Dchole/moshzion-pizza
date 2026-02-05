@@ -88,8 +88,9 @@ Open [http://localhost:3000](http://localhost:3000)
 
 **Fonts:**
 
-- Display: Miniver (headings)
-- Body: Inter
+- Display: Lobster (headings)
+- Body: Open Sans
+- Captions/Labels: Rubik
 
 ## 🛠 Tech Stack
 
