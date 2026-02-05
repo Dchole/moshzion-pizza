@@ -54,7 +54,7 @@ export default function Header({
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-16 w-16" />
+                  <Logo className="h-16 w-16" variant={variant} />
                 </Link>
 
                 <nav
@@ -102,7 +102,7 @@ export default function Header({
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-8 w-8" />
+                  <Logo className="h-8 w-8" variant={variant} />
                 </Link>
               )}
 
