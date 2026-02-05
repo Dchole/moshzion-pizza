@@ -23,7 +23,7 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section id="testimonials" className="bg-[#5D3A1A] py-16 sm:py-24">
+    <section id="testimonials" className="bg-brown-dark py-16 sm:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="What our customers are saying"
@@ -35,17 +35,17 @@ export default function Testimonials() {
           <div className="py-8 sm:py-12">
             <div className="mb-6 flex justify-center">
               <FormatQuoteIcon
-                sx={{ fontSize: 48, color: "#E5D4C1", opacity: 0.8 }}
+                sx={{ fontSize: 48, color: "var(--beige-light)", opacity: 0.8 }}
                 aria-hidden="true"
               />
             </div>
 
             <blockquote className="text-center">
-              <p className="text-lg sm:text-xl text-[#E5D4C1] leading-relaxed mb-8 max-w-2xl mx-auto">
+              <p className="text-lg sm:text-xl text-beige-light leading-relaxed mb-8 max-w-2xl mx-auto">
                 {testimonials[currentIndex].quote}
               </p>
               <footer>
-                <cite className="not-italic font-medium text-[#E5D4C1]">
+                <cite className="not-italic font-medium text-beige-light">
                   {testimonials[currentIndex].author}
                 </cite>
               </footer>
@@ -80,8 +80,8 @@ export default function Testimonials() {
               onClick={() => handleDotClick(index)}
               className={`h-2 rounded-full transition-all ${
                 index === currentIndex
-                  ? "bg-[#E5D4C1] w-8"
-                  : "bg-[#E5D4C1]/40 hover:bg-[#E5D4C1]/60 w-2"
+                  ? "bg-beige-light w-8"
+                  : "bg-beige-light/40 hover:bg-beige-light/60 w-2"
               }`}
               role="tab"
               aria-label={`Go to testimonial ${index + 1}`}

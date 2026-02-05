@@ -48,9 +48,7 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
 
   return (
     <form action={handleSubmit} className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-      {/* Left Column - Products & Payment */}
       <div className="space-y-6 bg-white/30 rounded-lg p-4 lg:p-6 border border-brown-dark/5">
-        {/* Order Items - Mobile (Collapsible) */}
         <div className="md:hidden">
           <button
             type="button"
@@ -133,7 +131,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
           </div>
         </div>
 
-        {/* Payment Method Selection */}
         <div className="bg-white/50 rounded-lg p-6 border border-brown-dark/5">
           <h2 className="font-open-sans font-semibold text-brown-dark mb-4">
             Payment Method
@@ -183,7 +180,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
             </SelectButton>
           </div>
 
-          {/* Card Details Form */}
           {paymentMethod === "credit-card" && (
             <div className="space-y-4">
               <Input
@@ -221,7 +217,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
             </div>
           )}
 
-          {/* Mobile Money Form */}
           {paymentMethod === "mobile-money" && (
             <Input
               id="phoneNumber"
@@ -240,7 +235,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
             />
           )}
 
-          {/* Cash on Delivery Message */}
           {paymentMethod === "cash-on-delivery" && (
             <div className="bg-beige-light border border-brown-dark/10 rounded-lg p-4">
               <p className="text-sm text-gray-700 font-open-sans">
@@ -252,7 +246,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
           )}
         </div>
 
-        {/* Mobile Submit Button */}
         <div className="md:hidden">
           <Button
             type="submit"
@@ -268,7 +261,6 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
         </div>
       </div>
 
-      {/* Right Column - Order Summary (Desktop) */}
       <div className="hidden md:block">
         <div className="sticky top-24 bg-beige-light rounded-lg p-6">
           <div className="flex items-center justify-between mb-4">

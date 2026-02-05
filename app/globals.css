@@ -12,6 +12,7 @@
   --brown-medium: #8b5a2b;
   --brown-light: #a67c52;
   --text-dark: #2d1b0e;
+  --beige-light: #e5d4c1;
 
   /* Footer & Contact Colors */
   --footer-bg: #332625;
@@ -50,6 +51,8 @@
   --color-secondary: var(--secondary-beige);
   --color-brown-dark: var(--brown-dark);
   --color-brown-medium: var(--brown-medium);
+  --color-brown-light: var(--brown-light);
+  --color-beige-light: var(--beige-light);
   --font-sans: var(--font-rubik);
   --font-display: var(--font-lobster);
   --font-open-sans: var(--font-open-sans);

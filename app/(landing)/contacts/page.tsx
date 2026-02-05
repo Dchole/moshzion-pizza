@@ -18,14 +18,13 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-primary">
-      {/* Hero Section */}
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-[#5D3A1A] mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
               Get in Touch
             </h1>
-            <p className="text-lg md:text-xl text-[#8B5A2B] max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
               Have a question, feedback, or special request? We&apos;d love to
               hear from you. Fill out the form below or reach out directly.
             </p>
@@ -33,35 +32,31 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Main Content */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384">
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Contact Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-lg p-8">
-                <h2 className="text-2xl font-semibold text-[#5D3A1A] mb-6">
+                <h2 className="text-2xl font-semibold text-brown-dark mb-6">
                   Send Us a Message
                 </h2>
                 <ContactForm />
               </div>
             </div>
 
-            {/* Contact Information */}
             <div className="space-y-6">
-              {/* Contact Details Card */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-semibold text-[#5D3A1A] mb-4">
+                <h3 className="text-xl font-semibold text-brown-dark mb-4">
                   Contact Information
                 </h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <PhoneIcon className="text-[#8B5A2B] mt-1" />
+                    <PhoneIcon className="text-brown-medium mt-1" />
                     <div>
-                      <p className="text-sm text-[#8B5A2B]/70 mb-1">Phone</p>
+                      <p className="text-sm text-brown-medium/70 mb-1">Phone</p>
                       <a
                         href={`tel:${CONTACT_INFO.phone}`}
-                        className="text-[#5D3A1A] hover:text-[#8B5A2B] transition-colors"
+                        className="text-brown-dark hover:text-brown-medium transition-colors"
                       >
                         {CONTACT_INFO.phone}
                       </a>
@@ -69,12 +64,12 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <EmailIcon className="text-[#8B5A2B] mt-1" />
+                    <EmailIcon className="text-brown-medium mt-1" />
                     <div>
-                      <p className="text-sm text-[#8B5A2B]/70 mb-1">Email</p>
+                      <p className="text-sm text-brown-medium/70 mb-1">Email</p>
                       <a
                         href={`mailto:${CONTACT_INFO.email}`}
-                        className="text-[#5D3A1A] hover:text-[#8B5A2B] transition-colors break-all"
+                        className="text-brown-dark hover:text-brown-medium transition-colors break-all"
                       >
                         {CONTACT_INFO.email}
                       </a>
@@ -82,29 +77,30 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <LocationOnIcon className="text-[#8B5A2B] mt-1" />
+                    <LocationOnIcon className="text-brown-medium mt-1" />
                     <div>
-                      <p className="text-sm text-[#8B5A2B]/70 mb-1">Address</p>
-                      <p className="text-[#5D3A1A]">{CONTACT_INFO.address}</p>
+                      <p className="text-sm text-brown-medium/70 mb-1">
+                        Address
+                      </p>
+                      <p className="text-brown-dark">{CONTACT_INFO.address}</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <AccessTimeIcon className="text-[#8B5A2B] mt-1" />
+                    <AccessTimeIcon className="text-brown-medium mt-1" />
                     <div>
-                      <p className="text-sm text-[#8B5A2B]/70 mb-1">
+                      <p className="text-sm text-brown-medium/70 mb-1">
                         Business Hours
                       </p>
-                      <p className="text-[#5D3A1A]">{BUSINESS_HOURS.days}</p>
-                      <p className="text-[#5D3A1A]">{BUSINESS_HOURS.hours}</p>
+                      <p className="text-brown-dark">{BUSINESS_HOURS.days}</p>
+                      <p className="text-brown-dark">{BUSINESS_HOURS.hours}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Social Media Card */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-semibold text-[#5D3A1A] mb-4">
+                <h3 className="text-xl font-semibold text-brown-dark mb-4">
                   Follow Us
                 </h3>
                 <div className="flex gap-4">
@@ -112,7 +108,7 @@ export default function ContactPage() {
                     href={SOCIAL_LINKS.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-[#5D3A1A] text-white rounded-full hover:bg-[#8B5A2B] transition-colors"
+                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
                     aria-label="Facebook"
                   >
                     <FacebookIcon />
@@ -121,7 +117,7 @@ export default function ContactPage() {
                     href={SOCIAL_LINKS.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-[#5D3A1A] text-white rounded-full hover:bg-[#8B5A2B] transition-colors"
+                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
                     aria-label="Instagram"
                   >
                     <InstagramIcon />
@@ -130,7 +126,7 @@ export default function ContactPage() {
                     href={SOCIAL_LINKS.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-[#5D3A1A] text-white rounded-full hover:bg-[#8B5A2B] transition-colors"
+                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
                     aria-label="WhatsApp"
                   >
                     <WhatsAppIcon />
@@ -138,18 +134,17 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Map Placeholder Card */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-semibold text-[#5D3A1A] mb-4">
+                <h3 className="text-xl font-semibold text-brown-dark mb-4">
                   Find Us
                 </h3>
-                <div className="aspect-video bg-[#8B5A2B]/10 rounded-lg flex items-center justify-center">
+                <div className="aspect-video bg-brown-medium/10 rounded-lg flex items-center justify-center">
                   <div className="text-center">
                     <LocationOnIcon
-                      className="text-[#8B5A2B] mb-2"
+                      className="text-brown-medium mb-2"
                       sx={{ fontSize: 48 }}
                     />
-                    <p className="text-[#8B5A2B] text-sm">
+                    <p className="text-brown-medium text-sm">
                       Map integration coming soon
                     </p>
                   </div>
@@ -160,10 +155,9 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Quick Response Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384">
-          <div className="bg-linear-to-r from-[#5D3A1A] to-[#8B5A2B] rounded-2xl p-8 md:p-12 text-center text-white">
+          <div className="bg-linear-to-r from-brown-dark to-brown-medium rounded-2xl p-8 md:p-12 text-center text-white">
             <h2 className="text-2xl md:text-3xl font-display mb-4">
               Need Immediate Assistance?
             </h2>

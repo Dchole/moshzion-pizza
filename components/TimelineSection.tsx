@@ -19,26 +19,26 @@ type TimelineSectionProps = {
 
 export default function TimelineSection({ journey }: TimelineSectionProps) {
   return (
-    <VerticalTimeline lineColor="#8B5A2B">
+    <VerticalTimeline lineColor="var(--brown-medium)">
       {journey.map(milestone => (
         <VerticalTimelineElement
           key={milestone.year}
           className="vertical-timeline-element--work"
           contentStyle={{
             background: "#fff",
-            color: "#5D3A1A",
-            boxShadow: "0 3px 0 #8B5A2B"
+            color: "var(--brown-dark)",
+            boxShadow: "0 3px 0 var(--brown-medium)"
           }}
           contentArrowStyle={{ borderRight: "7px solid #fff" }}
           date={milestone.year}
-          dateClassName="text-[#5D3A1A] font-bold"
-          iconStyle={{ background: "#5D3A1A", color: "#fff" }}
+          dateClassName="text-brown-dark font-bold"
+          iconStyle={{ background: "var(--brown-dark)", color: "#fff" }}
           icon={<AccessTimeIcon />}
         >
-          <h3 className="text-xl font-semibold font-display text-[#5D3A1A] mb-3">
+          <h3 className="text-xl font-semibold font-display text-brown-dark mb-3">
             {milestone.title}
           </h3>
-          <p className="text-[#8B5A2B] leading-relaxed font-open-sans">
+          <p className="text-brown-medium leading-relaxed font-open-sans">
             {milestone.description}
           </p>
         </VerticalTimelineElement>

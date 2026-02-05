@@ -30,7 +30,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-[#5D3A1A] mb-2"
+          className="block text-sm font-medium text-brown-dark mb-2"
         >
           Name *
         </label>
@@ -39,7 +39,7 @@ export default function ContactForm() {
           id="name"
           name="name"
           required
-          className="w-full px-4 py-3 border border-[#8B5A2B]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:border-transparent bg-white"
+          className="w-full px-4 py-3 border border-brown-medium/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-medium focus:border-transparent bg-white"
           placeholder="Your name"
           disabled={isPending}
         />
@@ -51,7 +51,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-[#5D3A1A] mb-2"
+          className="block text-sm font-medium text-brown-dark mb-2"
         >
           Email *
         </label>
@@ -60,7 +60,7 @@ export default function ContactForm() {
           id="email"
           name="email"
           required
-          className="w-full px-4 py-3 border border-[#8B5A2B]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:border-transparent bg-white"
+          className="w-full px-4 py-3 border border-brown-medium/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-medium focus:border-transparent bg-white"
           placeholder="your.email@example.com"
           disabled={isPending}
         />
@@ -72,7 +72,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="subject"
-          className="block text-sm font-medium text-[#5D3A1A] mb-2"
+          className="block text-sm font-medium text-brown-dark mb-2"
         >
           Subject *
         </label>
@@ -81,7 +81,7 @@ export default function ContactForm() {
           id="subject"
           name="subject"
           required
-          className="w-full px-4 py-3 border border-[#8B5A2B]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:border-transparent bg-white"
+          className="w-full px-4 py-3 border border-brown-medium/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-medium focus:border-transparent bg-white"
           placeholder="What's this about?"
           disabled={isPending}
         />
@@ -93,7 +93,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="message"
-          className="block text-sm font-medium text-[#5D3A1A] mb-2"
+          className="block text-sm font-medium text-brown-dark mb-2"
         >
           Message *
         </label>
@@ -102,7 +102,7 @@ export default function ContactForm() {
           name="message"
           required
           rows={6}
-          className="w-full px-4 py-3 border border-[#8B5A2B]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8B5A2B] focus:border-transparent bg-white resize-none"
+          className="w-full px-4 py-3 border border-brown-medium/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-brown-medium focus:border-transparent bg-white resize-none"
           placeholder="Tell us how we can help..."
           disabled={isPending}
         />
@@ -114,12 +114,12 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full bg-[#5D3A1A] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#8B5A2B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-brown-dark text-white font-semibold px-6 py-3 rounded-lg hover:bg-brown-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isPending ? "Sending..." : "Send Message"}
       </button>
 
-      <p className="text-sm text-[#8B5A2B]/70 text-center">
+      <p className="text-sm text-brown-medium/70 text-center">
         We typically respond within 24 hours
       </p>
     </form>

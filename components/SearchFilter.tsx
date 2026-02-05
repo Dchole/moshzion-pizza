@@ -78,7 +78,7 @@ export function SearchFilter({
   return (
     <div>
       <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="font-display text-4xl text-[#5D3A1A]">Store</h1>
+        <h1 className="font-display text-4xl text-brown-dark">Store</h1>
 
         <div className="flex flex-1 gap-2 sm:max-w-md">
           <Input
@@ -125,8 +125,8 @@ export function SearchFilter({
               onClick={() => toggleFilter(category)}
               className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
                 selectedFilters.includes(category)
-                  ? "border-[#5D3A1A] bg-[#5D3A1A] text-white shadow-sm"
-                  : "border-gray-300 bg-white text-gray-600 hover:border-[#8B5A2B] hover:bg-gray-50"
+                  ? "border-brown-dark bg-brown-dark text-white shadow-sm"
+                  : "border-gray-300 bg-white text-gray-600 hover:border-brown-medium hover:bg-gray-50"
               }`}
               aria-pressed={selectedFilters.includes(category)}
             >
@@ -136,7 +136,7 @@ export function SearchFilter({
           {selectedFilters.length > 0 && (
             <button
               onClick={clearAllFilters}
-              className="ml-1 text-xs font-medium text-[#8B5A2B] hover:text-[#5D3A1A] hover:underline transition-colors"
+              className="ml-1 text-xs font-medium text-brown-medium hover:text-brown-dark hover:underline transition-colors"
             >
               Clear all
             </button>

@@ -19,6 +19,11 @@ export default function Header({
 
   const isProductPage = pathname?.startsWith("/product/");
 
+  // Auto-detect if we should use app variant for about/contacts pages
+  const shouldUseAppVariant =
+    variant === "app" || pathname === "/about" || pathname === "/contacts";
+  const effectiveVariant = shouldUseAppVariant ? "app" : "landing";
+
   const handleOpenMenu = () => {
     setIsMobileMenuOpen(true);
   };
@@ -27,18 +32,21 @@ export default function Header({
     setIsMobileMenuOpen(false);
   };
 
-  const textColor = variant === "app" ? "text-[#5D3A1A]" : "text-white";
+  const textColor =
+    effectiveVariant === "app" ? "text-brown-dark" : "text-white";
   const hoverColor =
-    variant === "app" ? "hover:text-[#8B5A2B]" : "hover:text-gray-200";
+    effectiveVariant === "app"
+      ? "hover:text-brown-medium"
+      : "hover:text-gray-200";
 
   const navLinks =
-    variant === "app"
+    effectiveVariant === "app"
       ? [{ label: "Store", href: "/store" }, ...NAV_LINKS.slice(1)]
       : NAV_LINKS;
 
-  const headerPosition = variant === "app" ? "fixed" : "absolute";
-  const headerBg = variant === "app" ? "bg-primary" : "bg-transparent";
-  const headerZIndex = variant === "app" ? "z-40" : "z-30";
+  const headerPosition = effectiveVariant === "app" ? "fixed" : "absolute";
+  const headerBg = effectiveVariant === "app" ? "bg-primary" : "bg-transparent";
+  const headerZIndex = effectiveVariant === "app" ? "z-40" : "z-30";
 
   return (
     <>
@@ -54,7 +62,7 @@ export default function Header({
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-16 w-16" variant={variant} />
+                  <Logo className="h-16 w-16" variant={effectiveVariant} />
                 </Link>
 
                 <nav
@@ -66,7 +74,7 @@ export default function Header({
                       key={link.href}
                       href={link.href}
                       className={`text-base font-medium font-open-sans transition-colors ${hoverColor} ${
-                        index === 0 && variant === "landing"
+                        index === 0 && effectiveVariant === "landing"
                           ? "text-(--hero-accent)"
                           : textColor
                       }`}
@@ -102,7 +110,7 @@ export default function Header({
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-8 w-8" variant={variant} />
+                  <Logo className="h-8 w-8" variant={effectiveVariant} />
                 </Link>
               )}
 

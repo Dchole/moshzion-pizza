@@ -42,7 +42,6 @@ export default function FAQAccordion({
 
   return (
     <div>
-      {/* Category Filter */}
       {showCategories && (
         <div className="mb-8 flex flex-wrap gap-3 justify-center">
           {categories.map(category => (
@@ -51,8 +50,8 @@ export default function FAQAccordion({
               onClick={() => setSelectedCategory(category.id)}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
                 selectedCategory === category.id
-                  ? "bg-[#5D3A1A] text-white shadow-md"
-                  : "bg-white text-[#5D3A1A] hover:bg-[#8B5A2B]/10"
+                  ? "bg-brown-dark text-white shadow-md"
+                  : "bg-white text-brown-dark hover:bg-brown-medium/10"
               }`}
             >
               {category.label}
@@ -63,25 +62,25 @@ export default function FAQAccordion({
 
       <div className="space-y-4">
         {filteredFaqs.length === 0 ? (
-          <div className="text-center py-12 text-[#8B5A2B]">
+          <div className="text-center py-12 text-brown-medium">
             No questions found in this category.
           </div>
         ) : (
           filteredFaqs.map(faq => (
             <div
               key={faq.id}
-              className="bg-white rounded-lg border border-[#8B5A2B]/20 overflow-hidden transition-all hover:border-[#8B5A2B]/40"
+              className="bg-white rounded-lg border border-brown-medium/20 overflow-hidden transition-all hover:border-brown-medium/40"
             >
               <button
                 onClick={() => toggleFAQ(faq.id)}
-                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-[#E5D4C1]/30 transition-colors"
+                className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-beige-light/30 transition-colors"
                 aria-expanded={openId === faq.id}
               >
-                <span className="text-lg font-semibold text-[#5D3A1A] pr-4">
+                <span className="text-lg font-semibold text-brown-dark pr-4">
                   {faq.question}
                 </span>
                 <span
-                  className={`shrink-0 text-[#8B5A2B] transition-transform duration-300 ${
+                  className={`shrink-0 text-brown-medium transition-transform duration-300 ${
                     openId === faq.id ? "rotate-180" : "rotate-0"
                   }`}
                 >
@@ -96,7 +95,7 @@ export default function FAQAccordion({
                     : "max-h-0 opacity-0"
                 } overflow-hidden`}
               >
-                <div className="px-6 pb-4 text-[#8B5A2B] leading-relaxed">
+                <div className="px-6 pb-4 text-brown-medium leading-relaxed">
                   {faq.answer}
                 </div>
               </div>
