@@ -1,92 +1,57 @@
-"use client";
-
-import { useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import PaymentIcon from "@mui/icons-material/Payment";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
-import { addToCart } from "@/app/actions/cart";
-import { Button, Chip } from "@/components/ui";
-import type { PizzaSize } from "@/types";
+import { ProductDetails } from "@/components/ProductDetails";
+import { notFound } from "next/navigation";
 
-const calculatePrice = (basePrice: number, multiplier: number): number => {
-  return Math.round(basePrice * multiplier);
-};
+export async function generateStaticParams() {
+  return pizzas.map(pizza => ({
+    id: pizza.id
+  }));
+}
 
-export default function ProductPage() {
-  const params = useParams<{ id: string }>();
-  const router = useRouter();
-  const pizza = pizzas.find(p => p.id === params.id);
-
-  const [selectedSize, setSelectedSize] = useState<PizzaSize["name"]>("Small");
-
-  const selectedSizeData = pizza?.sizes.find(s => s.name === selectedSize);
-  const finalPrice =
-    pizza && selectedSizeData
-      ? calculatePrice(pizza.price, selectedSizeData.priceMultiplier)
-      : 0;
-
-  const handleAddToCart = useCallback(async () => {
-    if (!pizza || !selectedSizeData) return;
-
-    await addToCart({
-      pizzaId: pizza.id,
-      name: pizza.name,
-      price: finalPrice,
-      size: selectedSize,
-      toppings: pizza.toppings,
-      quantity: 1,
-      image: pizza.image
-    });
-
-    // Dispatch custom event for cart animation
-    window.dispatchEvent(
-      new CustomEvent("cart-updated", {
-        detail: {
-          name: pizza.name,
-          image: pizza.image,
-          price: finalPrice
-        }
-      })
-    );
-  }, [pizza, selectedSize, selectedSizeData, finalPrice]);
-
-  const handleCheckout = useCallback(() => {
-    // TODO: Implement actual checkout logic
-    router.push("/checkout");
-  }, [router]);
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const pizza = pizzas.find(p => p.id === id);
 
   if (!pizza) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Pizza not found
-          </h1>
-          <Link
-            href="/store"
-            className="text-brown-medium hover:text-brown-dark hover:underline transition-colors"
-          >
-            Return to store
-          </Link>
-        </div>
-      </div>
-    );
+    return {
+      title: "Pizza Not Found - Moshzion"
+    };
   }
 
-  // Check if this is the featured pizza with a discount
+  return {
+    title: `${pizza.name} - Moshzion`,
+    description: pizza.description,
+    openGraph: {
+      title: `${pizza.name} - Moshzion`,
+      description: pizza.description,
+      images: [pizza.image]
+    }
+  };
+}
+
+export default async function ProductPage({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const pizza = pizzas.find(p => p.id === id);
+
+  if (!pizza) {
+    notFound();
+  }
+
   const hasDiscount = pizza.id === FEATURED_CONFIG.pizzaId;
-  const originalPrice =
-    hasDiscount && selectedSizeData
-      ? calculatePrice(
-          FEATURED_CONFIG.originalPrice,
-          selectedSizeData.priceMultiplier
-        )
-      : null;
+  const originalPrice = hasDiscount ? FEATURED_CONFIG.originalPrice : null;
 
   return (
     <div className="min-h-screen">
@@ -110,85 +75,11 @@ export default function ProductPage() {
           </div>
 
           <div className="px-4 py-6 sm:px-6 lg:px-0 lg:py-0">
-            <h1 className="font-display text-5xl sm:text-6xl text-brown-dark mb-2">
-              {pizza.name}
-            </h1>
-            {hasDiscount && originalPrice ? (
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="font-display text-xl text-gray-500 line-through">
-                  ${originalPrice}
-                </span>
-                <span className="font-display text-2xl text-brown-dark">
-                  ${finalPrice}
-                </span>
-              </div>
-            ) : (
-              <p className="font-display text-2xl text-brown-dark mb-6">
-                ${finalPrice}
-              </p>
-            )}
-
-            <p className="text-gray-700 mb-8 leading-relaxed font-open-sans">
-              {pizza.description}
-            </p>
-
-            <div className="mb-8">
-              <h2 className="sr-only">Select Size</h2>
-              <div className="grid grid-cols-4 gap-2 sm:gap-3">
-                {pizza.sizes.map(size => (
-                  <button
-                    key={size.name}
-                    onClick={() => setSelectedSize(size.name)}
-                    className={`rounded-lg border-2 p-3 text-center transition-colors font-open-sans ${
-                      selectedSize === size.name
-                        ? "border-brown-dark bg-[#BCE7FF]"
-                        : "border-gray-200 bg-white hover:border-gray-300"
-                    }`}
-                    aria-pressed={selectedSize === size.name}
-                  >
-                    <div className="font-semibold text-gray-900 text-sm">
-                      {size.name}
-                    </div>
-                    <div className="text-xs text-gray-600">{size.size}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="font-display text-2xl text-brown-dark mb-3">
-                Toppings
-              </h2>
-              <div className="flex flex-wrap gap-2">
-                {pizza.toppings.map(topping => (
-                  <Chip key={topping} label={topping} variant="outline" />
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                onClick={handleAddToCart}
-                variant="outline"
-                color="brown"
-                className="flex-1"
-                icon={<AddShoppingCartIcon sx={{ fontSize: 20 }} />}
-                iconPosition="right"
-              >
-                ADD TO CART
-              </Button>
-
-              <Button
-                onClick={handleCheckout}
-                variant="primary"
-                color="beige"
-                className="flex-1"
-                icon={<PaymentIcon sx={{ fontSize: 20 }} />}
-                iconPosition="right"
-              >
-                CHECKOUT
-              </Button>
-            </div>
+            <ProductDetails
+              pizza={pizza}
+              hasDiscount={hasDiscount}
+              originalPrice={originalPrice}
+            />
 
             <div className="mt-8 hidden md:block">
               <Link

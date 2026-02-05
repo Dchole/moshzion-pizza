@@ -42,20 +42,18 @@ export async function getCart(): Promise<CartData> {
 export async function addToCart(item: Omit<CartItem, "id">): Promise<CartData> {
   const cart = await getCartData();
 
-  // Check if item with same pizza, size, and toppings exists
   const existingIndex = cart.items.findIndex(
     i =>
       i.pizzaId === item.pizzaId &&
       i.size === item.size &&
-      JSON.stringify(i.toppings.sort()) === JSON.stringify(item.toppings.sort())
+      JSON.stringify([...i.toppings].sort()) ===
+        JSON.stringify([...item.toppings].sort())
   );
 
   if (existingIndex >= 0) {
-    // Update quantity of existing item
     cart.items[existingIndex].quantity += item.quantity;
   } else {
-    // Add new item with unique ID
-    cart.items.push({ ...item, id: `${Date.now()}-${Math.random()}` });
+    cart.items.push({ ...item, id: crypto.randomUUID() });
   }
 
   await setCartData(cart);
