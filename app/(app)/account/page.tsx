@@ -11,14 +11,41 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { Button } from "@/components/ui";
+import { AuthForm } from "@/components/AuthForm";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AccountPage() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-brown-dark border-r-transparent"></div>
+          <p className="mt-4 text-gray-600 font-open-sans">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show sign-in form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md">
+          <AuthForm />
+        </div>
+      </div>
+    );
+  }
+
   // TODO: Fetch user data from your auth system
-  const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    avatar: null
+  const userData = {
+    name: user ? `${user.firstName} ${user.lastName}` : "John Doe",
+    email: user?.email,
+    phone: user?.phone || "+1 (555) 123-4567",
+    avatar: user?.avatar || null
   };
 
   const savedAddresses = [
@@ -103,24 +130,28 @@ export default function AccountPage() {
                 <label className="text-sm font-medium text-gray-600 font-open-sans">
                   Full Name
                 </label>
-                <p className="mt-1 text-gray-900 font-open-sans">{user.name}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600 font-open-sans">
-                  Email Address
-                </label>
                 <p className="mt-1 text-gray-900 font-open-sans">
-                  {user.email}
+                  {userData.name}
                 </p>
               </div>
+
+              {userData.email && (
+                <div>
+                  <label className="text-sm font-medium text-gray-600 font-open-sans">
+                    Email Address
+                  </label>
+                  <p className="mt-1 text-gray-900 font-open-sans">
+                    {userData.email}
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="text-sm font-medium text-gray-600 font-open-sans">
                   Phone Number
                 </label>
                 <p className="mt-1 text-gray-900 font-open-sans">
-                  {user.phone}
+                  {userData.phone}
                 </p>
               </div>
             </div>
