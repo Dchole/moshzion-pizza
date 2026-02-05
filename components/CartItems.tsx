@@ -7,6 +7,8 @@ import {
   clearCart
 } from "@/app/actions/cart";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import type { CartItem } from "@/types";
 
 interface CartItemsProps {
@@ -71,19 +73,28 @@ export function CartItems({ items }: CartItemsProps) {
             className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
           >
             <div className="flex gap-4">
-              <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-200">
-                <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-400">
-                  Pizza
-                </div>
-              </div>
+              <Link
+                href={`/product/${item.pizzaId}`}
+                className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-200 hover:opacity-80 transition-opacity"
+              >
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                  sizes="96px"
+                />
+              </Link>
 
               <div className="flex flex-1 flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-display text-xl text-brown-dark">
-                        {item.name}
-                      </h3>
+                      <Link href={`/product/${item.pizzaId}`}>
+                        <h3 className="font-display text-xl text-brown-dark hover:text-brown-medium transition-colors">
+                          {item.name}
+                        </h3>
+                      </Link>
                       <p className="text-sm text-gray-600 mt-1">
                         ${item.price} · {item.size}
                         {item.toppings.length > 0 &&
