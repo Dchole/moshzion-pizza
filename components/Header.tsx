@@ -21,7 +21,10 @@ export default function Header({
 
   // Auto-detect if we should use app variant for about/contacts pages
   const shouldUseAppVariant =
-    variant === "app" || pathname === "/about" || pathname === "/contacts";
+    variant === "app" ||
+    pathname === "/about" ||
+    pathname === "/contacts" ||
+    pathname === "/faqs";
   const effectiveVariant = shouldUseAppVariant ? "app" : "landing";
 
   const handleOpenMenu = () => {
