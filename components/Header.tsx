@@ -6,6 +6,11 @@ import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import PersonIcon from "@mui/icons-material/Person";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import InfoIcon from "@mui/icons-material/Info";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import Logo from "./Logo";
 import { CartButtonGroup } from "@/components/CartButtonGroup";
 import { NAV_LINKS } from "@/lib/constants";
@@ -45,15 +50,35 @@ export default function Header({
 
   const navLinks =
     effectiveVariant === "app"
-      ? [{ label: "Store", href: "/store" }, ...NAV_LINKS.slice(1)]
+      ? [
+          { label: "Store", href: "/store" },
+          { label: "About", href: "/about" },
+          { label: "Orders", href: "/orders" },
+          { label: "Track Order", href: "/track-order" }
+        ]
       : NAV_LINKS;
+
+  const mobileNavLinks =
+    effectiveVariant === "app"
+      ? [
+          { label: "Account", href: "/account", icon: PersonIcon },
+          { label: "Store", href: "/store", icon: StorefrontIcon },
+          { label: "About", href: "/about", icon: InfoIcon },
+          { label: "Orders", href: "/orders", icon: ReceiptIcon },
+          {
+            label: "Track Order",
+            href: "/track-order",
+            icon: LocalShippingIcon
+          }
+        ]
+      : navLinks.map(link => ({ ...link, icon: undefined }));
 
   const headerPosition = effectiveVariant === "app" ? "fixed" : "absolute";
   const headerBg = effectiveVariant === "app" ? "bg-primary" : "bg-transparent";
   const headerZIndex = effectiveVariant === "app" ? "z-40" : "z-30";
 
   const menuHeight =
-    isMobileMenuOpen && variant === "app" ? navLinks.length * 56 + 32 : 0;
+    isMobileMenuOpen && variant === "app" ? mobileNavLinks.length * 56 + 32 : 0;
 
   return (
     <>
@@ -156,21 +181,24 @@ export default function Header({
                 >
                   <div className="mx-auto max-w-384 px-4 py-4">
                     <div className="flex flex-col gap-2">
-                      {navLinks.map(link => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={handleCloseMenu}
-                          className={`${textColor} ${hoverColor} py-3 px-4 rounded-lg font-medium font-open-sans transition-colors hover:bg-brown-medium/10`}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
+                      {mobileNavLinks.map(link => {
+                        const Icon = link.icon;
+                        return (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={handleCloseMenu}
+                            className={`${textColor} ${hoverColor} py-3 px-4 rounded-lg font-medium font-open-sans transition-colors hover:bg-brown-medium/10 flex items-center gap-3`}
+                          >
+                            {Icon && <Icon className="w-5 h-5" />}
+                            {link.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 </nav>
               ) : (
-                // Popover menu for landing variant
                 <>
                   <div
                     className={`fixed inset-0 z-40 backdrop-blur-sm transition-all duration-200 ${
@@ -191,13 +219,13 @@ export default function Header({
                     aria-hidden={!isMobileMenuOpen}
                   >
                     <div className="py-3">
-                      {navLinks.map((link, index) => (
+                      {mobileNavLinks.map((link, index) => (
                         <Link
                           key={link.href}
                           href={link.href}
                           onClick={handleCloseMenu}
                           className={`block px-6 py-4 text-gray-900 hover:bg-gray-50 font-medium font-open-sans transition-colors ${
-                            index < navLinks.length - 1
+                            index < mobileNavLinks.length - 1
                               ? "border-b border-gray-100"
                               : ""
                           }`}
