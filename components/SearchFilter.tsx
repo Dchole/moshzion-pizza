@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import FilterIcon from "@mui/icons-material/FilterAltOutlined";
@@ -10,52 +10,69 @@ import { IconButton, Input } from "@/components/ui";
 const categories = ["New", "Vegan", "Hot", "Promo"];
 
 interface SearchFilterProps {
-  onSearchChange?: (query: string, filters: string[]) => void;
+  initialQuery?: string;
+  initialFilters?: string[];
 }
 
-export function SearchFilter({ onSearchChange }: SearchFilterProps) {
+export function SearchFilter({
+  initialQuery = "",
+  initialFilters = []
+}: SearchFilterProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
 
-  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(
-    searchParams.get("filter")?.split(",").filter(Boolean) || []
-  );
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [selectedFilters, setSelectedFilters] =
+    useState<string[]>(initialFilters);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  useEffect(() => {
-    const params = new URLSearchParams();
+  const updateURL = (query: string, filters: string[]) => {
+    const params = new URLSearchParams(searchParams);
 
-    if (searchQuery) {
-      params.set("q", searchQuery);
+    if (query) {
+      params.set("q", query);
+    } else {
+      params.delete("q");
     }
 
-    if (selectedFilters.length > 0) {
-      params.set("filter", selectedFilters.join(","));
+    if (filters.length > 0) {
+      params.set("filter", filters.join(","));
+    } else {
+      params.delete("filter");
     }
 
     const queryString = params.toString();
-    const newUrl = queryString ? `?${queryString}` : window.location.pathname;
+    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
 
-    router.replace(newUrl, { scroll: false });
+    startTransition(() => {
+      router.replace(newUrl, { scroll: false });
+    });
+  };
 
-    if (onSearchChange) {
-      onSearchChange(searchQuery, selectedFilters);
-    }
-  }, [searchQuery, selectedFilters, router, onSearchChange]);
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    updateURL(value, selectedFilters);
+  };
 
   const toggleFilter = (filter: string) => {
-    setSelectedFilters(prev =>
-      prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
-    );
+    const newFilters = selectedFilters.includes(filter)
+      ? selectedFilters.filter(f => f !== filter)
+      : [...selectedFilters, filter];
+
+    setSelectedFilters(newFilters);
+    updateURL(searchQuery, newFilters);
   };
 
   const clearSearch = () => {
     setSearchQuery("");
+    updateURL("", selectedFilters);
   };
 
   const clearAllFilters = () => {
     setSelectedFilters([]);
+    updateURL(searchQuery, []);
   };
 
   return (
@@ -69,7 +86,7 @@ export function SearchFilter({ onSearchChange }: SearchFilterProps) {
             type="search"
             placeholder="What pizza are you looking for?"
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={e => handleSearchChange(e.target.value)}
             label="Search pizzas"
             labelClassName="sr-only"
             startIcon={<SearchIcon sx={{ fontSize: 20, color: "#9CA3AF" }} />}

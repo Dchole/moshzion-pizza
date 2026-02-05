@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useMemo, useCallback } from "react";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import { PizzaCard, Button } from "@/components/ui";
@@ -8,33 +5,29 @@ import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 import { SearchFilter } from "@/components/SearchFilter";
 import { pluralize } from "@/lib/utils";
 
-export default function StorePage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+interface StorePageProps {
+  searchParams: Promise<{
+    q?: string;
+    filter?: string;
+  }>;
+}
 
-  const handleSearchChange = useCallback((query: string, filters: string[]) => {
-    setSearchQuery(query);
-    setSelectedFilters(filters);
-  }, []);
+export default async function StorePage({ searchParams }: StorePageProps) {
+  const params = await searchParams;
+  const searchQuery = params.q || "";
+  const selectedFilters = params.filter?.split(",").filter(Boolean) || [];
 
-  const handleClearFilters = useCallback(() => {
-    setSearchQuery("");
-    setSelectedFilters([]);
-  }, []);
+  const filteredPizzas = pizzas.filter(pizza => {
+    const matchesSearch = pizza.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
-  const filteredPizzas = useMemo(() => {
-    return pizzas.filter(pizza => {
-      const matchesSearch = pizza.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedFilters.length === 0 ||
+      selectedFilters.some(filter => pizza.category.includes(filter));
 
-      const matchesCategory =
-        selectedFilters.length === 0 ||
-        selectedFilters.some(filter => pizza.category.includes(filter));
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchQuery, selectedFilters]);
+    return matchesSearch && matchesCategory;
+  });
 
   const featuredPizza = filteredPizzas.find(
     p => p.id === FEATURED_CONFIG.pizzaId
@@ -45,7 +38,10 @@ export default function StorePage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 min-h-dvh">
-      <SearchFilter onSearchChange={handleSearchChange} />
+      <SearchFilter
+        initialQuery={searchQuery}
+        initialFilters={selectedFilters}
+      />
 
       <p className="mb-6 text-sm text-gray-600">
         Showing {filteredPizzas.length}{" "}
@@ -74,12 +70,7 @@ export default function StorePage() {
           <p className="text-lg text-gray-600">
             No pizzas found matching your criteria.
           </p>
-          <Button
-            onClick={handleClearFilters}
-            variant="ghost"
-            color="brown"
-            className="mt-4"
-          >
+          <Button href="/store" variant="ghost" color="brown" className="mt-4">
             Clear all filters
           </Button>
         </div>
