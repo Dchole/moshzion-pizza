@@ -36,7 +36,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-384">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="p-8">
                 <h2 className="text-2xl font-semibold text-brown-dark mb-6">
                   Send Us a Message
                 </h2>
@@ -45,96 +45,106 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-semibold text-brown-dark mb-4">
-                  Contact Information
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <PhoneIcon className="text-brown-medium mt-1" />
-                    <div>
-                      <p className="text-sm text-brown-medium/70 mb-1">Phone</p>
-                      <a
-                        href={`tel:${CONTACT_INFO.phone}`}
-                        className="text-brown-dark hover:text-brown-medium transition-colors"
-                      >
-                        {CONTACT_INFO.phone}
-                      </a>
+              <div className="bg-white border border-brown-medium/10 rounded-2xl p-6 space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold text-brown-dark mb-4">
+                    Contact Information
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <PhoneIcon className="text-brown-medium mt-1" />
+                      <div>
+                        <p className="text-sm text-brown-medium/70 mb-1">
+                          Phone
+                        </p>
+                        <a
+                          href={`tel:${CONTACT_INFO.phone}`}
+                          className="text-brown-dark hover:text-brown-medium transition-colors"
+                        >
+                          {CONTACT_INFO.phone}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <EmailIcon className="text-brown-medium mt-1" />
+                      <div>
+                        <p className="text-sm text-brown-medium/70 mb-1">
+                          Email
+                        </p>
+                        <a
+                          href={`mailto:${CONTACT_INFO.email}`}
+                          className="text-brown-dark hover:text-brown-medium transition-colors break-all"
+                        >
+                          {CONTACT_INFO.email}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <LocationOnIcon className="text-brown-medium mt-1" />
+                      <div>
+                        <p className="text-sm text-brown-medium/70 mb-1">
+                          Address
+                        </p>
+                        <p className="text-brown-dark">
+                          {CONTACT_INFO.address}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <AccessTimeIcon className="text-brown-medium mt-1" />
+                      <div>
+                        <p className="text-sm text-brown-medium/70 mb-1">
+                          Business Hours
+                        </p>
+                        <p className="text-brown-dark">{BUSINESS_HOURS.days}</p>
+                        <p className="text-brown-dark">
+                          {BUSINESS_HOURS.hours}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-start gap-3">
-                    <EmailIcon className="text-brown-medium mt-1" />
-                    <div>
-                      <p className="text-sm text-brown-medium/70 mb-1">Email</p>
-                      <a
-                        href={`mailto:${CONTACT_INFO.email}`}
-                        className="text-brown-dark hover:text-brown-medium transition-colors break-all"
-                      >
-                        {CONTACT_INFO.email}
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <LocationOnIcon className="text-brown-medium mt-1" />
-                    <div>
-                      <p className="text-sm text-brown-medium/70 mb-1">
-                        Address
-                      </p>
-                      <p className="text-brown-dark">{CONTACT_INFO.address}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <AccessTimeIcon className="text-brown-medium mt-1" />
-                    <div>
-                      <p className="text-sm text-brown-medium/70 mb-1">
-                        Business Hours
-                      </p>
-                      <p className="text-brown-dark">{BUSINESS_HOURS.days}</p>
-                      <p className="text-brown-dark">{BUSINESS_HOURS.hours}</p>
-                    </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-brown-dark mb-4">
+                    Follow Us
+                  </h3>
+                  <div className="flex gap-4">
+                    <a
+                      href={SOCIAL_LINKS.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
+                      aria-label="Facebook"
+                    >
+                      <FacebookIcon />
+                    </a>
+                    <a
+                      href={SOCIAL_LINKS.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
+                      aria-label="Instagram"
+                    >
+                      <InstagramIcon />
+                    </a>
+                    <a
+                      href={SOCIAL_LINKS.whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
+                      aria-label="WhatsApp"
+                    >
+                      <WhatsAppIcon />
+                    </a>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-semibold text-brown-dark mb-4">
-                  Follow Us
-                </h3>
-                <div className="flex gap-4">
-                  <a
-                    href={SOCIAL_LINKS.facebook}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
-                    aria-label="Facebook"
-                  >
-                    <FacebookIcon />
-                  </a>
-                  <a
-                    href={SOCIAL_LINKS.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
-                    aria-label="Instagram"
-                  >
-                    <InstagramIcon />
-                  </a>
-                  <a
-                    href={SOCIAL_LINKS.whatsapp}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-12 h-12 bg-brown-dark text-white rounded-full hover:bg-brown-medium transition-colors"
-                    aria-label="WhatsApp"
-                  >
-                    <WhatsAppIcon />
-                  </a>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="p-6">
                 <h3 className="text-xl font-semibold text-brown-dark mb-4">
                   Find Us
                 </h3>

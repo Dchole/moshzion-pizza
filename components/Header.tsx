@@ -24,7 +24,8 @@ export default function Header({
     variant === "app" ||
     pathname === "/about" ||
     pathname === "/contacts" ||
-    pathname === "/faqs";
+    pathname === "/faqs" ||
+    pathname === "/credits";
   const effectiveVariant = shouldUseAppVariant ? "app" : "landing";
 
   const handleOpenMenu = () => {
