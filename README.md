@@ -1,6 +1,6 @@
 # 🍕 Moshzion - Pizza Restaurant E-Commerce Website
 
-A modern, responsive pizza restaurant e-commerce website built with **Next.js 16**, **Tailwind CSS 4**, and **TypeScript**. Features a complete ordering system with shopping cart functionality and multiple payment options.
+A modern, responsive pizza restaurant e-commerce website built with **Next.js 16**, **Tailwind CSS 4**, and **TypeScript**. Features a complete ordering system with shopping cart functionality, multiple payment options, and server-side rendering for optimal performance.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.1.4-black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
@@ -13,8 +13,11 @@ A modern, responsive pizza restaurant e-commerce website built with **Next.js 16
 - **Responsive Design**: Optimized for mobile, tablet, and desktop
 - **Modern UI**: Beautiful beige/tan color scheme with brown accents
 - **Smooth Animations**: Transitions and hover effects throughout
+- **Dynamic Watermarks**: Responsive pizza name watermarks on product pages
+- **Logo Variants**: Separate logos for landing and app sections
+- **Real-time Updates**: Custom event system for instant cart synchronization
 - **Accessibility**: Semantic HTML, ARIA labels, keyboard navigation support
-- **SEO Optimized**: Proper meta tags, semantic structure, and Next.js optimization
+- **SEO Optimized**: Static generation, proper meta tags, and semantic structure
 
 ### 🏠 Pages & Features
 
@@ -33,9 +36,12 @@ A modern, responsive pizza restaurant e-commerce website built with **Next.js 16
    - Responsive product cards
 
 3. **Product Detail**
+   - Server-side rendering with static generation
+   - SEO-optimized metadata per product
    - Size selection (Small, Medium, Large, Mega)
    - Customizable toppings
    - Dynamic price calculation
+   - Responsive watermark effect
    - Add to cart & direct checkout options
 
 4. **Shopping Cart**
@@ -48,7 +54,9 @@ A modern, responsive pizza restaurant e-commerce website built with **Next.js 16
 5. **Checkout**
    - Multiple payment methods (Credit Card, Mobile Money, Cash on Delivery)
    - Order summary
-   - Form validation
+   - Zod schema validation for all payment methods
+   - Card validation (16 digits, expiry, CVC)
+   - Phone number validation for mobile money
    - Responsive multi-step design
 
 ## 🚀 Getting Started
@@ -64,11 +72,11 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Project Structure
 
-- **app/** - Next.js 16 App Router pages
+- **app/** - Next.js 16 App Router pages and Server Actions
 - **components/** - Reusable React components
-- **lib/** - Utilities and cart context
+- **lib/** - Utilities, data, and constants
 - **types/** - TypeScript definitions
-- **public/assets/** - Static images and icons
+- **public/assets/** - Static images, logos, and icons
 
 ## 🎨 Design System
 
@@ -85,11 +93,13 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## 🛠 Tech Stack
 
-- Next.js 16 with App Router
-- TypeScript
-- Tailwind CSS 4
-- React 19
-- Context API for state management
+- **Next.js 16** with App Router
+- **React 19** with Server Components
+- **TypeScript 5** for type safety
+- **Tailwind CSS 4** for styling
+- **Zod** for runtime validation
+- **Server Actions** for cart management (cookies-based)
+- **Custom Events** for real-time UI synchronization
 
 ## 📝 Available Scripts
 
@@ -100,14 +110,44 @@ npm start        # Start production server
 npm run lint     # Run ESLint
 ```
 
+## 🏗️ Architecture Highlights
+
+### Server-Side Rendering
+
+- **Server Components**: Store and product pages rendered on server
+- **Static Generation**: Product pages pre-generated with `generateStaticParams`
+- **Dynamic Metadata**: SEO-optimized meta tags per product using `generateMetadata`
+
+### State Management
+
+- **Server Actions**: Cart operations handled via secure server-side functions
+- **Cookie-based Storage**: Cart persisted across sessions
+- **Custom Events**: `cart-updated` events for real-time UI synchronization
+- **URL State**: Search and filters managed through searchParams
+
+### Code Quality
+
+- **Constants Management**: Centralized timing and threshold values
+- **Secure IDs**: `crypto.randomUUID()` for stable cart item identifiers
+- **Immutable Updates**: Pure functions for cart operations
+- **Form Validation**: Zod schemas with refinements for all payment methods
+
+### Performance Optimizations
+
+- **Image Optimization**: Next.js Image component with priority loading
+- **Debounced Updates**: Strategic delays for smooth UI transitions
+- **Event-based Updates**: Minimal re-renders with targeted notifications
+- **Static Assets**: Optimized SVG logos and icons
+
 ## 🔮 Next Steps
 
-- Add user authentication
-- Integrate payment processing
-- Connect to backend API
-- Add pizza images
-- Implement order tracking
-- Create admin dashboard
+- Add user authentication and profiles
+- Integrate real payment gateway (Stripe/PayPal)
+- Connect to backend API for order management
+- Implement order tracking system
+- Create admin dashboard for order management
+- Add email notifications for orders
+- Implement reviews and ratings system
 
 ## ♿ Accessibility
 
