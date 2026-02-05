@@ -36,7 +36,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-384">
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="p-8">
+              <div className="bg-white border border-brown-medium/10 rounded-2xl p-8">
                 <h2 className="text-2xl font-semibold text-brown-dark mb-6">
                   Send Us a Message
                 </h2>
@@ -144,7 +144,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="p-6">
+              <div className="bg-white border border-brown-medium/10 rounded-2xl p-6">
                 <h3 className="text-xl font-semibold text-brown-dark mb-4">
                   Find Us
                 </h3>
