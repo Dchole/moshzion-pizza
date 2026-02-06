@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import TimelineSection from "@/components/TimelineSection";
+import Grainient from "@/components/Grainient";
 import { Button } from "@/components/ui";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 
@@ -64,7 +65,7 @@ const journey = [
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-primary">
-      <section className="relative min-h-screen overflow-hidden">
+      <section id="hero" className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="/assets/chef-kitchen.jpg"
@@ -105,7 +106,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
+      <section id="mission" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="mx-auto max-w-384">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -142,7 +143,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="values" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display text-brown-dark mb-4">
@@ -178,7 +179,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
+      <section id="journey" className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="mx-auto max-w-384">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-display text-brown-dark mb-4">
@@ -194,26 +195,52 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section id="cta" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384">
-          <div className="bg-linear-to-r from-brown-dark to-brown-medium rounded-2xl p-12 text-center text-white">
-            <h2 className="text-3xl md:text-4xl font-display mb-6">
-              Taste the Difference
-            </h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
-              Experience the passion, quality, and tradition that goes into
-              every Moshzion pizza. Order now and become part of our story.
-            </p>
-            <Button
-              href="/store"
-              variant="primary"
-              color="white"
-              size="lg"
-              icon={<StorefrontIcon />}
-              iconPosition="right"
-            >
-              Order Now
-            </Button>
+          <div className="relative rounded-2xl p-12 text-center text-white overflow-hidden">
+            <Grainient
+              color1="#7e1e17"
+              color2="#332625"
+              color3="#914922"
+              timeSpeed={0.25}
+              colorBalance={0}
+              warpStrength={1}
+              warpFrequency={5}
+              warpSpeed={2}
+              warpAmplitude={50}
+              blendAngle={0}
+              blendSoftness={0.05}
+              rotationAmount={500}
+              noiseScale={0.75}
+              grainAmount={0.05}
+              grainScale={1}
+              grainAnimated={false}
+              contrast={1.5}
+              gamma={1}
+              saturation={1}
+              centerX={0}
+              centerY={0}
+              zoom={0.9}
+            />
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-display mb-6">
+                Taste the Difference
+              </h2>
+              <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
+                Experience the passion, quality, and tradition that goes into
+                every Moshzion pizza. Order now and become part of our story.
+              </p>
+              <Button
+                href="/store"
+                variant="primary"
+                color="white"
+                size="lg"
+                icon={<StorefrontIcon />}
+                iconPosition="right"
+              >
+                Order Now
+              </Button>
+            </div>
           </div>
         </div>
       </section>
