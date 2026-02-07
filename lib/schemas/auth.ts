@@ -14,44 +14,31 @@ export const phoneSchema = z
   .transform(val => val.replace(/\s/g, "")); // Remove any spaces
 
 /**
- * Password validation
- * Minimum 8 characters for signup
+ * OTP code validation
+ * Must be exactly 6 digits
  */
-export const passwordSchema = z
+export const otpSchema = z
   .string()
-  .min(1, "Password is required")
-  .min(8, "Password must be at least 8 characters");
+  .min(1, "Verification code is required")
+  .regex(/^\d{6}$/, "Code must be exactly 6 digits");
 
 /**
- * Sign in credentials schema
+ * Send OTP schema - request verification code
  */
-export const signInSchema = z.object({
-  phone: phoneSchema,
-  password: z.string().min(1, "Password is required")
+export const sendOTPSchema = z.object({
+  phone: phoneSchema
 });
 
 /**
- * Sign up credentials schema
+ * Verify OTP schema - check verification code
  */
-export const signUpSchema = z.object({
-  firstName: z
-    .string()
-    .min(1, "First name is required")
-    .min(2, "First name must be at least 2 characters")
-    .max(50, "First name must be less than 50 characters")
-    .trim(),
-  lastName: z
-    .string()
-    .min(1, "Last name is required")
-    .min(2, "Last name must be at least 2 characters")
-    .max(50, "Last name must be less than 50 characters")
-    .trim(),
+export const verifyOTPSchema = z.object({
   phone: phoneSchema,
-  password: passwordSchema
+  code: otpSchema
 });
 
 /**
  * Type inference for TypeScript
  */
-export type SignInInput = z.infer<typeof signInSchema>;
-export type SignUpInput = z.infer<typeof signUpSchema>;
+export type SendOTPInput = z.infer<typeof sendOTPSchema>;
+export type VerifyOTPInput = z.infer<typeof verifyOTPSchema>;

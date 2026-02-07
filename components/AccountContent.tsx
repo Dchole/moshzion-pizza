@@ -11,25 +11,46 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import LogoutIcon from "@mui/icons-material/Logout";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Button } from "@/components/ui";
-import { signOutUser } from "@/lib/auth-actions";
-import { useTransition } from "react";
+import { Input } from "@/components/ui";
+import { signOutUser, sendOTP, verifyOTP } from "@/lib/auth-actions";
+import { useState, useTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface User {
   id: string;
-  name?: string;
   phone: string;
-  firstName?: string;
-  lastName?: string;
-  image?: string;
+  firstName?: string | null;
+  lastName?: string | null;
 }
 
 interface AccountContentProps {
-  user: User;
+  user: User | null;
 }
 
 export function AccountContent({ user }: AccountContentProps) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isEditingPhone, setIsEditingPhone] = useState(!user);
+  const [showOTPInput, setShowOTPInput] = useState(false);
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [otpCode, setOtpCode] = useState("");
+  const [errors, setErrors] = useState<{
+    phone?: string;
+    code?: string;
+    general?: string;
+  }>({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+
+  // Countdown timer for resend OTP
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -37,53 +58,82 @@ export function AccountContent({ user }: AccountContentProps) {
     });
   };
 
-  const userData = {
-    name:
-      user.firstName && user.lastName
-        ? `${user.firstName} ${user.lastName}`
-        : user.name || "User",
-    phone: user.phone
+  const handlePhoneSave = () => {
+    startTransition(async () => {
+      setErrors({});
+      setSuccessMessage("");
+
+      const result = await sendOTP({ phone });
+
+      if (!result.success) {
+        if (result.errors) {
+          const newErrors: typeof errors = {};
+          Object.entries(result.errors).forEach(([field, messages]) => {
+            newErrors[field as keyof typeof errors] = messages[0];
+          });
+          setErrors(newErrors);
+        } else {
+          setErrors({ general: result.error });
+        }
+        return;
+      }
+
+      setShowOTPInput(true);
+      setResendTimer(60);
+      setSuccessMessage("Verification code sent to your phone!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    });
   };
 
-  const savedAddresses = [
-    {
-      id: "1",
-      label: "Home",
-      street: "123 Main Street",
-      city: "New York",
-      state: "NY",
-      zip: "10001",
-      isDefault: true
-    },
-    {
-      id: "2",
-      label: "Work",
-      street: "456 Office Park",
-      city: "New York",
-      state: "NY",
-      zip: "10002",
-      isDefault: false
-    }
-  ];
+  const handleOTPVerify = () => {
+    startTransition(async () => {
+      setErrors({});
+      setSuccessMessage("");
 
-  const paymentMethods = [
-    {
-      id: "1",
-      type: "Visa",
-      last4: "4242",
-      expiryMonth: "12",
-      expiryYear: "2025",
-      isDefault: true
-    },
-    {
-      id: "2",
-      type: "Mastercard",
-      last4: "5555",
-      expiryMonth: "08",
-      expiryYear: "2026",
-      isDefault: false
-    }
-  ];
+      const result = await verifyOTP({ phone, code: otpCode });
+
+      if (!result.success) {
+        if (result.errors) {
+          const newErrors: typeof errors = {};
+          Object.entries(result.errors).forEach(([field, messages]) => {
+            newErrors[field as keyof typeof errors] = messages[0];
+          });
+          setErrors(newErrors);
+        } else {
+          setErrors({ general: result.error });
+        }
+        return;
+      }
+
+      setSuccessMessage(
+        result.isNewAccount ? "Account created!" : "Phone verified!"
+      );
+
+      // Refresh to show authenticated state
+      setTimeout(() => {
+        router.refresh();
+      }, 500);
+    });
+  };
+
+  const handleResendOTP = () => {
+    if (resendTimer > 0) return;
+    handlePhoneSave();
+  };
+
+  const userData = {
+    name:
+      user?.firstName && user?.lastName
+        ? `${user.firstName} ${user.lastName}`
+        : "Not provided",
+    phone: user?.phone || ""
+  };
+
+  const isAuthenticated = !!user;
+
+  // Mock data (will be replaced with real data from DB)
+  const savedAddresses: any[] = [];
+  const paymentMethods: any[] = [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -93,11 +143,14 @@ export function AccountContent({ user }: AccountContentProps) {
             My Account
           </h1>
           <p className="mt-2 text-gray-600 font-open-sans">
-            Manage your profile, addresses, and payment methods
+            {isAuthenticated
+              ? "Manage your profile, addresses, and payment methods"
+              : "Enter your phone number to save your account information"}
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
+          {/* Profile Information */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
             aria-labelledby="profile-heading"
@@ -112,35 +165,169 @@ export function AccountContent({ user }: AccountContentProps) {
                   Profile Information
                 </h2>
               </div>
-              <button
-                className="rounded-lg p-2 text-brown-dark hover:bg-gray-100 transition-colors"
-                aria-label="Edit profile"
-              >
-                <EditIcon fontSize="small" />
-              </button>
+              {isAuthenticated && (
+                <button
+                  className="rounded-lg p-2 text-brown-dark hover:bg-gray-100 transition-colors"
+                  aria-label="Edit profile"
+                >
+                  <EditIcon fontSize="small" />
+                </button>
+              )}
             </div>
 
             <div className="space-y-4">
+              {/* Phone Number Field */}
               <div>
-                <label className="text-sm font-medium text-gray-600 font-open-sans">
-                  Full Name
-                </label>
-                <p className="mt-1 text-gray-900 font-open-sans">
-                  {userData.name}
+                <Input
+                  label="Phone Number"
+                  name="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={e => {
+                    setPhone(e.target.value);
+                    if (errors.phone) {
+                      setErrors(prev => ({ ...prev, phone: undefined }));
+                    }
+                  }}
+                  error={errors.phone}
+                  disabled={isAuthenticated || isPending}
+                  placeholder="0234567890"
+                  required
+                  helperText={
+                    !isAuthenticated
+                      ? "10 digits starting with 02, 03, or 05"
+                      : undefined
+                  }
+                  endIcon={
+                    isAuthenticated ? (
+                      <CheckCircleIcon
+                        className="text-green-600"
+                        fontSize="small"
+                      />
+                    ) : undefined
+                  }
+                />
+              </div>
+
+              {/* OTP Input - Inline with reveal animation */}
+              {showOTPInput && !isAuthenticated && (
+                <div className="animate-in slide-in-from-top-2 duration-300">
+                  <Input
+                    label="Verification Code"
+                    name="code"
+                    type="text"
+                    inputMode="numeric"
+                    value={otpCode}
+                    onChange={e => {
+                      const value = e.target.value
+                        .replace(/\D/g, "")
+                        .slice(0, 6);
+                      setOtpCode(value);
+                      if (errors.code) {
+                        setErrors(prev => ({ ...prev, code: undefined }));
+                      }
+                    }}
+                    error={errors.code}
+                    disabled={isPending}
+                    placeholder="000000"
+                    required
+                    helperText="Enter the 6-digit code from SMS"
+                  />
+
+                  <div className="mt-2 flex items-center justify-between text-sm">
+                    <button
+                      type="button"
+                      onClick={handleResendOTP}
+                      disabled={isPending || resendTimer > 0}
+                      className="text-brown-dark hover:text-brown-medium font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-open-sans"
+                    >
+                      {resendTimer > 0
+                        ? `Resend in ${resendTimer}s`
+                        : "Resend code"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowOTPInput(false);
+                        setOtpCode("");
+                        setErrors({});
+                      }}
+                      disabled={isPending}
+                      className="text-gray-600 hover:text-brown-dark transition-colors disabled:opacity-50 font-open-sans"
+                    >
+                      Change phone
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Error/Success Messages */}
+              {errors.general && (
+                <p className="text-sm text-red-600 font-open-sans" role="alert">
+                  {errors.general}
                 </p>
+              )}
+
+              {successMessage && (
+                <p
+                  className="text-sm text-green-600 font-open-sans flex items-center gap-2"
+                  role="status"
+                >
+                  <CheckCircleIcon fontSize="small" />
+                  {successMessage}
+                </p>
+              )}
+
+              {/* Save/Verify Button */}
+              {!isAuthenticated && (
+                <Button
+                  variant="primary"
+                  color="beige"
+                  className="w-full"
+                  disabled={
+                    isPending ||
+                    (showOTPInput && otpCode.length !== 6) ||
+                    (!showOTPInput && !phone)
+                  }
+                  onClick={showOTPInput ? handleOTPVerify : handlePhoneSave}
+                >
+                  {isPending
+                    ? showOTPInput
+                      ? "Verifying..."
+                      : "Sending code..."
+                    : showOTPInput
+                      ? "Verify & Save"
+                      : "Verify and save phone"}
+                </Button>
+              )}
+
+              {/* Name Fields */}
+              <div>
+                <Input
+                  label="First Name"
+                  name="firstName"
+                  type="text"
+                  value={user?.firstName || ""}
+                  disabled={!isAuthenticated}
+                  placeholder="Enter first name"
+                />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-600 font-open-sans">
-                  Phone Number
-                </label>
-                <p className="mt-1 text-gray-900 font-open-sans">
-                  {userData.phone}
-                </p>
+                <Input
+                  label="Last Name"
+                  name="lastName"
+                  type="text"
+                  value={user?.lastName || ""}
+                  disabled={!isAuthenticated}
+                  placeholder="Enter last name"
+                />
               </div>
             </div>
           </section>
 
+          {/* Quick Actions */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
             aria-labelledby="quick-actions-heading"
@@ -188,20 +375,23 @@ export function AccountContent({ user }: AccountContentProps) {
                 Start New Order
               </Button>
 
-              <Button
-                variant="outline"
-                color="brown"
-                className="w-full justify-start"
-                icon={<LogoutIcon sx={{ fontSize: 20 }} />}
-                iconPosition="left"
-                onClick={handleSignOut}
-                disabled={isPending}
-              >
-                {isPending ? "Signing out..." : "Sign Out"}
-              </Button>
+              {isAuthenticated && (
+                <Button
+                  variant="outline"
+                  color="brown"
+                  className="w-full justify-start"
+                  icon={<LogoutIcon sx={{ fontSize: 20 }} />}
+                  iconPosition="left"
+                  onClick={handleSignOut}
+                  disabled={isPending}
+                >
+                  {isPending ? "Signing out..." : "Sign Out"}
+                </Button>
+              )}
             </div>
           </section>
 
+          {/* Saved Addresses */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
             aria-labelledby="addresses-heading"
@@ -222,53 +412,69 @@ export function AccountContent({ user }: AccountContentProps) {
                 size="sm"
                 icon={<AddIcon sx={{ fontSize: 18 }} />}
                 iconPosition="left"
+                disabled={!isAuthenticated}
               >
                 Add Address
               </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {savedAddresses.map(address => (
-                <div
-                  key={address.id}
-                  className="rounded-lg border border-gray-200 p-4 relative"
-                >
-                  {address.isDefault && (
-                    <span className="absolute top-2 right-2 rounded-full bg-beige-light px-3 py-1 text-xs font-medium text-brown-dark font-open-sans">
-                      Default
-                    </span>
-                  )}
+            {savedAddresses.length === 0 ? (
+              <div className="text-center py-8">
+                <LocationOnIcon
+                  className="mx-auto text-gray-300 mb-3"
+                  sx={{ fontSize: 48 }}
+                />
+                <p className="text-gray-600 font-open-sans">
+                  {isAuthenticated
+                    ? "No addresses saved yet. Add one to get started!"
+                    : "Sign in to save delivery addresses"}
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {savedAddresses.map(address => (
+                  <div
+                    key={address.id}
+                    className="rounded-lg border border-gray-200 p-4 relative"
+                  >
+                    {address.isDefault && (
+                      <span className="absolute top-2 right-2 rounded-full bg-beige-light px-3 py-1 text-xs font-medium text-brown-dark font-open-sans">
+                        Default
+                      </span>
+                    )}
 
-                  <h3 className="font-display text-lg text-brown-dark mb-2">
-                    {address.label}
-                  </h3>
+                    <h3 className="font-display text-lg text-brown-dark mb-2">
+                      {address.label}
+                    </h3>
 
-                  <address className="not-italic text-sm text-gray-600 font-open-sans">
-                    {address.street}
-                    <br />
-                    {address.city}, {address.state} {address.zip}
-                  </address>
+                    <address className="not-italic text-sm text-gray-600 font-open-sans">
+                      {address.street}
+                      <br />
+                      {address.city}, {address.state} {address.zip}
+                    </address>
 
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
-                      aria-label={`Edit ${address.label} address`}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-                      aria-label={`Delete ${address.label} address`}
-                      disabled={address.isDefault}
-                    >
-                      <DeleteOutlineIcon fontSize="small" />
-                    </button>
+                    <div className="mt-4 flex gap-2">
+                      <button
+                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
+                        aria-label={`Edit ${address.label} address`}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        aria-label={`Delete ${address.label} address`}
+                        disabled={address.isDefault}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
 
+          {/* Payment Methods */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
             aria-labelledby="payment-heading"
@@ -289,108 +495,70 @@ export function AccountContent({ user }: AccountContentProps) {
                 size="sm"
                 icon={<AddIcon sx={{ fontSize: 18 }} />}
                 iconPosition="left"
+                disabled={!isAuthenticated}
               >
                 Add Card
               </Button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {paymentMethods.map(method => (
-                <div
-                  key={method.id}
-                  className="rounded-lg border border-gray-200 p-4 relative"
-                >
-                  {method.isDefault && (
-                    <span className="absolute top-2 right-2 rounded-full bg-beige-light px-3 py-1 text-xs font-medium text-brown-dark font-open-sans">
-                      Default
-                    </span>
-                  )}
+            {paymentMethods.length === 0 ? (
+              <div className="text-center py-8">
+                <PaymentIcon
+                  className="mx-auto text-gray-300 mb-3"
+                  sx={{ fontSize: 48 }}
+                />
+                <p className="text-gray-600 font-open-sans">
+                  {isAuthenticated
+                    ? "No payment methods saved yet. Add one for faster checkout!"
+                    : "Sign in to save payment methods"}
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {paymentMethods.map(method => (
+                  <div
+                    key={method.id}
+                    className="rounded-lg border border-gray-200 p-4 relative"
+                  >
+                    {method.isDefault && (
+                      <span className="absolute top-2 right-2 rounded-full bg-beige-light px-3 py-1 text-xs font-medium text-brown-dark font-open-sans">
+                        Default
+                      </span>
+                    )}
 
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="rounded bg-gray-100 p-2">
-                      <PaymentIcon className="text-brown-dark" />
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="rounded bg-gray-100 p-2">
+                        <PaymentIcon className="text-brown-dark" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-lg text-brown-dark">
+                          {method.type} •••• {method.last4}
+                        </h3>
+                        <p className="text-sm text-gray-600 font-open-sans">
+                          Expires {method.expiryMonth}/{method.expiryYear}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-display text-lg text-brown-dark">
-                        {method.type} •••• {method.last4}
-                      </h3>
-                      <p className="text-sm text-gray-600 font-open-sans">
-                        Expires {method.expiryMonth}/{method.expiryYear}
-                      </p>
+
+                    <div className="flex gap-2">
+                      <button
+                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
+                        aria-label={`Edit ${method.type} ending in ${method.last4}`}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                        aria-label={`Remove ${method.type} ending in ${method.last4}`}
+                        disabled={method.isDefault}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
-                      aria-label={`Edit ${method.type} ending in ${method.last4}`}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-                      aria-label={`Remove ${method.type} ending in ${method.last4}`}
-                      disabled={method.isDefault}
-                    >
-                      <DeleteOutlineIcon fontSize="small" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
-            aria-labelledby="settings-heading"
-          >
-            <div className="mb-4 flex items-center gap-2">
-              <SettingsIcon className="text-brown-dark" />
-              <h2
-                id="settings-heading"
-                className="font-display text-2xl text-brown-dark"
-              >
-                Account Settings
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 transition-colors">
-                <div>
-                  <h3 className="font-medium text-gray-900 font-open-sans">
-                    Change Password
-                  </h3>
-                  <p className="text-sm text-gray-600 font-open-sans">
-                    Update your password to keep your account secure
-                  </p>
-                </div>
-                <EditIcon className="text-gray-400" />
-              </button>
-
-              <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 transition-colors">
-                <div>
-                  <h3 className="font-medium text-gray-900 font-open-sans">
-                    Notification Preferences
-                  </h3>
-                  <p className="text-sm text-gray-600 font-open-sans">
-                    Manage your email and SMS notifications
-                  </p>
-                </div>
-                <EditIcon className="text-gray-400" />
-              </button>
-
-              <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 p-4 text-left hover:bg-gray-50 transition-colors">
-                <div>
-                  <h3 className="font-medium text-gray-900 font-open-sans">
-                    Privacy Settings
-                  </h3>
-                  <p className="text-sm text-gray-600 font-open-sans">
-                    Control your data and privacy preferences
-                  </p>
-                </div>
-                <EditIcon className="text-gray-400" />
-              </button>
-            </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>

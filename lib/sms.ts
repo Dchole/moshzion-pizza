@@ -62,14 +62,17 @@ export async function sendSMS({ phone, message }: SendSMSOptions): Promise<{
 }
 
 /**
- * Send OTP verification code
+ * Send OTP verification code via SMS
+ * @param phone - Phone number to send to
+ * @param otp - The OTP code to send
  */
-export async function sendOTPVerification(phone: string): Promise<{
+export async function sendOTPVerification(
+  phone: string,
+  otp: string
+): Promise<{
   success: boolean;
-  otp?: string;
   error?: string;
 }> {
-  const otp = generateOTP();
   const message = `Your Moshzion Pizza verification code is: ${otp}. Valid for 10 minutes.`;
 
   const result = await sendSMS({ phone, message });
@@ -78,5 +81,5 @@ export async function sendOTPVerification(phone: string): Promise<{
     return { success: false, error: result.error };
   }
 
-  return { success: true, otp };
+  return { success: true };
 }

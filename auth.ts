@@ -1,27 +1,26 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import Facebook from "next-auth/providers/facebook";
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-import { signInSchema } from "@/lib/schemas/auth";
+import { phoneSchema } from "@/lib/schemas/auth";
 import { z } from "zod";
 import prisma from "@/lib/db";
-import bcrypt from "bcryptjs";
 
 interface UserData {
   id: string;
   phone: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
 }
 
-async function validateUser(
-  phone: string,
-  password: string
-): Promise<UserData | null> {
+/**
+ * Validate user by phone number
+ * OTP verification happens in server actions before calling signIn
+ * This just confirms the user exists
+ */
+async function validateUser(phone: string): Promise<UserData | null> {
   try {
-    // Validate input format
-    signInSchema.parse({ phone, password });
+    // Validate phone format
+    phoneSchema.parse(phone);
 
     // Query database for user
     const user = await prisma.user.findUnique({
@@ -29,9 +28,9 @@ async function validateUser(
       select: {
         id: true,
         phone: true,
-        password: true,
         firstName: true,
-        lastName: true
+        lastName: true,
+        isPhoneVerified: true
       }
     });
 
@@ -39,18 +38,12 @@ async function validateUser(
       return null;
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    // Return user without password
+    // Return user data
     return {
       id: user.id,
       phone: user.phone,
-      firstName: user.firstName,
-      lastName: user.lastName
+      firstName: user.firstName || undefined,
+      lastName: user.lastName || undefined
     };
   } catch (error) {
     // Invalid input format
@@ -64,29 +57,17 @@ async function validateUser(
 
 export const authConfig: NextAuthConfig = {
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!
-    }),
-    Facebook({
-      clientId: process.env.FACEBOOK_CLIENT_ID!,
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!
-    }),
     Credentials({
-      name: "Phone & Password",
+      name: "Phone (OTP Verified)",
       credentials: {
-        phone: { label: "Phone", type: "tel" },
-        password: { label: "Password", type: "password" }
+        phone: { label: "Phone", type: "tel" }
       },
       async authorize(credentials) {
-        if (!credentials?.phone || !credentials?.password) {
+        if (!credentials?.phone) {
           return null;
         }
 
-        const user = await validateUser(
-          credentials.phone as string,
-          credentials.password as string
-        );
+        const user = await validateUser(credentials.phone as string);
 
         if (!user) {
           return null;
@@ -95,7 +76,10 @@ export const authConfig: NextAuthConfig = {
         return {
           id: user.id,
           phone: user.phone,
-          name: `${user.firstName} ${user.lastName}`,
+          name:
+            user.firstName && user.lastName
+              ? `${user.firstName} ${user.lastName}`
+              : user.phone,
           firstName: user.firstName,
           lastName: user.lastName
         };

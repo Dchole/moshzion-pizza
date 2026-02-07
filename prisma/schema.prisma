@@ -11,20 +11,17 @@ datasource db {
 }
 
 model User {
-    id        String @id @default(cuid())
-    phone     String @unique
-    password  String // bcrypt hashed
-    firstName String
-    lastName  String
+    id        String  @id @default(cuid())
+    phone     String  @unique
+    firstName String?
+    lastName  String?
 
-    // Phone verification
+    // Phone verification with OTP
     isPhoneVerified Boolean   @default(false)
     phoneVerifiedAt DateTime?
-
-    // OAuth fields (optional)
-    image         String?
-    email         String?   @unique
-    emailVerified DateTime?
+    otpCode         String?
+    otpExpiresAt    DateTime?
+    otpAttempts     Int       @default(0)
 
     // Timestamps
     createdAt DateTime @default(now())
@@ -33,30 +30,8 @@ model User {
     // Relations
     orders    Order[]
     addresses Address[]
-    accounts  Account[] // For OAuth
 
     @@map("users")
-}
-
-// OAuth accounts (Google, Facebook, etc.)
-model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String?
-    access_token      String?
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String?
-    session_state     String?
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, providerAccountId])
-    @@map("accounts")
 }
 
 model Address {
