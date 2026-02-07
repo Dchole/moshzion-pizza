@@ -10,7 +10,8 @@ import { Input } from "@/components/ui";
 import { Button } from "@/components/ui";
 import {
   authenticateWithCredentials,
-  authenticateWithProvider
+  authenticateWithProvider,
+  registerUser
 } from "@/lib/auth-actions";
 import { signInSchema, signUpSchema } from "@/lib/schemas/auth";
 import { z } from "zod";
@@ -128,10 +129,41 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
         router.refresh();
         onSuccess?.();
       } else {
-        setErrors({
-          general:
-            "Sign up functionality needs to be connected to your database. Please implement the user registration API."
+        // Sign up
+        const result = await registerUser(formData);
+
+        if (!result.success) {
+          // Handle field-specific errors from server
+          if (result.errors) {
+            const newErrors: FormErrors = {};
+            Object.entries(result.errors).forEach(([field, messages]) => {
+              newErrors[field as keyof FormErrors] = messages[0];
+            });
+            setErrors(newErrors);
+          } else {
+            setErrors({ general: result.error });
+          }
+          return;
+        }
+
+        // After successful registration, automatically sign in
+        const signInResult = await authenticateWithCredentials({
+          phone: formData.phone,
+          password: formData.password
         });
+
+        if (!signInResult.success) {
+          // Registration succeeded but sign in failed
+          setMode("signin");
+          setErrors({
+            general: "Account created! Please sign in."
+          });
+          return;
+        }
+
+        router.push("/account");
+        router.refresh();
+        onSuccess?.();
       }
     });
   };

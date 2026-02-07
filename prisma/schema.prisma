@@ -1,0 +1,127 @@
+// Prisma schema for pizza ordering app
+// Database: PostgreSQL
+
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id        String @id @default(cuid())
+    phone     String @unique
+    password  String // bcrypt hashed
+    firstName String
+    lastName  String
+
+    // Phone verification
+    isPhoneVerified Boolean   @default(false)
+    phoneVerifiedAt DateTime?
+
+    // OAuth fields (optional)
+    image         String?
+    email         String?   @unique
+    emailVerified DateTime?
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    orders    Order[]
+    addresses Address[]
+    accounts  Account[] // For OAuth
+
+    @@map("users")
+}
+
+// OAuth accounts (Google, Facebook, etc.)
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Address {
+    id        String  @id @default(cuid())
+    userId    String
+    label     String // e.g., "Home", "Work"
+    street    String
+    city      String
+    state     String?
+    zipCode   String?
+    country   String  @default("Local")
+    isDefault Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    orders Order[]
+
+    @@map("addresses")
+}
+
+model Order {
+    id        String  @id @default(cuid())
+    userId    String? // Nullable for guest orders
+    addressId String?
+
+    // Order details
+    items       Json // Store cart items as JSON
+    subtotal    Float
+    deliveryFee Float @default(0)
+    tax         Float @default(0)
+    total       Float
+
+    // Order status
+    status        OrderStatus   @default(PENDING)
+    paymentStatus PaymentStatus @default(PENDING)
+
+    // Guest user info (for orders without account)
+    guestName    String?
+    guestPhone   String?
+    guestAddress String?
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+    @@map("orders")
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    PREPARING
+    OUT_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+    REFUNDED
+}

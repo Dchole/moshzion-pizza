@@ -101,3 +101,39 @@ export async function validateSignUpData(
     };
   }
 }
+
+/**
+ * Register a new user
+ */
+export async function registerUser(data: SignUpInput): Promise<ActionResult> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/auth/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: result.error || "Registration failed",
+        errors: result.errors
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Registration error:", error);
+    return {
+      success: false,
+      error: "An error occurred during registration"
+    };
+  }
+}

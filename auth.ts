@@ -5,6 +5,8 @@ import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
 import { signInSchema } from "@/lib/schemas/auth";
 import { z } from "zod";
+import prisma from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 interface UserData {
   id: string;
@@ -21,29 +23,41 @@ async function validateUser(
     // Validate input format
     signInSchema.parse({ phone, password });
 
-    // TODO: Replace with actual database query and bcrypt validation
-    // import bcrypt from 'bcryptjs';
-    // const user = await db.user.findUnique({ where: { phone } });
-    // if (!user) return null;
-    // const isValid = await bcrypt.compare(password, user.password);
-    // if (!isValid) return null;
-    // return user;
+    // Query database for user
+    const user = await prisma.user.findUnique({
+      where: { phone },
+      select: {
+        id: true,
+        phone: true,
+        password: true,
+        firstName: true,
+        lastName: true
+      }
+    });
 
-    // Mock implementation for development
-    if (phone && password) {
-      return {
-        id: "1",
-        phone,
-        firstName: "John",
-        lastName: "Doe"
-      };
+    if (!user) {
+      return null;
     }
-    return null;
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return null;
+    }
+
+    // Return user without password
+    return {
+      id: user.id,
+      phone: user.phone,
+      firstName: user.firstName,
+      lastName: user.lastName
+    };
   } catch (error) {
     // Invalid input format
     if (error instanceof z.ZodError) {
       return null;
     }
+    console.error("Validation error:", error);
     throw error;
   }
 }
