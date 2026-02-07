@@ -1,13 +1,13 @@
-import { config } from "dotenv";
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { config } from "dotenv";
+import pg from "pg";
 
-// Load .env.local explicitly
 config({ path: ".env.local" });
 
 const prismaClientSingleton = () => {
-  const connectionString = process.env.DATABASE_URL;
-  const adapter = new PrismaPg({ connectionString });
+  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
 
