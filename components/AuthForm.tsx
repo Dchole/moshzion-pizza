@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import GoogleIcon from "@mui/icons-material/Google";
-import AppleIcon from "@mui/icons-material/Apple";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { Input } from "@/components/ui";
 import { Button } from "@/components/ui";
-import { useAuth } from "@/contexts/AuthContext";
+import {
+  authenticateWithCredentials,
+  authenticateWithProvider
+} from "@/lib/auth-actions";
+import { signInSchema, signUpSchema } from "@/lib/schemas/auth";
+import { z } from "zod";
 
 type AuthMode = "signin" | "signup";
 
@@ -17,99 +22,118 @@ interface AuthFormProps {
   defaultMode?: AuthMode;
 }
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  password: string;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  password?: string;
+  general?: string;
+}
+
 export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
+  const router = useRouter();
   const [mode, setMode] = useState<AuthMode>(defaultMode);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
-  const { signIn, signUp } = useAuth();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     phone: "",
     password: ""
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: "" }));
+    if (errors[name as keyof FormErrors]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
 
-  const handleSocialLogin = async (
-    provider: "google" | "apple" | "facebook"
-  ) => {
-    setIsLoading(true);
-    try {
-      // TODO: Implement social login
-      console.log(`Logging in with ${provider}`);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onSuccess?.();
-    } catch (error) {
-      console.error(`${provider} login failed:`, error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSocialLogin = (provider: "google" | "facebook") => {
+    startTransition(async () => {
+      try {
+        await authenticateWithProvider(provider);
+        onSuccess?.();
+      } catch {
+        setErrors({ general: "Social login failed. Please try again." });
+      }
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
 
     try {
-      // Basic validation
-      const newErrors: Record<string, string> = {};
-
       if (mode === "signup") {
-        if (!formData.firstName.trim())
-          newErrors.firstName = "First name is required";
-        if (!formData.lastName.trim())
-          newErrors.lastName = "Last name is required";
-      }
-
-      if (!formData.phone.trim()) {
-        newErrors.phone = "Phone number is required";
-      } else if (
-        !/^\+?[1-9]\d{1,14}$/.test(formData.phone.replace(/[\s()-]/g, ""))
-      ) {
-        newErrors.phone = "Invalid phone number";
-      }
-
-      if (!formData.password.trim()) {
-        newErrors.password = "Password is required";
-      } else if (mode === "signup" && formData.password.length < 8) {
-        newErrors.password = "Password must be at least 8 characters";
-      }
-
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        setIsLoading(false);
-        return;
-      }
-
-      // Call auth methods from context
-      if (mode === "signin") {
-        await signIn(formData.phone, formData.password);
+        signUpSchema.parse(formData);
       } else {
-        await signUp({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+        signInSchema.parse({
           phone: formData.phone,
           password: formData.password
         });
       }
-
-      onSuccess?.();
+      return true;
     } catch (error) {
-      console.error(`${mode} failed:`, error);
-      setErrors({ general: "An error occurred. Please try again." });
-    } finally {
-      setIsLoading(false);
+      if (error instanceof z.ZodError) {
+        error.issues.forEach(err => {
+          const field = err.path[0] as keyof FormErrors;
+          if (field) {
+            newErrors[field] = err.message;
+          }
+        });
+      }
+      setErrors(newErrors);
+      return false;
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    startTransition(async () => {
+      setErrors({});
+
+      if (mode === "signin") {
+        const result = await authenticateWithCredentials({
+          phone: formData.phone,
+          password: formData.password
+        });
+
+        if (!result.success) {
+          // Handle field-specific errors from server
+          if (result.errors) {
+            const newErrors: FormErrors = {};
+            Object.entries(result.errors).forEach(([field, messages]) => {
+              newErrors[field as keyof FormErrors] = messages[0];
+            });
+            setErrors(newErrors);
+          } else {
+            setErrors({ general: result.error });
+          }
+          return;
+        }
+
+        router.push("/account");
+        router.refresh();
+        onSuccess?.();
+      } else {
+        setErrors({
+          general:
+            "Sign up functionality needs to be connected to your database. Please implement the user registration API."
+        });
+      }
+    });
   };
 
   return (
@@ -124,8 +148,8 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
         </h2>
         <p className="text-gray-600 font-open-sans">
           {mode === "signin"
-            ? "Sign in to access your account"
-            : "Join us to start ordering delicious pizza"}
+            ? "Sign in to view your saved information"
+            : "Save your info for faster ordering"}
         </p>
       </div>
 
@@ -133,7 +157,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
       <div className="space-y-3 mb-6">
         <button
           onClick={() => handleSocialLogin("google")}
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 font-open-sans"
           aria-label="Continue with Google"
         >
@@ -142,18 +166,8 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
         </button>
 
         <button
-          onClick={() => handleSocialLogin("apple")}
-          disabled={isLoading}
-          className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 font-open-sans"
-          aria-label="Continue with Apple"
-        >
-          <AppleIcon />
-          Continue with Apple
-        </button>
-
-        <button
           onClick={() => handleSocialLogin("facebook")}
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full flex items-center justify-center gap-3 rounded-lg border-2 border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50 font-open-sans"
           aria-label="Continue with Facebook"
         >
@@ -185,7 +199,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
               value={formData.firstName}
               onChange={handleInputChange}
               error={errors.firstName}
-              disabled={isLoading}
+              disabled={isPending}
               required
               autoComplete="given-name"
             />
@@ -196,7 +210,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
               value={formData.lastName}
               onChange={handleInputChange}
               error={errors.lastName}
-              disabled={isLoading}
+              disabled={isPending}
               required
               autoComplete="family-name"
             />
@@ -210,8 +224,8 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
           value={formData.phone}
           onChange={handleInputChange}
           error={errors.phone}
-          disabled={isLoading}
-          placeholder="+1 (555) 123-4567"
+          disabled={isPending}
+          placeholder="0234567890"
           required
           autoComplete="tel"
         />
@@ -223,7 +237,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
           value={formData.password}
           onChange={handleInputChange}
           error={errors.password}
-          disabled={isLoading}
+          disabled={isPending}
           required
           autoComplete={mode === "signin" ? "current-password" : "new-password"}
           helperText={mode === "signup" ? "At least 8 characters" : undefined}
@@ -255,9 +269,9 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
           variant="primary"
           color="beige"
           className="w-full"
-          disabled={isLoading}
+          disabled={isPending}
         >
-          {isLoading
+          {isPending
             ? "Please wait..."
             : mode === "signin"
               ? "Sign In"
@@ -273,7 +287,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
             : "Already have an account? "}
           <button
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            disabled={isLoading}
+            disabled={isPending}
             className="font-medium text-brown-dark hover:text-brown-medium transition-colors disabled:opacity-50"
           >
             {mode === "signin" ? "Sign up" : "Sign in"}
@@ -287,7 +301,7 @@ export function AuthForm({ onSuccess, defaultMode = "signin" }: AuthFormProps) {
             onClick={() => {
               /* TODO: Implement forgot password */
             }}
-            disabled={isLoading}
+            disabled={isPending}
             className="text-sm text-gray-600 hover:text-brown-dark transition-colors font-open-sans disabled:opacity-50"
           >
             Forgot your password?
