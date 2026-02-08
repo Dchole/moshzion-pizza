@@ -12,10 +12,20 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import EditIcon from "@mui/icons-material/Edit";
 import { Button, IconButton } from "@/components/ui";
 import { signOutUser } from "@/lib/auth-actions";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PhoneVerification } from "./account/PhoneVerification";
 import { ProfileEditableField } from "./account/ProfileEditableField";
+import { AddressFormModal } from "./AddressFormModal";
+import { PaymentMethodFormModal } from "./PaymentMethodFormModal";
+import {
+  getUserAddresses,
+  deleteAddress,
+} from "@/lib/address-actions";
+import {
+  getUserPaymentMethods,
+  deletePaymentMethod,
+} from "@/lib/payment-actions";
 
 interface User {
   id: string;
@@ -28,6 +38,27 @@ interface User {
   updatedAt?: Date;
 }
 
+interface Address {
+  id: string;
+  label: string;
+  street: string;
+  city: string;
+  state?: string | null;
+  zipCode?: string | null;
+  country: string;
+  isDefault: boolean;
+}
+
+interface PaymentMethodType {
+  id: string;
+  type: string;
+  provider: string;
+  last4: string;
+  fullPhone?: string | null;
+  name?: string | null;
+  isDefault: boolean;
+}
+
 interface AccountContentProps {
   user: User | null;
 }
@@ -38,6 +69,43 @@ export function AccountContent({ user }: AccountContentProps) {
   const [editingField, setEditingField] = useState<
     "firstName" | "lastName" | "phone" | null
   >(null);
+
+  // Modal states
+  const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedPayment, setSelectedPayment] =
+    useState<PaymentMethodType | null>(null);
+
+  // Data states
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodType[]>([]);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
+  const [isLoadingPayments, setIsLoadingPayments] = useState(false);
+
+  const isAuthenticated = !!user;
+
+  // Fetch addresses
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsLoadingAddresses(true);
+      getUserAddresses().then((addresses) => {
+        setSavedAddresses(addresses);
+        setIsLoadingAddresses(false);
+      });
+    }
+  }, [isAuthenticated]);
+
+  // Fetch payment methods
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsLoadingPayments(true);
+      getUserPaymentMethods().then((methods) => {
+        setPaymentMethods(methods);
+        setIsLoadingPayments(false);
+      });
+    }
+  }, [isAuthenticated]);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -60,13 +128,69 @@ export function AccountContent({ user }: AccountContentProps) {
     }, 500);
   };
 
-  const isAuthenticated = !!user;
+  // Address handlers
+  const handleAddAddress = () => {
+    setSelectedAddress(null);
+    setIsAddressModalOpen(true);
+  };
 
-  // Mock data (will be replaced with real data from DB)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const savedAddresses: any[] = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const paymentMethods: any[] = [];
+  const handleEditAddress = (address: Address) => {
+    setSelectedAddress(address);
+    setIsAddressModalOpen(true);
+  };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    if (
+      confirm(
+        "Are you sure you want to delete this address? This action cannot be undone."
+      )
+    ) {
+      const result = await deleteAddress(addressId);
+      if (result.success) {
+        setSavedAddresses((prev) => prev.filter((a) => a.id !== addressId));
+      } else {
+        alert(result.error || "Failed to delete address");
+      }
+    }
+  };
+
+  const handleAddressFormSuccess = async () => {
+    // Refresh addresses list
+    const addresses = await getUserAddresses();
+    setSavedAddresses(addresses);
+  };
+
+  // Payment method handlers
+  const handleAddPayment = () => {
+    setSelectedPayment(null);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleEditPayment = (payment: PaymentMethodType) => {
+    setSelectedPayment(payment);
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleDeletePayment = async (paymentId: string) => {
+    if (
+      confirm(
+        "Are you sure you want to remove this payment method? This action cannot be undone."
+      )
+    ) {
+      const result = await deletePaymentMethod(paymentId);
+      if (result.success) {
+        setPaymentMethods((prev) => prev.filter((p) => p.id !== paymentId));
+      } else {
+        alert(result.error || "Failed to remove payment method");
+      }
+    }
+  };
+
+  const handlePaymentFormSuccess = async () => {
+    // Refresh payment methods list
+    const methods = await getUserPaymentMethods();
+    setPaymentMethods(methods);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -228,12 +352,17 @@ export function AccountContent({ user }: AccountContentProps) {
                 icon={<AddIcon sx={{ fontSize: 18 }} />}
                 iconPosition="left"
                 disabled={!isAuthenticated}
+                onClick={handleAddAddress}
               >
                 Add Address
               </Button>
             </div>
 
-            {savedAddresses.length === 0 ? (
+            {isLoadingAddresses ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600 font-open-sans">Loading addresses...</p>
+              </div>
+            ) : savedAddresses.length === 0 ? (
               <div className="text-center py-8">
                 <LocationOnIcon
                   className="mx-auto text-gray-300 mb-3"
@@ -247,7 +376,7 @@ export function AccountContent({ user }: AccountContentProps) {
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {savedAddresses.map(address => (
+                {savedAddresses.map((address) => (
                   <div
                     key={address.id}
                     className="rounded-lg border border-gray-200 p-4 relative"
@@ -265,7 +394,9 @@ export function AccountContent({ user }: AccountContentProps) {
                     <address className="not-italic text-sm text-gray-600 font-open-sans">
                       {address.street}
                       <br />
-                      {address.city}, {address.state} {address.zip}
+                      {address.city}
+                      {address.state && `, ${address.state}`}{" "}
+                      {address.zipCode}
                     </address>
 
                     <div className="mt-4 flex gap-2">
@@ -277,14 +408,15 @@ export function AccountContent({ user }: AccountContentProps) {
                         icon={<EditIcon fontSize="small" />}
                         iconPosition="left"
                         aria-label={`Edit ${address.label} address`}
+                        onClick={() => handleEditAddress(address)}
                       >
                         Edit
                       </Button>
                       <IconButton
                         className="border border-red-300 text-red-600 hover:bg-red-50"
                         aria-label={`Delete ${address.label} address`}
-                        disabled={address.isDefault}
                         icon={<DeleteOutlineIcon fontSize="small" />}
+                        onClick={() => handleDeleteAddress(address.id)}
                       />
                     </div>
                   </div>
@@ -313,12 +445,19 @@ export function AccountContent({ user }: AccountContentProps) {
                 icon={<AddIcon sx={{ fontSize: 18 }} />}
                 iconPosition="left"
                 disabled={!isAuthenticated}
+                onClick={handleAddPayment}
               >
-                Add Card
+                Add Payment Method
               </Button>
             </div>
 
-            {paymentMethods.length === 0 ? (
+            {isLoadingPayments ? (
+              <div className="text-center py-8">
+                <p className="text-gray-600 font-open-sans">
+                  Loading payment methods...
+                </p>
+              </div>
+            ) : paymentMethods.length === 0 ? (
               <div className="text-center py-8">
                 <PaymentIcon
                   className="mx-auto text-gray-300 mb-3"
@@ -332,7 +471,7 @@ export function AccountContent({ user }: AccountContentProps) {
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {paymentMethods.map(method => (
+                {paymentMethods.map((method) => (
                   <div
                     key={method.id}
                     className="rounded-lg border border-gray-200 p-4 relative"
@@ -349,10 +488,13 @@ export function AccountContent({ user }: AccountContentProps) {
                       </div>
                       <div>
                         <h3 className="font-display text-lg text-brown-dark">
-                          {method.type} •••• {method.last4}
+                          {method.type === "Mobile Money" && method.fullPhone
+                            ? method.fullPhone
+                            : `${method.type} •••• ${method.last4}`}
                         </h3>
                         <p className="text-sm text-gray-600 font-open-sans">
-                          Expires {method.expiryMonth}/{method.expiryYear}
+                          {method.provider}
+                          {method.name && ` • ${method.name}`}
                         </p>
                       </div>
                     </div>
@@ -366,14 +508,15 @@ export function AccountContent({ user }: AccountContentProps) {
                         icon={<EditIcon fontSize="small" />}
                         iconPosition="left"
                         aria-label={`Edit ${method.type} ending in ${method.last4}`}
+                        onClick={() => handleEditPayment(method)}
                       >
                         Edit
                       </Button>
                       <IconButton
                         className="border border-red-300 text-red-600 hover:bg-red-50"
                         aria-label={`Remove ${method.type} ending in ${method.last4}`}
-                        disabled={method.isDefault}
                         icon={<DeleteOutlineIcon fontSize="small" />}
+                        onClick={() => handleDeletePayment(method.id)}
                       />
                     </div>
                   </div>
@@ -383,6 +526,21 @@ export function AccountContent({ user }: AccountContentProps) {
           </section>
         </div>
       </div>
+
+      {/* Modals */}
+      <AddressFormModal
+        isOpen={isAddressModalOpen}
+        onClose={() => setIsAddressModalOpen(false)}
+        address={selectedAddress}
+        onSuccess={handleAddressFormSuccess}
+      />
+
+      <PaymentMethodFormModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        paymentMethod={selectedPayment}
+        onSuccess={handlePaymentFormSuccess}
+      />
     </div>
   );
 }
