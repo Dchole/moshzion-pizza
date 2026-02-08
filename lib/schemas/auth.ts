@@ -38,7 +38,37 @@ export const verifyOTPSchema = z.object({
 });
 
 /**
+ * Update profile schema - update user information
+ */
+export const updateProfileSchema = z
+  .object({
+    firstName: z
+      .string()
+      .min(1, "First name is required")
+      .max(50, "First name must be less than 50 characters")
+      .optional(),
+    lastName: z
+      .string()
+      .min(1, "Last name is required")
+      .max(50, "Last name must be less than 50 characters")
+      .optional()
+  })
+  .refine(data => data.firstName !== undefined || data.lastName !== undefined, {
+    message: "At least one field must be provided"
+  });
+
+/**
+ * Update phone schema - verify new phone with OTP
+ */
+export const updatePhoneSchema = z.object({
+  newPhone: phoneSchema,
+  code: otpSchema
+});
+
+/**
  * Type inference for TypeScript
  */
 export type SendOTPInput = z.infer<typeof sendOTPSchema>;
 export type VerifyOTPInput = z.infer<typeof verifyOTPSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type UpdatePhoneInput = z.infer<typeof updatePhoneSchema>;

@@ -4,25 +4,28 @@ import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PaymentIcon from "@mui/icons-material/Payment";
 import ReceiptIcon from "@mui/icons-material/Receipt";
-import SettingsIcon from "@mui/icons-material/Settings";
-import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import LogoutIcon from "@mui/icons-material/Logout";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { Button } from "@/components/ui";
-import { Input } from "@/components/ui";
-import { signOutUser, sendOTP, verifyOTP } from "@/lib/auth-actions";
-import { useState, useTransition, useEffect } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import { Button, IconButton } from "@/components/ui";
+import { signOutUser } from "@/lib/auth-actions";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { PhoneVerification } from "./account/PhoneVerification";
+import { ProfileEditableField } from "./account/ProfileEditableField";
 
 interface User {
   id: string;
   phone: string;
   firstName?: string | null;
   lastName?: string | null;
+  isPhoneVerified?: boolean | null;
+  phoneVerifiedAt?: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface AccountContentProps {
@@ -32,25 +35,9 @@ interface AccountContentProps {
 export function AccountContent({ user }: AccountContentProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isEditingPhone, setIsEditingPhone] = useState(!user);
-  const [showOTPInput, setShowOTPInput] = useState(false);
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [otpCode, setOtpCode] = useState("");
-  const [errors, setErrors] = useState<{
-    phone?: string;
-    code?: string;
-    general?: string;
-  }>({});
-  const [successMessage, setSuccessMessage] = useState("");
-  const [resendTimer, setResendTimer] = useState(0);
-
-  // Countdown timer for resend OTP
-  useEffect(() => {
-    if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [resendTimer]);
+  const [editingField, setEditingField] = useState<
+    "firstName" | "lastName" | "phone" | null
+  >(null);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -58,81 +45,27 @@ export function AccountContent({ user }: AccountContentProps) {
     });
   };
 
-  const handlePhoneSave = () => {
-    startTransition(async () => {
-      setErrors({});
-      setSuccessMessage("");
-
-      const result = await sendOTP({ phone });
-
-      if (!result.success) {
-        if (result.errors) {
-          const newErrors: typeof errors = {};
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            newErrors[field as keyof typeof errors] = messages[0];
-          });
-          setErrors(newErrors);
-        } else {
-          setErrors({ general: result.error });
-        }
-        return;
-      }
-
-      setShowOTPInput(true);
-      setResendTimer(60);
-      setSuccessMessage("Verification code sent to your phone!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-    });
+  const handleEditField = (field: "firstName" | "lastName" | "phone") => {
+    setEditingField(field);
   };
 
-  const handleOTPVerify = () => {
-    startTransition(async () => {
-      setErrors({});
-      setSuccessMessage("");
-
-      const result = await verifyOTP({ phone, code: otpCode });
-
-      if (!result.success) {
-        if (result.errors) {
-          const newErrors: typeof errors = {};
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            newErrors[field as keyof typeof errors] = messages[0];
-          });
-          setErrors(newErrors);
-        } else {
-          setErrors({ general: result.error });
-        }
-        return;
-      }
-
-      setSuccessMessage(
-        result.isNewAccount ? "Account created!" : "Phone verified!"
-      );
-
-      // Refresh to show authenticated state
-      setTimeout(() => {
-        router.refresh();
-      }, 500);
-    });
+  const handleCancelEdit = () => {
+    setEditingField(null);
   };
 
-  const handleResendOTP = () => {
-    if (resendTimer > 0) return;
-    handlePhoneSave();
-  };
-
-  const userData = {
-    name:
-      user?.firstName && user?.lastName
-        ? `${user.firstName} ${user.lastName}`
-        : "Not provided",
-    phone: user?.phone || ""
+  const handleSuccess = () => {
+    setEditingField(null);
+    setTimeout(() => {
+      router.refresh();
+    }, 500);
   };
 
   const isAuthenticated = !!user;
 
   // Mock data (will be replaced with real data from DB)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const savedAddresses: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const paymentMethods: any[] = [];
 
   return (
@@ -145,189 +78,72 @@ export function AccountContent({ user }: AccountContentProps) {
           <p className="mt-2 text-gray-600 font-open-sans">
             {isAuthenticated
               ? "Manage your profile, addresses, and payment methods"
-              : "Enter your phone number to save your account information"}
+              : "Sign in or create an account with your phone number"}
           </p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Profile Information */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
             aria-labelledby="profile-heading"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <PersonIcon className="text-brown-dark" />
-                <h2
-                  id="profile-heading"
-                  className="font-display text-2xl text-brown-dark"
-                >
-                  Profile Information
-                </h2>
-              </div>
-              {isAuthenticated && (
-                <button
-                  className="rounded-lg p-2 text-brown-dark hover:bg-gray-100 transition-colors"
-                  aria-label="Edit profile"
-                >
-                  <EditIcon fontSize="small" />
-                </button>
-              )}
+            <div className="mb-4 flex items-center gap-2">
+              <PersonIcon className="text-brown-dark" />
+              <h2
+                id="profile-heading"
+                className="font-display text-2xl text-brown-dark"
+              >
+                Profile Information
+              </h2>
             </div>
 
             <div className="space-y-4">
-              {/* Phone Number Field */}
-              <div>
-                <Input
-                  label="Phone Number"
-                  name="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={e => {
-                    setPhone(e.target.value);
-                    if (errors.phone) {
-                      setErrors(prev => ({ ...prev, phone: undefined }));
-                    }
-                  }}
-                  error={errors.phone}
-                  disabled={isAuthenticated || isPending}
-                  placeholder="0234567890"
-                  required
-                  helperText={
-                    !isAuthenticated
-                      ? "10 digits starting with 02, 03, or 05"
-                      : undefined
-                  }
-                  endIcon={
-                    isAuthenticated ? (
-                      <CheckCircleIcon
-                        className="text-green-600"
-                        fontSize="small"
-                      />
-                    ) : undefined
-                  }
+              {!isAuthenticated ? (
+                <PhoneVerification
+                  isPending={isPending}
+                  startTransition={startTransition}
                 />
-              </div>
-
-              {/* OTP Input - Inline with reveal animation */}
-              {showOTPInput && !isAuthenticated && (
-                <div className="animate-in slide-in-from-top-2 duration-300">
-                  <Input
-                    label="Verification Code"
-                    name="code"
-                    type="text"
-                    inputMode="numeric"
-                    value={otpCode}
-                    onChange={e => {
-                      const value = e.target.value
-                        .replace(/\D/g, "")
-                        .slice(0, 6);
-                      setOtpCode(value);
-                      if (errors.code) {
-                        setErrors(prev => ({ ...prev, code: undefined }));
-                      }
-                    }}
-                    error={errors.code}
-                    disabled={isPending}
-                    placeholder="000000"
-                    required
-                    helperText="Enter the 6-digit code from SMS"
+              ) : (
+                <>
+                  <ProfileEditableField
+                    label="Phone Number"
+                    field="phone"
+                    value={user?.phone || ""}
+                    isEditing={editingField === "phone"}
+                    isPending={isPending}
+                    onEdit={() => handleEditField("phone")}
+                    onCancel={handleCancelEdit}
+                    onSuccess={handleSuccess}
+                    startTransition={startTransition}
                   />
 
-                  <div className="mt-2 flex items-center justify-between text-sm">
-                    <button
-                      type="button"
-                      onClick={handleResendOTP}
-                      disabled={isPending || resendTimer > 0}
-                      className="text-brown-dark hover:text-brown-medium font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-open-sans"
-                    >
-                      {resendTimer > 0
-                        ? `Resend in ${resendTimer}s`
-                        : "Resend code"}
-                    </button>
+                  <ProfileEditableField
+                    label="First Name"
+                    field="firstName"
+                    value={user?.firstName || ""}
+                    isEditing={editingField === "firstName"}
+                    isPending={isPending}
+                    onEdit={() => handleEditField("firstName")}
+                    onCancel={handleCancelEdit}
+                    onSuccess={handleSuccess}
+                    startTransition={startTransition}
+                  />
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowOTPInput(false);
-                        setOtpCode("");
-                        setErrors({});
-                      }}
-                      disabled={isPending}
-                      className="text-gray-600 hover:text-brown-dark transition-colors disabled:opacity-50 font-open-sans"
-                    >
-                      Change phone
-                    </button>
-                  </div>
-                </div>
+                  <ProfileEditableField
+                    label="Last Name"
+                    field="lastName"
+                    value={user?.lastName || ""}
+                    isEditing={editingField === "lastName"}
+                    isPending={isPending}
+                    onEdit={() => handleEditField("lastName")}
+                    onCancel={handleCancelEdit}
+                    onSuccess={handleSuccess}
+                    startTransition={startTransition}
+                  />
+                </>
               )}
-
-              {/* Error/Success Messages */}
-              {errors.general && (
-                <p className="text-sm text-red-600 font-open-sans" role="alert">
-                  {errors.general}
-                </p>
-              )}
-
-              {successMessage && (
-                <p
-                  className="text-sm text-green-600 font-open-sans flex items-center gap-2"
-                  role="status"
-                >
-                  <CheckCircleIcon fontSize="small" />
-                  {successMessage}
-                </p>
-              )}
-
-              {/* Save/Verify Button */}
-              {!isAuthenticated && (
-                <Button
-                  variant="primary"
-                  color="beige"
-                  className="w-full"
-                  disabled={
-                    isPending ||
-                    (showOTPInput && otpCode.length !== 6) ||
-                    (!showOTPInput && !phone)
-                  }
-                  onClick={showOTPInput ? handleOTPVerify : handlePhoneSave}
-                >
-                  {isPending
-                    ? showOTPInput
-                      ? "Verifying..."
-                      : "Sending code..."
-                    : showOTPInput
-                      ? "Verify & Save"
-                      : "Verify and save phone"}
-                </Button>
-              )}
-
-              {/* Name Fields */}
-              <div>
-                <Input
-                  label="First Name"
-                  name="firstName"
-                  type="text"
-                  value={user?.firstName || ""}
-                  disabled={!isAuthenticated}
-                  placeholder="Enter first name"
-                />
-              </div>
-
-              <div>
-                <Input
-                  label="Last Name"
-                  name="lastName"
-                  type="text"
-                  value={user?.lastName || ""}
-                  disabled={!isAuthenticated}
-                  placeholder="Enter last name"
-                />
-              </div>
             </div>
           </section>
-
-          {/* Quick Actions */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
             aria-labelledby="quick-actions-heading"
@@ -391,7 +207,6 @@ export function AccountContent({ user }: AccountContentProps) {
             </div>
           </section>
 
-          {/* Saved Addresses */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
             aria-labelledby="addresses-heading"
@@ -454,27 +269,29 @@ export function AccountContent({ user }: AccountContentProps) {
                     </address>
 
                     <div className="mt-4 flex gap-2">
-                      <button
-                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
+                      <Button
+                        variant="outline"
+                        color="brown"
+                        size="sm"
+                        className="flex-1"
+                        icon={<EditIcon fontSize="small" />}
+                        iconPosition="left"
                         aria-label={`Edit ${address.label} address`}
                       >
                         Edit
-                      </button>
-                      <button
-                        className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                      </Button>
+                      <IconButton
+                        className="border border-red-300 text-red-600 hover:bg-red-50"
                         aria-label={`Delete ${address.label} address`}
                         disabled={address.isDefault}
-                      >
-                        <DeleteOutlineIcon fontSize="small" />
-                      </button>
+                        icon={<DeleteOutlineIcon fontSize="small" />}
+                      />
                     </div>
                   </div>
                 ))}
               </div>
             )}
           </section>
-
-          {/* Payment Methods */}
           <section
             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
             aria-labelledby="payment-heading"
@@ -541,19 +358,23 @@ export function AccountContent({ user }: AccountContentProps) {
                     </div>
 
                     <div className="flex gap-2">
-                      <button
-                        className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors font-open-sans"
+                      <Button
+                        variant="outline"
+                        color="brown"
+                        size="sm"
+                        className="flex-1"
+                        icon={<EditIcon fontSize="small" />}
+                        iconPosition="left"
                         aria-label={`Edit ${method.type} ending in ${method.last4}`}
                       >
                         Edit
-                      </button>
-                      <button
-                        className="rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                      </Button>
+                      <IconButton
+                        className="border border-red-300 text-red-600 hover:bg-red-50"
                         aria-label={`Remove ${method.type} ending in ${method.last4}`}
                         disabled={method.isDefault}
-                      >
-                        <DeleteOutlineIcon fontSize="small" />
-                      </button>
+                        icon={<DeleteOutlineIcon fontSize="small" />}
+                      />
                     </div>
                   </div>
                 ))}

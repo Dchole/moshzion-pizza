@@ -75,13 +75,7 @@ export const authConfig: NextAuthConfig = {
 
         return {
           id: user.id,
-          phone: user.phone,
-          name:
-            user.firstName && user.lastName
-              ? `${user.firstName} ${user.lastName}`
-              : user.phone,
-          firstName: user.firstName,
-          lastName: user.lastName
+          phone: user.phone
         };
       }
     })
@@ -94,8 +88,6 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         token.id = user.id;
         token.phone = user.phone;
-        token.firstName = user.firstName;
-        token.lastName = user.lastName;
       }
       return token;
     },
@@ -103,8 +95,6 @@ export const authConfig: NextAuthConfig = {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.phone = token.phone as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
       }
       return session;
     }
