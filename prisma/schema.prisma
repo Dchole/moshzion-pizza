@@ -28,8 +28,8 @@ model User {
     updatedAt DateTime @updatedAt
 
     // Relations
-    orders    Order[]
-    addresses Address[]
+    orders         Order[]
+    addresses      Address[]
     paymentMethods PaymentMethod[]
 
     @@map("users")

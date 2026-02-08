@@ -6,7 +6,9 @@ import pg from "pg";
 config({ path: ".env.local" });
 
 const prismaClientSingleton = () => {
-  const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+  // Use Vercel's POSTGRES_URL (direct connection), fallback to DATABASE_URL for local dev
+  const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
+  const pool = new pg.Pool({ connectionString });
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };
