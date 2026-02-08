@@ -1,0 +1,121 @@
+// Prisma schema for pizza ordering app
+// Database: PostgreSQL
+
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id        String  @id @default(cuid())
+    phone     String  @unique
+    firstName String?
+    lastName  String?
+
+    // Phone verification with OTP
+    isPhoneVerified Boolean   @default(false)
+    phoneVerifiedAt DateTime?
+    otpCode         String?
+    otpExpiresAt    DateTime?
+    otpAttempts     Int       @default(0)
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    orders    Order[]
+    addresses Address[]
+    paymentMethods PaymentMethod[]
+
+    @@map("users")
+}
+
+model Address {
+    id        String  @id @default(cuid())
+    userId    String
+    label     String // e.g., "Home", "Work"
+    street    String
+    city      String
+    state     String?
+    zipCode   String?
+    country   String  @default("Local")
+    isDefault Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    orders Order[]
+
+    @@map("addresses")
+}
+
+model PaymentMethod {
+    id        String  @id @default(cuid())
+    userId    String
+    type      String // "Mobile Money", "Card"
+    provider  String // "MTN", "Vodafone", "AirtelTigo" for mobile money, or card network
+    last4     String // Last 4 digits of card (for display)
+    fullPhone String? // Full phone number for Mobile Money
+    name      String? // Cardholder name or Account name
+    isDefault Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("payment_methods")
+}
+
+model Order {
+    id        String  @id @default(cuid())
+    userId    String? // Nullable for guest orders
+    addressId String?
+
+    // Order details
+    items       Json // Store cart items as JSON
+    subtotal    Float
+    deliveryFee Float @default(0)
+    tax         Float @default(0)
+    total       Float
+
+    // Order status
+    status        OrderStatus   @default(PENDING)
+    paymentStatus PaymentStatus @default(PENDING)
+
+    // Guest user info (for orders without account)
+    guestName    String?
+    guestPhone   String?
+    guestAddress String?
+
+    // Timestamps
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+    address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+    @@map("orders")
+}
+
+enum OrderStatus {
+    PENDING
+    CONFIRMED
+    PREPARING
+    OUT_FOR_DELIVERY
+    DELIVERED
+    CANCELLED
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    FAILED
+    REFUNDED
+}
