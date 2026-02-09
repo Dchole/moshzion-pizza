@@ -196,32 +196,8 @@ export default function AboutPage() {
       </section>
 
       <section id="cta" className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-384">
-          <div className="relative rounded-2xl p-12 text-center text-white overflow-hidden">
-            <Grainient
-              color1="#7e1e17"
-              color2="#332625"
-              color3="#914922"
-              timeSpeed={0.25}
-              colorBalance={0}
-              warpStrength={1}
-              warpFrequency={5}
-              warpSpeed={2}
-              warpAmplitude={50}
-              blendAngle={0}
-              blendSoftness={0.05}
-              rotationAmount={500}
-              noiseScale={0.75}
-              grainAmount={0.05}
-              grainScale={1}
-              grainAnimated={false}
-              contrast={1.5}
-              gamma={1}
-              saturation={1}
-              centerX={0}
-              centerY={0}
-              zoom={0.9}
-            />
+        <div className="mx-auto max-w-6xl">
+          <div className="relative rounded-2xl p-12 text-center text-white overflow-hidden bg-brown-dark">
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-display mb-6">
                 Taste the Difference
