@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import TimelineSection from "@/components/TimelineSection";
-import Grainient from "@/components/Grainient";
 import { Button } from "@/components/ui";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 
