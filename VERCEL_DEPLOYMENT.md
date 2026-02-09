@@ -84,10 +84,11 @@ NEXTAUTH_URL=https://your-domain.vercel.app
 #### Optional (for full functionality):
 
 ```env
-# AWS SNS (for SMS OTP in production)
-AWS_ACCESS_KEY_ID=your-key
-AWS_SECRET_ACCESS_KEY=your-secret
-AWS_REGION=us-east-1
+# Hubtel SMS (for OTP in production - Ghana-based, cheapest option)
+# Sign up at https://hubtel.com
+HUBTEL_CLIENT_ID=your-client-id
+HUBTEL_CLIENT_SECRET=your-client-secret
+HUBTEL_SENDER_ID=Moshzion
 
 # OAuth (if using Google/Facebook login)
 GOOGLE_CLIENT_ID=your-id
@@ -155,7 +156,7 @@ DATABASE_URL="postgres://user:pass@host/db?sslmode=verify-full"
 **Solution**:
 
 - In development: OTPs are logged to console (check Vercel logs)
-- In production: Set up AWS SNS or another SMS provider
+- In production: Set up Hubtel SMS (Ghana-based, ~$0.003-0.006 per SMS)
 
 ---
 

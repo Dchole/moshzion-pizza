@@ -2,12 +2,39 @@
  * SMS Verification Utility
  *
  * Development: Logs OTP to console
- * Production: Uses AWS SNS (100 free SMS/month)
+ * Production: Uses Hubtel SMS (Ghana-based, ~$0.003-0.006 per SMS)
+ * 
+ * Setup:
+ * 1. Sign up at https://hubtel.com
+ * 2. Get ClientId and ClientSecret from dashboard
+ * 3. Add to Vercel: HUBTEL_CLIENT_ID, HUBTEL_CLIENT_SECRET, HUBTEL_SENDER_ID
  */
 
 interface SendSMSOptions {
   phone: string;
   message: string;
+}
+
+/**
+ * Format Ghana phone number to international format (233XXXXXXXXX)
+ * Accepts: 0244123456 or 244123456 or 233244123456
+ */
+function formatGhanaPhone(phone: string): string {
+  // Remove any spaces or special characters
+  const cleaned = phone.replace(/\D/g, "");
+  
+  // If starts with 0, replace with 233
+  if (cleaned.startsWith("0")) {
+    return "233" + cleaned.slice(1);
+  }
+  
+  // If already has 233, return as is
+  if (cleaned.startsWith("233")) {
+    return cleaned;
+  }
+  
+  // Otherwise, add 233
+  return "233" + cleaned;
 }
 
 /**
@@ -18,7 +45,7 @@ export function generateOTP(): string {
 }
 
 /**
- * Send SMS (Development mode - logs to console)
+ * Send SMS via Hubtel (Production) or console (Development)
  */
 export async function sendSMS({ phone, message }: SendSMSOptions): Promise<{
   success: boolean;
@@ -34,23 +61,54 @@ export async function sendSMS({ phone, message }: SendSMSOptions): Promise<{
       return { success: true };
     }
 
-    // Production: Use AWS SNS
-    if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
-      throw new Error("AWS credentials not configured");
+    // Production: Use Hubtel SMS API
+    const clientId = process.env.HUBTEL_CLIENT_ID;
+    const clientSecret = process.env.HUBTEL_CLIENT_SECRET;
+    const senderId = process.env.HUBTEL_SENDER_ID || "Moshzion";
+
+    if (!clientId || !clientSecret) {
+      throw new Error(
+        "Hubtel credentials not configured. Please set HUBTEL_CLIENT_ID and HUBTEL_CLIENT_SECRET environment variables."
+      );
     }
 
-    // TODO: Implement AWS SNS integration
-    // import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
-    // const client = new SNSClient({ region: process.env.AWS_REGION || "us-east-1" });
-    // const command = new PublishCommand({
-    //   PhoneNumber: phone,
-    //   Message: message
-    // });
-    // await client.send(command);
+    // Format phone to international format
+    const formattedPhone = formatGhanaPhone(phone);
 
-    console.warn("Production SMS not implemented yet. Using console logging.");
-    console.log(`SMS to ${phone}: ${message}`);
+    // Create Basic Auth header
+    const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString(
+      "base64"
+    );
 
+    // Send SMS via Hubtel API
+    const response = await fetch("https://sms.hubtel.com/v1/messages/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${credentials}`
+      },
+      body: JSON.stringify({
+        From: senderId,
+        To: formattedPhone,
+        Content: message
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(
+        `Hubtel API error (${response.status}): ${errorData}`
+      );
+    }
+
+    const data = await response.json();
+    
+    // Hubtel returns a status code in the response
+    if (data.Status !== 0) {
+      throw new Error(`SMS failed: ${data.Message || "Unknown error"}`);
+    }
+
+    console.log(`✓ SMS sent to ${phone} via Hubtel`);
     return { success: true };
   } catch (error) {
     console.error("SMS sending failed:", error);
