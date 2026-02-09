@@ -76,6 +76,7 @@ NEXTAUTH_URL=https://your-domain.vercel.app
 ```
 
 **How it works:**
+
 - Vercel automatically provides `DATABASE_URL` when you add Postgres
 - Both your migrations and app use this automatically
 - Your code also checks `POSTGRES_URL` as a fallback (same value)
@@ -84,11 +85,11 @@ NEXTAUTH_URL=https://your-domain.vercel.app
 #### Optional (for full functionality):
 
 ```env
-# Hubtel SMS (for OTP in production - Ghana-based, cheapest option)
+# Hubtel OTP API (for OTP in production - Ghana-based, cheapest & most secure)
 # Sign up at https://hubtel.com
+# Uses built-in OTP API (codes never stored in your DB)
 HUBTEL_CLIENT_ID=your-client-id
 HUBTEL_CLIENT_SECRET=your-client-secret
-HUBTEL_SENDER_ID=Moshzion
 
 # OAuth (if using Google/Facebook login)
 GOOGLE_CLIENT_ID=your-id
@@ -156,7 +157,7 @@ DATABASE_URL="postgres://user:pass@host/db?sslmode=verify-full"
 **Solution**:
 
 - In development: OTPs are logged to console (check Vercel logs)
-- In production: Set up Hubtel SMS (Ghana-based, ~$0.003-0.006 per SMS)
+- In production: Set up Hubtel OTP API (Ghana-based, ~$0.003-0.006 per SMS, codes never stored in DB)
 
 ---
 
@@ -177,6 +178,7 @@ NEXTAUTH_URL="http://localhost:3000"
 ### Production (Vercel - Auto-provided)
 
 When you add Vercel Postgres, it automatically creates:
+
 ```env
 DATABASE_URL=<postgres-connection-string>
 POSTGRES_URL=<same-as-database_url>
@@ -184,12 +186,14 @@ PRISMA_DATABASE_URL=<accelerate-url-optional>
 ```
 
 **You only add:**
+
 ```env
 AUTH_SECRET=<your-production-secret>
 NEXTAUTH_URL=https://your-domain.vercel.app
 ```
 
 **Why it's simple:**
+
 - ✅ Same `DATABASE_URL` name in both environments
 - ✅ No manual mapping or configuration needed
 - ✅ Just add Postgres in Vercel and it works!

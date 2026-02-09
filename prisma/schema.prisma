@@ -16,12 +16,11 @@ model User {
     firstName String?
     lastName  String?
 
-    // Phone verification with OTP
-    isPhoneVerified Boolean   @default(false)
-    phoneVerifiedAt DateTime?
-    otpCode         String?
-    otpExpiresAt    DateTime?
-    otpAttempts     Int       @default(0)
+    // Phone verification with Hubtel OTP API
+    isPhoneVerified      Boolean   @default(false)
+    phoneVerifiedAt      DateTime?
+    otpRequestId         String? // Hubtel OTP request ID
+    otpRequestIdExpiresAt DateTime? // Track when requestId expires
 
     // Timestamps
     createdAt DateTime @default(now())

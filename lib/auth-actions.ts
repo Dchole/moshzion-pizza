@@ -14,7 +14,10 @@ import type {
 } from "@/lib/schemas/auth";
 import { z } from "zod";
 import prisma from "@/lib/db";
-import { sendOTPVerification } from "@/lib/sms";
+import {
+  sendOTP as sendHubtelOTP,
+  verifyOTP as verifyHubtelOTP
+} from "@/lib/sms";
 
 interface ActionResult {
   success: boolean;
@@ -24,42 +27,40 @@ interface ActionResult {
 }
 
 /**
- * Generate a random 6-digit OTP code
- */
-function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-/**
- * Send OTP to phone number
- * Creates user record if doesn't exist (with OTP stored)
- * Updates existing user with new OTP
+ * Send OTP to phone number via Hubtel OTP API
+ * Creates user record if doesn't exist, stores Hubtel requestId
  */
 export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
   try {
     const validatedData = sendOTPSchema.parse(data);
     const { phone } = validatedData;
 
-    const otpCode = generateOTP();
-    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    // Send OTP via Hubtel
+    const otpResult = await sendHubtelOTP(phone);
+
+    if (!otpResult.success || !otpResult.requestId) {
+      return {
+        success: false,
+        error: otpResult.error || "Failed to send verification code"
+      };
+    }
+
+    // Store requestId in user record
+    const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     await prisma.user.upsert({
       where: { phone },
       update: {
-        otpCode,
-        otpExpiresAt,
-        otpAttempts: 0
+        otpRequestId: otpResult.requestId,
+        otpRequestIdExpiresAt: requestIdExpiresAt
       },
       create: {
         phone,
-        otpCode,
-        otpExpiresAt,
-        otpAttempts: 0,
+        otpRequestId: otpResult.requestId,
+        otpRequestIdExpiresAt: requestIdExpiresAt,
         isPhoneVerified: false
       }
     });
-
-    await sendOTPVerification(phone, otpCode);
 
     return { success: true };
   } catch (error) {
@@ -88,7 +89,7 @@ export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
 }
 
 /**
- * Verify OTP and sign in user
+ * Verify OTP via Hubtel API and sign in user
  * If verification succeeds, marks phone as verified and signs user in
  */
 export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
@@ -96,59 +97,57 @@ export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
     const validatedData = verifyOTPSchema.parse(data);
     const { phone, code } = validatedData;
 
+    // Get user's stored requestId
     const user = await prisma.user.findUnique({
       where: { phone },
       select: {
         id: true,
-        otpCode: true,
-        otpExpiresAt: true,
-        otpAttempts: true,
+        otpRequestId: true,
+        otpRequestIdExpiresAt: true,
         isPhoneVerified: true
       }
     });
 
-    if (!user || !user.otpCode || !user.otpExpiresAt) {
+    if (!user || !user.otpRequestId || !user.otpRequestIdExpiresAt) {
       return {
         success: false,
         error: "No verification code found. Please request a new one."
       };
     }
 
-    if (new Date() > user.otpExpiresAt) {
+    if (new Date() > user.otpRequestIdExpiresAt) {
       return {
         success: false,
         error: "Verification code expired. Please request a new one."
       };
     }
 
-    if (user.otpAttempts >= 5) {
+    // Verify OTP via Hubtel
+    const verifyResult = await verifyHubtelOTP(user.otpRequestId, code);
+
+    if (!verifyResult.success) {
       return {
         success: false,
-        error: "Too many failed attempts. Please request a new code."
+        error: verifyResult.error || "Failed to verify code"
       };
     }
 
-    if (user.otpCode !== code) {
-      await prisma.user.update({
-        where: { phone },
-        data: { otpAttempts: user.otpAttempts + 1 }
-      });
-
+    if (!verifyResult.verified) {
       return {
         success: false,
         error: "Invalid verification code. Please try again."
       };
     }
 
+    // OTP verified successfully
     const isNewAccount = !user.isPhoneVerified;
     await prisma.user.update({
       where: { phone },
       data: {
         isPhoneVerified: true,
         phoneVerifiedAt: new Date(),
-        otpCode: null,
-        otpExpiresAt: null,
-        otpAttempts: 0
+        otpRequestId: null,
+        otpRequestIdExpiresAt: null
       }
     });
 
@@ -241,7 +240,7 @@ export async function updateProfile(
 }
 
 /**
- * Send OTP for phone update (stores OTP on current user, not new phone)
+ * Send OTP for phone update via Hubtel (stores requestId on current user)
  */
 export async function sendPhoneUpdateOTP(
   newPhone: string
@@ -273,19 +272,26 @@ export async function sendPhoneUpdateOTP(
       };
     }
 
-    const otpCode = generateOTP();
-    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    // Send OTP via Hubtel to new phone number
+    const otpResult = await sendHubtelOTP(newPhone);
+
+    if (!otpResult.success || !otpResult.requestId) {
+      return {
+        success: false,
+        error: otpResult.error || "Failed to send verification code"
+      };
+    }
+
+    // Store requestId on current user
+    const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await prisma.user.update({
       where: { id: currentUser.id },
       data: {
-        otpCode,
-        otpExpiresAt,
-        otpAttempts: 0
+        otpRequestId: otpResult.requestId,
+        otpRequestIdExpiresAt: requestIdExpiresAt
       }
     });
-
-    await sendOTPVerification(newPhone, otpCode);
 
     return { success: true };
   } catch (error) {
@@ -307,6 +313,13 @@ export async function sendPhoneUpdateOTP(
 /**
  * Update phone number (requires OTP verification)
  * Verifies OTP on current user, then updates phone
+ */
+export async function updatePhone(data: {
+  newPhone: string;
+  code: string;
+/**
+ * Update phone number (requires Hubtel OTP verification)
+ * Verifies OTP via Hubtel, then updates phone
  */
 export async function updatePhone(data: {
   newPhone: string;
@@ -338,57 +351,58 @@ export async function updatePhone(data: {
       };
     }
 
-    const userWithOTP = await prisma.user.findUnique({
+    // Get stored requestId
+    const userWithRequestId = await prisma.user.findUnique({
       where: { id: currentUser.id },
       select: {
-        otpCode: true,
-        otpExpiresAt: true,
-        otpAttempts: true
+        otpRequestId: true,
+        otpRequestIdExpiresAt: true
       }
     });
 
-    if (!userWithOTP?.otpCode) {
+    if (!userWithRequestId?.otpRequestId) {
       return {
         success: false,
         error: "Please request a verification code first"
       };
     }
 
-    if (new Date() > userWithOTP.otpExpiresAt!) {
+    if (new Date() > userWithRequestId.otpRequestIdExpiresAt!) {
       return {
         success: false,
         error: "Verification code has expired. Please request a new one"
       };
     }
 
-    if (userWithOTP.otpAttempts >= 5) {
+    // Verify OTP via Hubtel
+    const verifyResult = await verifyHubtelOTP(
+      userWithRequestId.otpRequestId,
+      code
+    );
+
+    if (!verifyResult.success) {
       return {
         success: false,
-        error: "Too many attempts. Please request a new code"
+        error: verifyResult.error || "Failed to verify code"
       };
     }
 
-    if (userWithOTP.otpCode !== code) {
-      await prisma.user.update({
-        where: { id: currentUser.id },
-        data: { otpAttempts: { increment: 1 } }
-      });
-
+    if (!verifyResult.verified) {
       return {
         success: false,
         error: "Invalid verification code"
       };
     }
 
+    // Update phone number
     await prisma.user.update({
       where: { id: currentUser.id },
       data: {
         phone: newPhone,
         isPhoneVerified: true,
         phoneVerifiedAt: new Date(),
-        otpCode: null,
-        otpExpiresAt: null,
-        otpAttempts: 0
+        otpRequestId: null,
+        otpRequestIdExpiresAt: null
       }
     });
 

@@ -7,7 +7,7 @@
 3. **Add to Vercel**:
    ```bash
    vercel env add HUBTEL_CLIENT_ID
-   vercel env add HUBTEL_CLIENT_SECRET  
+   vercel env add HUBTEL_CLIENT_SECRET
    vercel env add HUBTEL_SENDER_ID
    ```
 4. **Top up**: GHS 50 = ~1,000 SMS (~$3 USD)
@@ -24,8 +24,9 @@
 ```env
 HUBTEL_CLIENT_ID=your-client-id
 HUBTEL_CLIENT_SECRET=your-client-secret
-HUBTEL_SENDER_ID=Moshzion
 ```
+
+**Note**: No SENDER_ID needed - Hubtel OTP API uses "Moshzion" as prefix automatically.
 
 ## 📱 Phone Format (Auto-handled)
 
@@ -40,12 +41,12 @@ Converts to: `233244123456` (international)
 
 ## 🐛 Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| "Credentials not configured" | Add env vars in Vercel, redeploy |
-| "Insufficient balance" | Top up in Hubtel dashboard |
-| "Invalid sender ID" | Use "Moshzion" or request custom ID approval |
-| SMS not received | Check Hubtel dashboard → Sent Messages |
+| Issue                        | Solution                                     |
+| ---------------------------- | -------------------------------------------- |
+| "Credentials not configured" | Add env vars in Vercel, redeploy             |
+| "Insufficient balance"       | Top up in Hubtel dashboard                   |
+| "Invalid sender ID"          | Use "Moshzion" or request custom ID approval |
+| SMS not received             | Check Hubtel dashboard → Sent Messages       |
 
 ## 📖 Full Guide
 
