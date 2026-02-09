@@ -17,9 +17,9 @@ model User {
     lastName  String?
 
     // Phone verification with Hubtel OTP API
-    isPhoneVerified      Boolean   @default(false)
-    phoneVerifiedAt      DateTime?
-    otpRequestId         String? // Hubtel OTP request ID
+    isPhoneVerified       Boolean   @default(false)
+    phoneVerifiedAt       DateTime?
+    otpRequestId          String? // Hubtel OTP request ID
     otpRequestIdExpiresAt DateTime? // Track when requestId expires
 
     // Timestamps

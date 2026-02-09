@@ -103,7 +103,9 @@ export async function sendOTP(phone: string): Promise<{
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(`Hubtel OTP API error (${response.status}): ${errorData}`);
+      throw new Error(
+        `Hubtel OTP API error (${response.status}): ${errorData}`
+      );
     }
 
     const data = await response.json();
@@ -174,14 +176,14 @@ export async function verifyOTP(
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(`Hubtel verify API error (${response.status}): ${errorData}`);
+      throw new Error(
+        `Hubtel verify API error (${response.status}): ${errorData}`
+      );
     }
 
     const data = await response.json();
 
-    console.log(
-      `✓ OTP verification: ${data.verified ? "Success" : "Failed"}`
-    );
+    console.log(`✓ OTP verification: ${data.verified ? "Success" : "Failed"}`);
 
     return {
       success: true,
