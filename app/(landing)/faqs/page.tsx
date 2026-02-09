@@ -161,16 +161,14 @@ export default function FAQsPage() {
   return (
     <main className="min-h-screen bg-primary">
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-384">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
-              Frequently Asked Questions
-            </h1>
-            <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
-              Got questions? We&apos;ve got answers. Browse our most common
-              questions below or reach out if you need more help.
-            </p>
-          </div>
+        <div className="mx-auto max-w-384 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
+            Frequently Asked Questions
+          </h1>
+          <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
+            Got questions? We&apos;ve got answers. Browse our most common
+            questions below or reach out if you need more help.
+          </p>
         </div>
       </section>
 

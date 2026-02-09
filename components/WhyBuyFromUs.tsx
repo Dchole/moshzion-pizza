@@ -5,11 +5,9 @@ export default function WhyBuyFromUs() {
   return (
     <section id="why-us" className="bg-white py-16 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl text-brown-dark">
-            Why buy from Us
-          </h2>
-        </div>
+        <h2 className="text-center mb-16 font-display text-5xl sm:text-6xl lg:text-7xl text-brown-dark">
+          Why buy from Us
+        </h2>
 
         <div className="grid gap-12 md:grid-cols-3">
           {features.map(feature => (

@@ -19,16 +19,14 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-primary">
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-384">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
-              Get in Touch
-            </h1>
-            <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
-              Have a question, feedback, or special request? We&apos;d love to
-              hear from you. Fill out the form below or reach out directly.
-            </p>
-          </div>
+        <div className="mx-auto max-w-384 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
+            Get in Touch
+          </h1>
+          <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
+            Have a question, feedback, or special request? We&apos;d love to
+            hear from you. Fill out the form below or reach out directly.
+          </p>
         </div>
       </section>
 
