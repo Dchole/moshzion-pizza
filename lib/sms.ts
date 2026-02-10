@@ -88,7 +88,7 @@ export async function sendOTP(phone: string): Promise<{
 
     const formattedPhone = formatGhanaPhone(phone);
 
-    const response = await fetch("https://sms.hubtel.com/v1/otp/send", {
+    const response = await fetch("https://api-otp.hubtel.com/otp/send", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,7 +162,7 @@ export async function verifyOTP(
       );
     }
 
-    const response = await fetch("https://sms.hubtel.com/v1/otp/verify", {
+    const response = await fetch("https://api-otp.hubtel.com/otp/verify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
