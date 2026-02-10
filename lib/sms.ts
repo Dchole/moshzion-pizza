@@ -97,7 +97,7 @@ export async function sendOTP(phone: string): Promise<{
         Authorization: `Basic ${auth}`
       },
       body: JSON.stringify({
-        senderId: "Moshzion",
+        senderId: "233248245692",
         phoneNumber: formattedPhone,
         countryCode: "GH"
       })
@@ -117,6 +117,8 @@ export async function sendOTP(phone: string): Promise<{
     }
 
     console.log(`✓ OTP sent to ${phone} via Hubtel OTP API`);
+    console.log(`  RequestId: ${data.data.requestId}`);
+    console.log(`  Prefix: ${data.data.prefix}`);
     return {
       success: true,
       requestId: data.data.requestId,
@@ -144,7 +146,6 @@ export async function verifyOTP(
   error?: string;
 }> {
   try {
-    // Development: Simple verification (any 6-digit code works)
     if (process.env.NODE_ENV === "development") {
       const isValid = /^\d{6}$/.test(code);
       console.log("\n=== OTP VERIFICATION (DEV MODE) ===");
@@ -159,7 +160,6 @@ export async function verifyOTP(
       };
     }
 
-    // Production: Use Hubtel OTP API
     const auth = getHubtelAuth();
     if (!auth) {
       throw new Error(
@@ -217,7 +217,6 @@ export async function resendOTP(requestId: string): Promise<{
   error?: string;
 }> {
   try {
-    // Development: Simulate resend
     if (process.env.NODE_ENV === "development") {
       console.log("\n=== OTP RESEND (DEV MODE) ===");
       console.log(`RequestId: ${requestId}`);
@@ -230,7 +229,6 @@ export async function resendOTP(requestId: string): Promise<{
       };
     }
 
-    // Production: Use Hubtel OTP API
     const auth = getHubtelAuth();
     if (!auth) {
       throw new Error(
