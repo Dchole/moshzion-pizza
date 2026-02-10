@@ -54,11 +54,12 @@ function getHubtelAuth(): string | null {
 
 /**
  * Send OTP via Hubtel OTP API
- * Returns requestId needed for verification
+ * Returns requestId and prefix needed for verification
  */
 export async function sendOTP(phone: string): Promise<{
   success: boolean;
   requestId?: string;
+  prefix?: string;
   otpCode?: string; // Only in development
   error?: string;
 }> {
@@ -74,6 +75,7 @@ export async function sendOTP(phone: string): Promise<{
       return {
         success: true,
         requestId: `dev-${Date.now()}`,
+        prefix: "DEV",
         otpCode // Return code for dev testing
       };
     }
@@ -95,9 +97,9 @@ export async function sendOTP(phone: string): Promise<{
         Authorization: `Basic ${auth}`
       },
       body: JSON.stringify({
+        senderId: "Moshzion",
         phoneNumber: formattedPhone,
-        prefix: "Moshzion", // Shows in SMS as sender
-        expiry: 600 // 10 minutes in seconds
+        countryCode: "GH"
       })
     });
 
@@ -110,14 +112,15 @@ export async function sendOTP(phone: string): Promise<{
 
     const data = await response.json();
 
-    if (!data.requestId) {
-      throw new Error("No requestId returned from Hubtel");
+    if (data.code !== "0000" || !data.data?.requestId) {
+      throw new Error(`Hubtel OTP failed: ${data.message || "Unknown error"}`);
     }
 
     console.log(`✓ OTP sent to ${phone} via Hubtel OTP API`);
     return {
       success: true,
-      requestId: data.requestId
+      requestId: data.data.requestId,
+      prefix: data.data.prefix
     };
   } catch (error) {
     console.error("OTP sending failed:", error);
@@ -133,6 +136,7 @@ export async function sendOTP(phone: string): Promise<{
  */
 export async function verifyOTP(
   requestId: string,
+  prefix: string,
   code: string
 ): Promise<{
   success: boolean;
@@ -145,6 +149,7 @@ export async function verifyOTP(
       const isValid = /^\d{6}$/.test(code);
       console.log("\n=== OTP VERIFICATION (DEV MODE) ===");
       console.log(`RequestId: ${requestId}`);
+      console.log(`Prefix: ${prefix}`);
       console.log(`Code: ${code}`);
       console.log(`Result: ${isValid ? "✓ Valid" : "✗ Invalid"}`);
       console.log("====================================\n");
@@ -170,6 +175,7 @@ export async function verifyOTP(
       },
       body: JSON.stringify({
         requestId,
+        prefix,
         code
       })
     });
@@ -183,11 +189,12 @@ export async function verifyOTP(
 
     const data = await response.json();
 
-    console.log(`✓ OTP verification: ${data.verified ? "Success" : "Failed"}`);
+    const verified = data.code === "0000";
+    console.log(`✓ OTP verification: ${verified ? "Success" : "Failed"}`);
 
     return {
       success: true,
-      verified: data.verified === true
+      verified
     };
   } catch (error) {
     console.error("OTP verification failed:", error);
@@ -195,6 +202,79 @@ export async function verifyOTP(
       success: false,
       verified: false,
       error: error instanceof Error ? error.message : "Failed to verify OTP"
+    };
+  }
+}
+
+/**
+ * Resend OTP via Hubtel OTP API
+ * Uses existing requestId to resend the same OTP
+ */
+export async function resendOTP(requestId: string): Promise<{
+  success: boolean;
+  requestId?: string;
+  prefix?: string;
+  error?: string;
+}> {
+  try {
+    // Development: Simulate resend
+    if (process.env.NODE_ENV === "development") {
+      console.log("\n=== OTP RESEND (DEV MODE) ===");
+      console.log(`RequestId: ${requestId}`);
+      console.log(`Status: Resent successfully`);
+      console.log("============================\n");
+      return {
+        success: true,
+        requestId,
+        prefix: "DEV"
+      };
+    }
+
+    // Production: Use Hubtel OTP API
+    const auth = getHubtelAuth();
+    if (!auth) {
+      throw new Error(
+        "Hubtel credentials not configured. Set HUBTEL_CLIENT_ID and HUBTEL_CLIENT_SECRET."
+      );
+    }
+
+    const response = await fetch("https://api-otp.hubtel.com/otp/resend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${auth}`
+      },
+      body: JSON.stringify({
+        requestId
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(
+        `Hubtel resend API error (${response.status}): ${errorData}`
+      );
+    }
+
+    const data = await response.json();
+
+    if (data.code !== "0000" || !data.data?.requestId) {
+      throw new Error(
+        `Hubtel OTP resend failed: ${data.message || "Unknown error"}`
+      );
+    }
+
+    console.log(`✓ OTP resent successfully`);
+    return {
+      success: true,
+      requestId: data.data.requestId,
+      prefix: data.data.prefix
+    };
+  } catch (error) {
+    console.error("OTP resend failed:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to resend OTP"
     };
   }
 }

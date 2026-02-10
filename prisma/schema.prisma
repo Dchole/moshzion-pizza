@@ -20,6 +20,7 @@ model User {
     isPhoneVerified       Boolean   @default(false)
     phoneVerifiedAt       DateTime?
     otpRequestId          String? // Hubtel OTP request ID
+    otpPrefix             String? // Hubtel OTP prefix (needed for verification)
     otpRequestIdExpiresAt DateTime? // Track when requestId expires
 
     // Timestamps
