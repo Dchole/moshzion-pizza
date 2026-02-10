@@ -311,13 +311,6 @@ export async function sendPhoneUpdateOTP(
 }
 
 /**
- * Update phone number (requires OTP verification)
- * Verifies OTP on current user, then updates phone
- */
-export async function updatePhone(data: {
-  newPhone: string;
-  code: string;
-/**
  * Update phone number (requires Hubtel OTP verification)
  * Verifies OTP via Hubtel, then updates phone
  */
