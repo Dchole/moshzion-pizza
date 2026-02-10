@@ -90,6 +90,8 @@ export async function sendOTP(phone: string): Promise<{
 
     const formattedPhone = formatGhanaPhone(phone);
 
+    const senderId = process.env.HUBTEL_SENDER_ID;
+
     const response = await fetch("https://api-otp.hubtel.com/otp/send", {
       method: "POST",
       headers: {
@@ -97,7 +99,7 @@ export async function sendOTP(phone: string): Promise<{
         Authorization: `Basic ${auth}`
       },
       body: JSON.stringify({
-        senderId: "233248245692",
+        senderId: senderId,
         phoneNumber: formattedPhone,
         countryCode: "GH"
       })
