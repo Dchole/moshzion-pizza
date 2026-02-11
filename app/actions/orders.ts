@@ -70,6 +70,7 @@ export async function createOrder(input: CreateOrderInput) {
         deliveryFee: input.deliveryFee,
         tax: input.tax,
         total: input.total,
+        paymentMethod: input.paymentMethodType, // Save payment method
         guestName: input.guestName,
         guestPhone: input.guestPhone,
         guestAddress: input.guestAddress,

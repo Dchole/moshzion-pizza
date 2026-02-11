@@ -87,6 +87,7 @@ model Order {
     // Order status
     status        OrderStatus   @default(PENDING)
     paymentStatus PaymentStatus @default(PENDING)
+    paymentMethod String? // Payment method used: "credit-card", "mobile-money", "cash-on-delivery"
 
     // Guest user info (for orders without account)
     guestName    String?

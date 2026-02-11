@@ -14,16 +14,40 @@ import CloseIcon from "@mui/icons-material/Close";
 
 type PaymentMethod = "credit-card" | "mobile-money" | "cash-on-delivery";
 
+interface UserData {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  address: string;
+}
+
 interface CheckoutFormProps {
   items: CartItem[];
   totalPrice: number;
+  userData: UserData | null;
+  hasCreditCard: boolean;
+  userId?: string;
 }
 
-export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
+export function CheckoutForm({
+  items,
+  totalPrice,
+  userData,
+  hasCreditCard,
+  userId
+}: CheckoutFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  // Default payment method based on saved data
+  const defaultPaymentMethod: PaymentMethod = hasCreditCard
+    ? "credit-card"
+    : userData?.phone
+      ? "mobile-money"
+      : "credit-card";
+
   const [paymentMethod, setPaymentMethod] =
-    useState<PaymentMethod>("credit-card");
+    useState<PaymentMethod>(defaultPaymentMethod);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [orderItems, setOrderItems] = useState<CartItem[]>(items);
   const [error, setError] = useState<string | null>(null);
@@ -31,10 +55,13 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
 
   // Store step 1 data
   const [contactInfo, setContactInfo] = useState({
-    name: "",
-    phone: "",
-    address: ""
+    name: userData ? `${userData.firstName} ${userData.lastName}`.trim() : "",
+    phone: userData?.phone || "",
+    address: userData?.address || ""
   });
+
+  // Store original data to detect changes
+  const [originalData] = useState(userData);
 
   const orderTotal = orderItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -80,6 +107,32 @@ export function CheckoutForm({ items, totalPrice }: CheckoutFormProps) {
       console.log("Checkout result:", result);
 
       if (result.success && result.orderId) {
+        // Check if user data has changed and ask to update
+        if (userId && originalData) {
+          const currentName =
+            `${originalData.firstName} ${originalData.lastName}`.trim();
+          const hasNameChanged = contactInfo.name !== currentName;
+          const hasPhoneChanged = contactInfo.phone !== originalData.phone;
+          const hasAddressChanged =
+            contactInfo.address !== originalData.address;
+
+          if (hasNameChanged || hasPhoneChanged || hasAddressChanged) {
+            const shouldUpdate = window.confirm(
+              "Your contact information has changed. Would you like to save these changes to your account?"
+            );
+
+            if (shouldUpdate) {
+              const { updateUserCheckoutData } =
+                await import("@/lib/auth-actions");
+              await updateUserCheckoutData({
+                name: contactInfo.name,
+                phone: contactInfo.phone,
+                address: contactInfo.address
+              });
+            }
+          }
+        }
+
         router.push(`/order-confirmation?orderId=${result.orderId}`);
       } else {
         setError(result.message || "Checkout failed. Please try again.");

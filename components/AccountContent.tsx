@@ -18,13 +18,10 @@ import { PhoneVerification } from "./account/PhoneVerification";
 import { ProfileEditableField } from "./account/ProfileEditableField";
 import { AddressFormModal } from "./AddressFormModal";
 import { PaymentMethodFormModal } from "./PaymentMethodFormModal";
-import {
-  getUserAddresses,
-  deleteAddress,
-} from "@/lib/address-actions";
+import { getUserAddresses, deleteAddress } from "@/lib/address-actions";
 import {
   getUserPaymentMethods,
-  deletePaymentMethod,
+  deletePaymentMethod
 } from "@/lib/payment-actions";
 
 interface User {
@@ -78,32 +75,28 @@ export function AccountContent({ user }: AccountContentProps) {
     useState<PaymentMethodType | null>(null);
 
   // Data states
-  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodType[]>([]);
-  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
-  const [isLoadingPayments, setIsLoadingPayments] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState<Address[] | null>(null);
+  const [paymentMethods, setPaymentMethods] = useState<
+    PaymentMethodType[] | null
+  >(null);
 
   const isAuthenticated = !!user;
+
+  // Derived loading states
+  const isLoadingAddresses = isAuthenticated && savedAddresses === null;
+  const isLoadingPayments = isAuthenticated && paymentMethods === null;
 
   // Fetch addresses
   useEffect(() => {
     if (isAuthenticated) {
-      setIsLoadingAddresses(true);
-      getUserAddresses().then((addresses) => {
-        setSavedAddresses(addresses);
-        setIsLoadingAddresses(false);
-      });
+      getUserAddresses().then(setSavedAddresses);
     }
   }, [isAuthenticated]);
 
   // Fetch payment methods
   useEffect(() => {
     if (isAuthenticated) {
-      setIsLoadingPayments(true);
-      getUserPaymentMethods().then((methods) => {
-        setPaymentMethods(methods);
-        setIsLoadingPayments(false);
-      });
+      getUserPaymentMethods().then(setPaymentMethods);
     }
   }, [isAuthenticated]);
 
@@ -147,7 +140,7 @@ export function AccountContent({ user }: AccountContentProps) {
     ) {
       const result = await deleteAddress(addressId);
       if (result.success) {
-        setSavedAddresses((prev) => prev.filter((a) => a.id !== addressId));
+        setSavedAddresses(prev => (prev || []).filter(a => a.id !== addressId));
       } else {
         alert(result.error || "Failed to delete address");
       }
@@ -179,7 +172,7 @@ export function AccountContent({ user }: AccountContentProps) {
     ) {
       const result = await deletePaymentMethod(paymentId);
       if (result.success) {
-        setPaymentMethods((prev) => prev.filter((p) => p.id !== paymentId));
+        setPaymentMethods(prev => (prev || []).filter(p => p.id !== paymentId));
       } else {
         alert(result.error || "Failed to remove payment method");
       }
@@ -360,9 +353,11 @@ export function AccountContent({ user }: AccountContentProps) {
 
             {isLoadingAddresses ? (
               <div className="text-center py-8">
-                <p className="text-gray-600 font-open-sans">Loading addresses...</p>
+                <p className="text-gray-600 font-open-sans">
+                  Loading addresses...
+                </p>
               </div>
-            ) : savedAddresses.length === 0 ? (
+            ) : (savedAddresses || []).length === 0 ? (
               <div className="text-center py-8">
                 <LocationOnIcon
                   className="mx-auto text-gray-300 mb-3"
@@ -376,7 +371,7 @@ export function AccountContent({ user }: AccountContentProps) {
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {savedAddresses.map((address) => (
+                {savedAddresses?.map(address => (
                   <div
                     key={address.id}
                     className="rounded-lg border border-gray-200 p-4 relative"
@@ -395,8 +390,7 @@ export function AccountContent({ user }: AccountContentProps) {
                       {address.street}
                       <br />
                       {address.city}
-                      {address.state && `, ${address.state}`}{" "}
-                      {address.zipCode}
+                      {address.state && `, ${address.state}`} {address.zipCode}
                     </address>
 
                     <div className="mt-4 flex gap-2">
@@ -457,7 +451,7 @@ export function AccountContent({ user }: AccountContentProps) {
                   Loading payment methods...
                 </p>
               </div>
-            ) : paymentMethods.length === 0 ? (
+            ) : (paymentMethods || []).length === 0 ? (
               <div className="text-center py-8">
                 <PaymentIcon
                   className="mx-auto text-gray-300 mb-3"
@@ -471,7 +465,7 @@ export function AccountContent({ user }: AccountContentProps) {
               </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
-                {paymentMethods.map((method) => (
+                {paymentMethods?.map(method => (
                   <div
                     key={method.id}
                     className="rounded-lg border border-gray-200 p-4 relative"

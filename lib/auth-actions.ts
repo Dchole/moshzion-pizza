@@ -516,3 +516,85 @@ export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
 export async function signOutUser() {
   await signOut({ redirectTo: "/" });
 }
+
+/**
+ * Update user data from checkout
+ * Parses full name, updates user profile, and updates/creates default address
+ */
+export async function updateUserCheckoutData(data: {
+  name: string;
+  phone: string;
+  address: string;
+}): Promise<ActionResult> {
+  try {
+    const { getCurrentUser } = await import("@/lib/auth");
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return {
+        success: false,
+        error: "You must be signed in to update your profile"
+      };
+    }
+
+    // Parse name into firstName and lastName
+    const nameParts = data.name.trim().split(/\s+/);
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ") || "";
+
+    // Update user profile
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        firstName,
+        lastName
+      }
+    });
+
+    // Get user's default address
+    const defaultAddress = await prisma.address.findFirst({
+      where: {
+        userId: user.id,
+        isDefault: true
+      }
+    });
+
+    // Parse address (assuming format: "street, city, state")
+    const addressParts = data.address.split(",").map(part => part.trim());
+    const street = addressParts[0] || data.address;
+    const city = addressParts[1] || "";
+    const state = addressParts[2] || "";
+
+    if (defaultAddress) {
+      // Update existing default address
+      await prisma.address.update({
+        where: { id: defaultAddress.id },
+        data: {
+          street,
+          city,
+          state
+        }
+      });
+    } else {
+      // Create new default address
+      await prisma.address.create({
+        data: {
+          userId: user.id,
+          label: "Home",
+          street,
+          city,
+          state,
+          isDefault: true
+        }
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Update checkout data error:", error);
+    return {
+      success: false,
+      error: "Failed to update your information"
+    };
+  }
+}
