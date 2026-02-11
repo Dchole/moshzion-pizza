@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getOrderById } from "@/app/actions/orders";
 import { Button } from "@/components/ui";
 import { OrderInvoice } from "@/components/OrderInvoice";
+import { OrderStatusTimeline } from "@/components/OrderStatusTimeline";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -10,13 +11,14 @@ import PaymentIcon from "@mui/icons-material/Payment";
 import type { OrderItem } from "@/types";
 
 interface OrderDetailsPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function OrderDetailsPage({
   params
 }: OrderDetailsPageProps) {
-  const result = await getOrderById(params.id);
+  const { id } = await params;
+  const result = await getOrderById(id);
 
   if (!result.success || !result.order) {
     redirect("/orders");
@@ -48,37 +50,6 @@ export default async function OrderDetailsPage({
       .map(word => word.charAt(0) + word.slice(1).toLowerCase())
       .join(" ");
   }
-
-  const orderTimeline = [
-    { status: "PENDING", label: "Order Placed", completed: true },
-    {
-      status: "CONFIRMED",
-      label: "Confirmed",
-      completed: [
-        "CONFIRMED",
-        "PREPARING",
-        "OUT_FOR_DELIVERY",
-        "DELIVERED"
-      ].includes(order.status)
-    },
-    {
-      status: "PREPARING",
-      label: "Preparing",
-      completed: ["PREPARING", "OUT_FOR_DELIVERY", "DELIVERED"].includes(
-        order.status
-      )
-    },
-    {
-      status: "OUT_FOR_DELIVERY",
-      label: "Out for Delivery",
-      completed: ["OUT_FOR_DELIVERY", "DELIVERED"].includes(order.status)
-    },
-    {
-      status: "DELIVERED",
-      label: "Delivered",
-      completed: order.status === "DELIVERED"
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -120,63 +91,10 @@ export default async function OrderDetailsPage({
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Order Timeline */}
-            {order.status !== "CANCELLED" && (
-              <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6">
-                <h2 className="font-display text-xl text-brown-dark mb-6">
-                  Order Progress
-                </h2>
-                <div className="space-y-4">
-                  {orderTimeline.map((step, index) => (
-                    <div key={step.status} className="flex items-start gap-4">
-                      <div className="relative">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            step.completed
-                              ? "bg-green-100 text-green-600"
-                              : "bg-gray-100 text-gray-400"
-                          }`}
-                        >
-                          {step.completed ? (
-                            <svg
-                              className="w-6 h-6"
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          ) : (
-                            <div className="w-3 h-3 rounded-full bg-gray-300" />
-                          )}
-                        </div>
-                        {index < orderTimeline.length - 1 && (
-                          <div
-                            className={`absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-8 ${
-                              step.completed ? "bg-green-300" : "bg-gray-200"
-                            }`}
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 pt-2">
-                        <p
-                          className={`font-open-sans font-semibold ${
-                            step.completed ? "text-brown-dark" : "text-gray-400"
-                          }`}
-                        >
-                          {step.label}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <OrderStatusTimeline currentStatus={order.status} />
 
             {/* Order Items */}
-            <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6">
+            <div className="bg-white rounded-lg border border-brown-dark/10 p-6">
               <div className="flex items-center gap-2 mb-6">
                 <ReceiptIcon className="text-brown-dark" />
                 <h2 className="font-display text-xl text-brown-dark">
@@ -247,7 +165,7 @@ export default async function OrderDetailsPage({
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Delivery Information */}
-            <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6">
+            <div className="bg-white rounded-lg border border-brown-dark/10 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <LocalShippingIcon className="text-brown-dark" />
                 <h2 className="font-display text-lg text-brown-dark">
@@ -282,7 +200,7 @@ export default async function OrderDetailsPage({
             </div>
 
             {/* Payment Information */}
-            <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6">
+            <div className="bg-white rounded-lg border border-brown-dark/10 p-6">
               <div className="flex items-center gap-2 mb-4">
                 <PaymentIcon className="text-brown-dark" />
                 <h2 className="font-display text-lg text-brown-dark">
