@@ -15,7 +15,7 @@ export default async function CheckoutPage() {
   );
 
   return (
-    <div className="min-h-screen bg-beige-light">
+    <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h1 className="font-display text-3xl sm:text-4xl text-brown-dark">
