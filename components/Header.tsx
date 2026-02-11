@@ -112,7 +112,7 @@ export default function Header({
                 </Link>
 
                 <nav
-                  className="flex items-center gap-8"
+                  className="flex items-center gap-4"
                   aria-label="Main navigation"
                 >
                   {navLinks.map(link => (

@@ -19,13 +19,24 @@ interface AddedItemWithCount extends AddedItem {
 
 export function FloatingCartButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const [showAddedItems, setShowAddedItems] = useState(false);
   const [addedItems, setAddedItems] = useState<AddedItemWithCount[]>([]);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > SCROLL_THRESHOLDS.floatingCartButton);
+      const shouldShow = window.scrollY > SCROLL_THRESHOLDS.floatingCartButton;
+      setIsVisible(shouldShow);
+
+      // Check if main content bottom is near viewport bottom
+      const mainContent = document.getElementById("main-content");
+      if (mainContent) {
+        const mainRect = mainContent.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        // If main content bottom is above viewport bottom (footer is showing), stick to main content
+        setIsAtBottom(mainRect.bottom <= viewportHeight);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -84,7 +95,7 @@ export function FloatingCartButton() {
 
   return (
     <div
-      className={`sticky bottom-0 right-0 z-50 ml-auto w-fit transition-transform duration-300 ${
+      className={`${isAtBottom ? "absolute" : "fixed"} ${isAtBottom ? "bottom-0" : "bottom-0"} right-0 z-50 ml-auto w-fit transition-all duration-300 ${
         isVisible ? "translate-x-0" : "translate-x-full"
       }`}
     >
