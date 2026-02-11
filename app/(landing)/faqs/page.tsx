@@ -159,7 +159,7 @@ const faqs = [
 
 export default function FAQsPage() {
   return (
-    <main className="min-h-screen bg-primary">
+    <main className="min-h-screen bg-white">
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
