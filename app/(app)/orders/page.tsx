@@ -9,6 +9,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import type { OrderItem } from "@/types";
 
 export default async function OrdersPage() {
@@ -82,15 +83,12 @@ export default async function OrdersPage() {
           <h1 className="font-display text-4xl text-brown-dark mb-4 sm:mb-0">
             My Orders
           </h1>
-          <Link href="/store">
-            <Button
-              variant="primary"
-              color="beige"
-              icon={<ShoppingBagIcon sx={{ fontSize: 20 }} />}
-              iconPosition="left"
-            >
-              Continue Shopping
-            </Button>
+          <Link
+            href="/store"
+            className="text-brown-dark hover:text-brown-medium font-open-sans font-medium transition-colors flex items-center gap-2 hover:underline underline-offset-2"
+          >
+            Continue Shopping
+            <ArrowForwardIcon sx={{ fontSize: 18 }} />
           </Link>
         </div>
 
@@ -131,7 +129,7 @@ export default async function OrdersPage() {
                 <Link
                   key={order.id}
                   href={`/orders/${order.id}`}
-                  className="block bg-white rounded-lg shadow-sm border border-brown-dark/10 hover:shadow-md transition-shadow p-6"
+                  className="block bg-white rounded-lg border border-brown-dark/10 hover:border-brown-dark/20 transition-colors p-6"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     {/* Order Info */}
@@ -142,11 +140,11 @@ export default async function OrdersPage() {
                         </div>
                         <div className="flex-1">
                           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 mb-1">
-                            <h3 className="font-display text-xl text-brown-dark">
+                            <h3 className="font-sans text-xl text-brown-dark font-semibold">
                               Order #{order.id.slice(0, 8)}
                             </h3>
                             <span
-                              className={`font-open-sans text-sm font-semibold ${getStatusColor(order.status)}`}
+                              className={`font-sans text-sm font-semibold ${getStatusColor(order.status)}`}
                             >
                               {formatStatus(order.status)}
                             </span>
@@ -178,16 +176,11 @@ export default async function OrdersPage() {
                     {/* Order Total */}
                     <div className="flex items-center justify-between lg:justify-end gap-4">
                       <div className="text-right">
-                        <p className="text-sm text-gray-600 font-open-sans mb-1">
+                        <p className="text-sm text-gray-600 font-sans mb-1">
                           Total
                         </p>
                         <p className="font-display text-2xl text-brown-dark">
                           ${order.total.toFixed(2)}
-                        </p>
-                        <p className="text-xs text-gray-500 font-open-sans">
-                          {order.paymentStatus === "PAID"
-                            ? "Paid"
-                            : order.paymentStatus}
                         </p>
                       </div>
                       <div className="text-brown-dark">
