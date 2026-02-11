@@ -14,6 +14,7 @@ export interface CreateOrderInput {
   total: number;
   addressId?: string;
   paymentMethodType: string;
+  mobileMoneyPhone?: string;
   guestName?: string;
   guestPhone?: string;
   guestAddress?: string;
@@ -89,7 +90,55 @@ export async function createOrder(input: CreateOrderInput) {
       }
     });
 
+    // Auto-save mobile money payment method for authenticated users
+    if (
+      user &&
+      input.paymentMethodType === "mobile-money" &&
+      input.mobileMoneyPhone
+    ) {
+      try {
+        // Detect provider from phone number prefix (Ghana)
+        const phonePrefix = input.mobileMoneyPhone.substring(0, 3);
+        let provider = "Mobile Money";
+
+        if (["024", "054", "055", "059"].includes(phonePrefix)) {
+          provider = "MTN";
+        } else if (["020", "050"].includes(phonePrefix)) {
+          provider = "Vodafone";
+        } else if (["027", "057", "026", "056"].includes(phonePrefix)) {
+          provider = "AirtelTigo";
+        }
+
+        // Check if this payment method already exists
+        const existingMethod = await prisma.paymentMethod.findFirst({
+          where: {
+            userId: user.id,
+            type: "Mobile Money",
+            fullPhone: input.mobileMoneyPhone
+          }
+        });
+
+        // Only create if it doesn't exist
+        if (!existingMethod) {
+          await prisma.paymentMethod.create({
+            data: {
+              userId: user.id,
+              type: "Mobile Money",
+              provider,
+              last4: input.mobileMoneyPhone.slice(-4),
+              fullPhone: input.mobileMoneyPhone,
+              isDefault: false // Don't auto-set as default
+            }
+          });
+        }
+      } catch (error) {
+        // Log error but don't fail the order
+        console.error("Failed to save mobile money payment method:", error);
+      }
+    }
+
     revalidatePath("/orders");
+    revalidatePath("/account");
 
     return {
       success: true,

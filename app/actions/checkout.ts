@@ -118,6 +118,7 @@ export async function processCheckout(formData: FormData) {
       total,
       addressId,
       paymentMethodType: validation.data.paymentMethod,
+      mobileMoneyPhone: validation.data.phoneNumber,
       guestName: validation.data.guestName,
       guestPhone: validation.data.guestPhone,
       guestAddress: validation.data.guestAddress
