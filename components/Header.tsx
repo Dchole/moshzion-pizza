@@ -58,7 +58,7 @@ export default function Header({
 
   // Determine styling based on variant and state
   const shouldUseDarkText = isAppVariant || !isLandingPage || isScrolled;
-  const shouldShowWhiteBg = isAppVariant || !isLandingPage || isScrolled;
+  const shouldShowWhiteBg = !isAppVariant && (!isLandingPage || isScrolled);
   const shouldShowShadow = !isAppVariant && shouldShowWhiteBg;
 
   const textColor = shouldUseDarkText ? "text-brown-dark" : "text-white";
@@ -78,7 +78,11 @@ export default function Header({
     isAppVariant || isLandingGroupPage ? "fixed" : "absolute",
     "top-0 left-0 right-0",
     isAppVariant ? "z-40" : "z-30",
-    shouldShowWhiteBg ? "bg-white" : "bg-transparent",
+    isAppVariant
+      ? "bg-primary"
+      : shouldShowWhiteBg
+        ? "bg-white"
+        : "bg-transparent",
     shouldShowShadow ? "shadow-sm" : "shadow-none",
     "transition-all duration-300"
   ].join(" ");
