@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import { FloatingCartButton } from "@/components/FloatingCartButton";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <FloatingCartButton />
+      <ScrollToTopButton />
     </div>
   );
 }

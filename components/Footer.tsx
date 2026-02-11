@@ -7,7 +7,7 @@ import { SocialLinks } from "@/components/ui";
 
 export default function Footer() {
   return (
-    <footer className="bg-(--footer-bg) text-white pt-12 sm:pt-24">
+    <footer className="relative z-10 bg-(--footer-bg) text-white pt-12 sm:pt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row justify-between gap-8">
           <div className="lg:max-w-sm">

@@ -77,7 +77,7 @@ export default function Header({
   const headerClasses = [
     isAppVariant || isLandingGroupPage ? "fixed" : "absolute",
     "top-0 left-0 right-0",
-    isAppVariant ? "z-40" : "z-30",
+    isAppVariant ? "z-0" : "z-30",
     isAppVariant
       ? "bg-primary"
       : shouldShowWhiteBg
@@ -221,7 +221,7 @@ export default function Header({
             <>
               {isAppVariant ? (
                 <nav
-                  className={`bg-white border-t border-brown-medium/10 transition-all duration-300 ease-out overflow-hidden ${
+                  className={`border-t border-brown-medium/10 transition-all duration-300 ease-out overflow-hidden ${
                     isMobileMenuOpen
                       ? "max-h-96 opacity-100"
                       : "max-h-0 opacity-0"
