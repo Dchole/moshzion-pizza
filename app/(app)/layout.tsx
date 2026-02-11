@@ -8,8 +8,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Header variant="app" />
       <main id="main-content" className="relative z-50 bg-white shadow-2xl">
         {children}
+        <FloatingCartButton />
       </main>
-      <FloatingCartButton />
       <ScrollToTopButton />
     </div>
   );

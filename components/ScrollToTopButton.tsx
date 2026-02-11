@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { IconButton } from "@/components/ui/IconButton";
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsVisible(window.scrollY > 300);
+      setIsVisible(window.scrollY > 1530);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -22,15 +23,23 @@ export default function ScrollToTopButton() {
     });
   };
 
-  if (!isVisible) return null;
-
   return (
-    <button
-      onClick={scrollToTop}
-      className="fixed bottom-24 right-6 z-50 bg-primary hover:bg-brown-medium text-brown-dark p-3 rounded-lg shadow-lg transition-all duration-300 hover:scale-110"
-      aria-label="Scroll to top"
+    <div
+      className={`fixed bottom-16 right-8 z-50 transition-all duration-200 ${
+        isVisible
+          ? "scale-100 opacity-100 pointer-events-auto"
+          : "scale-0 opacity-0 pointer-events-none"
+      }`}
     >
-      <KeyboardArrowUpIcon sx={{ fontSize: 24 }} />
-    </button>
+      <IconButton
+        onClick={scrollToTop}
+        icon={<KeyboardArrowUpIcon sx={{ fontSize: 24 }} />}
+        aria-label="Scroll to top"
+        variant="filled"
+        color="beige"
+        size="lg"
+        className="rounded-md! shadow-lg hover:bg-brown-medium transition-all hover:scale-110"
+      />
+    </div>
   );
 }

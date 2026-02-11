@@ -84,7 +84,7 @@ export function FloatingCartButton() {
 
   return (
     <div
-      className={`fixed bottom-0 right-0 z-50 transition-transform duration-300 ${
+      className={`sticky bottom-0 right-0 z-50 ml-auto w-fit transition-transform duration-300 ${
         isVisible ? "translate-x-0" : "translate-x-full"
       }`}
     >
