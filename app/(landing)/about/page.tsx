@@ -196,19 +196,20 @@ export default function AboutPage() {
 
       <section id="cta" className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <div className="relative rounded-2xl p-12 text-center text-white overflow-hidden bg-brown-dark">
+          <div className="relative rounded-2xl p-12 text-center overflow-hidden bg-white/70">
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-display mb-6">
+              <h2 className="text-3xl md:text-4xl font-display mb-6 text-brown-dark">
                 Taste the Difference
               </h2>
-              <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">
+              <p className="text-lg mb-8 max-w-2xl mx-auto text-brown-medium">
                 Experience the passion, quality, and tradition that goes into
                 every Moshzion pizza. Order now and become part of our story.
               </p>
               <Button
                 href="/store"
                 variant="primary"
-                color="white"
+                color="brown"
+                className="shadow-none"
                 size="lg"
                 icon={<StorefrontIcon />}
                 iconPosition="right"
