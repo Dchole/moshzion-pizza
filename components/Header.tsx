@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -21,16 +21,33 @@ export default function Header({
   variant?: "landing" | "app";
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
   const isProductPage = pathname?.startsWith("/product/");
-
-  const shouldUseAppVariant =
-    variant === "app" ||
+  const isLandingPage = pathname === "/";
+  const isLandingGroupPage =
+    variant === "landing" ||
     pathname === "/about" ||
     pathname === "/contacts" ||
     pathname === "/faqs" ||
     pathname === "/credits";
+
+  // Track scroll position for landing page
+  useEffect(() => {
+    if (!isLandingPage) {
+      return;
+    }
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLandingPage]);
+
+  const shouldUseAppVariant = variant === "app";
   const effectiveVariant = shouldUseAppVariant ? "app" : "landing";
 
   const handleOpenMenu = () => {
@@ -41,12 +58,13 @@ export default function Header({
     setIsMobileMenuOpen(false);
   };
 
-  const textColor =
-    effectiveVariant === "app" ? "text-brown-dark" : "text-white";
-  const hoverColor =
-    effectiveVariant === "app"
-      ? "hover:text-brown-medium"
-      : "hover:text-gray-200";
+  // Determine text colors based on page type and scroll state
+  const shouldUseDarkText =
+    effectiveVariant === "app" || !isLandingPage || isScrolled;
+  const textColor = shouldUseDarkText ? "text-brown-dark" : "text-white";
+  const hoverColor = shouldUseDarkText
+    ? "hover:text-brown-medium"
+    : "hover:text-gray-200";
 
   const navLinks =
     effectiveVariant === "app"
@@ -73,8 +91,16 @@ export default function Header({
         ]
       : navLinks.map(link => ({ ...link, icon: undefined }));
 
-  const headerPosition = effectiveVariant === "app" ? "fixed" : "absolute";
-  const headerBg = effectiveVariant === "app" ? "bg-primary" : "bg-transparent";
+  // Determine header styling based on variant, page type, and scroll state
+  const headerPosition =
+    effectiveVariant === "app" || isLandingGroupPage ? "fixed" : "absolute";
+  const shouldShowWhiteBg =
+    effectiveVariant === "app" || !isLandingPage || isScrolled;
+  const headerBg = shouldShowWhiteBg ? "bg-white" : "bg-transparent";
+  const headerShadow =
+    effectiveVariant === "landing" && shouldShowWhiteBg
+      ? "shadow-sm"
+      : "shadow-none";
   const headerZIndex = effectiveVariant === "app" ? "z-40" : "z-30";
 
   const menuHeight =
@@ -83,7 +109,7 @@ export default function Header({
   return (
     <>
       <header
-        className={`${headerPosition} top-0 left-0 right-0 ${headerZIndex} ${headerBg}`}
+        className={`${headerPosition} top-0 left-0 right-0 ${headerZIndex} ${headerBg} ${headerShadow} transition-all duration-300`}
       >
         <div className="hidden md:block">
           <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
@@ -94,26 +120,36 @@ export default function Header({
                   className="flex items-center gap-2"
                   aria-label="Moshzion Home"
                 >
-                  <Logo className="h-16 w-16" variant={effectiveVariant} />
+                  <Logo
+                    className="h-16 w-16"
+                    variant={shouldUseDarkText ? "app" : "landing"}
+                  />
                 </Link>
 
                 <nav
                   className="flex items-center gap-8"
                   aria-label="Main navigation"
                 >
-                  {navLinks.map((link, index) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`text-base font-medium font-open-sans transition-colors ${hoverColor} ${
-                        index === 0 && effectiveVariant === "landing"
-                          ? "text-(--hero-accent)"
-                          : textColor
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {navLinks.map(link => {
+                    const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`text-base font-medium font-open-sans transition-all duration-300 px-4 py-2 rounded-full ${
+                          isActive
+                            ? shouldUseDarkText
+                              ? "bg-brown-dark/10 scale-105"
+                              : "bg-white/25 scale-105"
+                            : shouldUseDarkText
+                              ? "hover:bg-brown-dark/5"
+                              : "hover:bg-white/15"
+                        } ${textColor} ${hoverColor}`}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
                 </nav>
               </div>
 
@@ -131,7 +167,7 @@ export default function Header({
                     onClick={
                       isMobileMenuOpen ? handleCloseMenu : handleOpenMenu
                     }
-                    className={`${textColor} hover:opacity-80 transition-opacity`}
+                    className={`${textColor} hover:opacity-80 transition-all duration-300`}
                     aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   >
                     {isMobileMenuOpen ? (
@@ -144,7 +180,7 @@ export default function Header({
                 {isProductPage ? (
                   <Link
                     href="/store"
-                    className={`flex items-center gap-1 ${textColor} hover:opacity-80 transition-opacity`}
+                    className={`flex items-center gap-1 ${textColor} hover:opacity-80 transition-all duration-300`}
                     aria-label="Back to store"
                   >
                     <ArrowBackIcon sx={{ fontSize: 20 }} />
@@ -158,7 +194,10 @@ export default function Header({
                     className="flex items-center gap-2"
                     aria-label="Moshzion Home"
                   >
-                    <Logo className="h-8 w-8" variant={effectiveVariant} />
+                    <Logo
+                      className="h-8 w-8"
+                      variant={shouldUseDarkText ? "app" : "landing"}
+                    />
                   </Link>
                 )}
               </div>
@@ -169,9 +208,9 @@ export default function Header({
 
           {!isProductPage && (
             <>
-              {variant === "app" ? (
+              {effectiveVariant === "app" ? (
                 <nav
-                  className={`bg-primary border-t border-brown-medium/10 transition-all duration-300 ease-out overflow-hidden ${
+                  className={`bg-white border-t border-brown-medium/10 transition-all duration-300 ease-out overflow-hidden ${
                     isMobileMenuOpen
                       ? "max-h-96 opacity-100"
                       : "max-h-0 opacity-0"
@@ -183,12 +222,17 @@ export default function Header({
                     <div className="flex flex-col gap-2">
                       {mobileNavLinks.map(link => {
                         const Icon = link.icon;
+                        const isActive = pathname === link.href;
                         return (
                           <Link
                             key={link.href}
                             href={link.href}
                             onClick={handleCloseMenu}
-                            className={`${textColor} ${hoverColor} py-3 px-4 rounded-lg font-medium font-open-sans transition-colors hover:bg-brown-medium/10 flex items-center gap-3`}
+                            className={`${textColor} ${hoverColor} py-3 px-4 rounded-lg font-open-sans transition-colors duration-300 hover:bg-brown-medium/10 flex items-center gap-3 ${
+                              isActive
+                                ? "font-bold bg-brown-medium/20 border-l-4 border-brown-dark"
+                                : "font-medium"
+                            }`}
                           >
                             {Icon && <Icon className="w-5 h-5" />}
                             {link.label}
@@ -219,20 +263,27 @@ export default function Header({
                     aria-hidden={!isMobileMenuOpen}
                   >
                     <div className="py-3">
-                      {mobileNavLinks.map((link, index) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={handleCloseMenu}
-                          className={`block px-6 py-4 text-gray-900 hover:bg-gray-50 font-medium font-open-sans transition-colors ${
-                            index < mobileNavLinks.length - 1
-                              ? "border-b border-gray-100"
-                              : ""
-                          }`}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
+                      {mobileNavLinks.map((link, index) => {
+                        const isActive = pathname === link.href;
+                        return (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={handleCloseMenu}
+                            className={`block px-6 py-4 text-gray-900 hover:bg-gray-50 font-open-sans transition-colors duration-300 relative ${
+                              isActive
+                                ? "font-bold bg-brown-dark/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-brown-dark"
+                                : "font-medium"
+                            } ${
+                              index < mobileNavLinks.length - 1
+                                ? "border-b border-gray-100"
+                                : ""
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   </nav>
                 </>
@@ -242,8 +293,8 @@ export default function Header({
         </div>
       </header>
 
-      {/* Spacer for app variant to push content down */}
-      {variant === "app" && !isProductPage && (
+      {/* Spacer for fixed header to push content down */}
+      {(effectiveVariant === "app" || isLandingGroupPage) && !isProductPage && (
         <div
           className="md:hidden transition-all duration-300"
           style={{ height: isMobileMenuOpen ? `${menuHeight}px` : "0px" }}
