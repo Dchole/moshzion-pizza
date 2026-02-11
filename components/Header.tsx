@@ -13,7 +13,22 @@ import ReceiptIcon from "@mui/icons-material/Receipt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import Logo from "./Logo";
 import { CartButtonGroup } from "@/components/CartButtonGroup";
-import { NAV_LINKS } from "@/lib/constants";
+import {
+  NAV_LINKS,
+  SCROLL_THRESHOLDS,
+  MOBILE_MENU_CONFIG,
+  APP_NAV_LINKS,
+  APP_MOBILE_NAV_LINKS,
+  LANDING_GROUP_PATHS
+} from "@/lib/constants";
+
+const ICON_MAP = {
+  Person: PersonIcon,
+  Storefront: StorefrontIcon,
+  Info: InfoIcon,
+  Receipt: ReceiptIcon,
+  LocalShipping: LocalShippingIcon
+} as const;
 
 export default function Header({
   variant = "landing"
@@ -27,90 +42,95 @@ export default function Header({
   const isProductPage = pathname?.startsWith("/product/");
   const isLandingPage = pathname === "/";
   const isLandingGroupPage =
-    variant === "landing" ||
-    pathname === "/about" ||
-    pathname === "/contacts" ||
-    pathname === "/faqs" ||
-    pathname === "/credits";
+    variant === "landing" || LANDING_GROUP_PATHS.includes(pathname || "");
+  const isAppVariant = variant === "app";
 
   // Track scroll position for landing page
   useEffect(() => {
-    if (!isLandingPage) {
-      return;
-    }
+    if (!isLandingPage) return;
 
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () =>
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLDS.headerScroll);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isLandingPage]);
 
-  const shouldUseAppVariant = variant === "app";
-  const effectiveVariant = shouldUseAppVariant ? "app" : "landing";
+  // Determine styling based on variant and state
+  const shouldUseDarkText = isAppVariant || !isLandingPage || isScrolled;
+  const shouldShowWhiteBg = isAppVariant || !isLandingPage || isScrolled;
+  const shouldShowShadow = !isAppVariant && shouldShowWhiteBg;
 
-  const handleOpenMenu = () => {
-    setIsMobileMenuOpen(true);
-  };
-
-  const handleCloseMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  // Determine text colors based on page type and scroll state
-  const shouldUseDarkText =
-    effectiveVariant === "app" || !isLandingPage || isScrolled;
   const textColor = shouldUseDarkText ? "text-brown-dark" : "text-white";
   const hoverColor = shouldUseDarkText
     ? "hover:text-brown-medium"
     : "hover:text-gray-200";
 
-  const navLinks =
-    effectiveVariant === "app"
-      ? [
-          { label: "Store", href: "/store" },
-          { label: "About", href: "/about" },
-          { label: "Orders", href: "/orders" },
-          { label: "Track Order", href: "/track-order" }
-        ]
-      : NAV_LINKS;
+  const navLinks = isAppVariant ? APP_NAV_LINKS : NAV_LINKS;
+  const mobileNavLinks = isAppVariant
+    ? APP_MOBILE_NAV_LINKS.map(link => ({
+        ...link,
+        icon: ICON_MAP[link.icon as keyof typeof ICON_MAP]
+      }))
+    : NAV_LINKS.map(link => ({ ...link, icon: undefined }));
 
-  const mobileNavLinks =
-    effectiveVariant === "app"
-      ? [
-          { label: "Account", href: "/account", icon: PersonIcon },
-          { label: "Store", href: "/store", icon: StorefrontIcon },
-          { label: "About", href: "/about", icon: InfoIcon },
-          { label: "Orders", href: "/orders", icon: ReceiptIcon },
-          {
-            label: "Track Order",
-            href: "/track-order",
-            icon: LocalShippingIcon
-          }
-        ]
-      : navLinks.map(link => ({ ...link, icon: undefined }));
-
-  // Determine header styling based on variant, page type, and scroll state
-  const headerPosition =
-    effectiveVariant === "app" || isLandingGroupPage ? "fixed" : "absolute";
-  const shouldShowWhiteBg =
-    effectiveVariant === "app" || !isLandingPage || isScrolled;
-  const headerBg = shouldShowWhiteBg ? "bg-white" : "bg-transparent";
-  const headerShadow =
-    effectiveVariant === "landing" && shouldShowWhiteBg
-      ? "shadow-sm"
-      : "shadow-none";
-  const headerZIndex = effectiveVariant === "app" ? "z-40" : "z-30";
+  const headerClasses = [
+    isAppVariant || isLandingGroupPage ? "fixed" : "absolute",
+    "top-0 left-0 right-0",
+    isAppVariant ? "z-40" : "z-30",
+    shouldShowWhiteBg ? "bg-white" : "bg-transparent",
+    shouldShowShadow ? "shadow-sm" : "shadow-none",
+    "transition-all duration-300"
+  ].join(" ");
 
   const menuHeight =
-    isMobileMenuOpen && variant === "app" ? mobileNavLinks.length * 56 + 32 : 0;
+    isMobileMenuOpen && isAppVariant
+      ? mobileNavLinks.length * MOBILE_MENU_CONFIG.itemHeight +
+        MOBILE_MENU_CONFIG.padding
+      : 0;
+
+  const getNavLinkClasses = (isActive: boolean) => {
+    const base =
+      "text-base font-medium font-open-sans transition-all duration-300 px-4 py-2 rounded-full";
+    const colors = `${textColor} ${hoverColor}`;
+
+    if (isActive) {
+      const activeBg = shouldUseDarkText ? "bg-brown-dark/10" : "bg-white/25";
+      return `${base} ${colors} ${activeBg} scale-105`;
+    }
+
+    const hoverBg = shouldUseDarkText
+      ? "hover:bg-brown-dark/5"
+      : "hover:bg-white/15";
+    return `${base} ${colors} ${hoverBg}`;
+  };
+
+  const getMobileNavLinkClasses = (isActive: boolean, index: number) => {
+    const base =
+      "block px-6 py-4 text-gray-900 hover:bg-gray-50 font-open-sans transition-colors duration-300 relative";
+    const border =
+      index < mobileNavLinks.length - 1 ? "border-b border-gray-100" : "";
+    const weight = isActive ? "font-bold" : "font-medium";
+    const active = isActive
+      ? "bg-brown-dark/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-brown-dark"
+      : "";
+
+    return `${base} ${weight} ${active} ${border}`;
+  };
+
+  const getAppMobileNavLinkClasses = (isActive: boolean) => {
+    const base = `${textColor} ${hoverColor} py-3 px-4 rounded-lg font-open-sans transition-colors duration-300 hover:bg-brown-medium/10 flex items-center gap-3`;
+    const weight = isActive ? "font-bold" : "font-medium";
+    const active = isActive
+      ? "bg-brown-medium/20 border-l-4 border-brown-dark"
+      : "";
+
+    return `${base} ${weight} ${active}`;
+  };
 
   return (
     <>
-      <header
-        className={`${headerPosition} top-0 left-0 right-0 ${headerZIndex} ${headerBg} ${headerShadow} transition-all duration-300`}
-      >
+      <header className={headerClasses}>
         <div className="hidden md:block">
           <div className="mx-auto max-w-384 px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
@@ -130,26 +150,15 @@ export default function Header({
                   className="flex items-center gap-8"
                   aria-label="Main navigation"
                 >
-                  {navLinks.map(link => {
-                    const isActive = pathname === link.href;
-                    return (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className={`text-base font-medium font-open-sans transition-all duration-300 px-4 py-2 rounded-full ${
-                          isActive
-                            ? shouldUseDarkText
-                              ? "bg-brown-dark/10 scale-105"
-                              : "bg-white/25 scale-105"
-                            : shouldUseDarkText
-                              ? "hover:bg-brown-dark/5"
-                              : "hover:bg-white/15"
-                        } ${textColor} ${hoverColor}`}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  })}
+                  {navLinks.map(link => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={getNavLinkClasses(pathname === link.href)}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
                 </nav>
               </div>
 
@@ -164,9 +173,7 @@ export default function Header({
               <div className="flex items-center gap-3">
                 {!isProductPage && (
                   <button
-                    onClick={
-                      isMobileMenuOpen ? handleCloseMenu : handleOpenMenu
-                    }
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     className={`${textColor} hover:opacity-80 transition-all duration-300`}
                     aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
                   >
@@ -208,7 +215,7 @@ export default function Header({
 
           {!isProductPage && (
             <>
-              {effectiveVariant === "app" ? (
+              {isAppVariant ? (
                 <nav
                   className={`bg-white border-t border-brown-medium/10 transition-all duration-300 ease-out overflow-hidden ${
                     isMobileMenuOpen
@@ -227,12 +234,8 @@ export default function Header({
                           <Link
                             key={link.href}
                             href={link.href}
-                            onClick={handleCloseMenu}
-                            className={`${textColor} ${hoverColor} py-3 px-4 rounded-lg font-open-sans transition-colors duration-300 hover:bg-brown-medium/10 flex items-center gap-3 ${
-                              isActive
-                                ? "font-bold bg-brown-medium/20 border-l-4 border-brown-dark"
-                                : "font-medium"
-                            }`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={getAppMobileNavLinkClasses(isActive)}
                           >
                             {Icon && <Icon className="w-5 h-5" />}
                             {link.label}
@@ -250,7 +253,7 @@ export default function Header({
                         ? "bg-black/30 opacity-100 pointer-events-auto"
                         : "bg-black/0 opacity-0 pointer-events-none"
                     }`}
-                    onClick={handleCloseMenu}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     aria-hidden="true"
                   />
                   <nav
@@ -263,27 +266,19 @@ export default function Header({
                     aria-hidden={!isMobileMenuOpen}
                   >
                     <div className="py-3">
-                      {mobileNavLinks.map((link, index) => {
-                        const isActive = pathname === link.href;
-                        return (
-                          <Link
-                            key={link.href}
-                            href={link.href}
-                            onClick={handleCloseMenu}
-                            className={`block px-6 py-4 text-gray-900 hover:bg-gray-50 font-open-sans transition-colors duration-300 relative ${
-                              isActive
-                                ? "font-bold bg-brown-dark/5 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1 before:bg-brown-dark"
-                                : "font-medium"
-                            } ${
-                              index < mobileNavLinks.length - 1
-                                ? "border-b border-gray-100"
-                                : ""
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        );
-                      })}
+                      {mobileNavLinks.map((link, index) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={getMobileNavLinkClasses(
+                            pathname === link.href,
+                            index
+                          )}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
                     </div>
                   </nav>
                 </>
@@ -293,11 +288,10 @@ export default function Header({
         </div>
       </header>
 
-      {/* Spacer for fixed header to push content down */}
-      {(effectiveVariant === "app" || isLandingGroupPage) && !isProductPage && (
+      {(isAppVariant || isLandingGroupPage) && !isProductPage && (
         <div
           className="md:hidden transition-all duration-300"
-          style={{ height: isMobileMenuOpen ? `${menuHeight}px` : "0px" }}
+          style={{ height: `${menuHeight}px` }}
         />
       )}
     </>

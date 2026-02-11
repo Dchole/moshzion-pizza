@@ -57,8 +57,31 @@ export const UI_TIMING = {
 };
 
 export const SCROLL_THRESHOLDS = {
-  floatingCartButton: 64
+  floatingCartButton: 64,
+  headerScroll: 50
 };
+
+export const MOBILE_MENU_CONFIG = {
+  itemHeight: 56,
+  padding: 32
+};
+
+export const APP_NAV_LINKS = [
+  { label: "Store", href: "/store" },
+  { label: "About", href: "/about" },
+  { label: "Orders", href: "/orders" },
+  { label: "Track Order", href: "/track-order" }
+];
+
+export const APP_MOBILE_NAV_LINKS = [
+  { label: "Account", href: "/account", icon: "Person" },
+  { label: "Store", href: "/store", icon: "Storefront" },
+  { label: "About", href: "/about", icon: "Info" },
+  { label: "Orders", href: "/orders", icon: "Receipt" },
+  { label: "Track Order", href: "/track-order", icon: "LocalShipping" }
+];
+
+export const LANDING_GROUP_PATHS = ["/about", "/contacts", "/faqs", "/credits"];
 
 export const FOOTER_LINKS = [
   { label: "About Us", href: "/about" },
