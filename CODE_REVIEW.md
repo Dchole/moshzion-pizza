@@ -15,12 +15,12 @@
 - Matches app theme and branding
 - Non-blocking (doesn't halt JS execution)
 
-### 2. Code Duplication: Modal Components
+### 2. ✅ FIXED: Code Duplication: Modal Components
 
-#### CRITICAL DUPLICATES:
+#### CRITICAL DUPLICATES (RESOLVED):
 
 ```tsx
-// Repeated in 3 files: AddressFormModal, PaymentMethodFormModal, SaveOrderInfoModal
+// Was repeated in 3 files: AddressFormModal, PaymentMethodFormModal, SaveOrderInfoModal
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
   <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
     <div className="p-6">{/* Form content */}</div>
@@ -28,60 +28,64 @@
 </div>
 ```
 
-**Impact:** ~150 lines of duplicate code  
-**Fix Needed:** Use unified `Modal` component (created)
+**Impact:** ~150 lines of duplicate code eliminated  
+**Fix Applied:** Created unified `Modal` component using native `<dialog>` element
 
-#### Form Validation Duplication:
+#### Form Validation Duplication (RESOLVED):
 
-- Phone number validation logic repeated in PaymentMethodFormModal (lines 75-84) and ContactInfoStep
-- Provider detection repeated in orders.ts (lines 95-107) and PaymentMethodFormModal (lines 76-84)
+- ✅ Phone number validation logic extracted to utility functions
+- ✅ Provider detection extracted to utility functions
+- ✅ Used in orders.ts, PaymentMethodFormModal, AddressFormModal
 
-**Fix Needed:** Extract to utility functions in `/lib/utils/phone.ts`:
+**Fix Applied:** Created `/lib/utils/phone.ts` with 5 utility functions:
 
-- `detectMobileMoneyProvider(phone: string)`
-- `formatPhoneNumber(phone: string)`
+- `detectMobileMoneyProvider(phone: string)` - Detects MTN/Vodafone/AirtelTigo
+- `formatPhoneNumber(phone: string)` - Handles 233 country code
+- `isValidGhanaPhone(phone: string)` - Validates format
+- `getPhoneLast4(phone: string)` - Gets last 4 digits
 
-### 3. Accessibility Issues
+### 3. ✅ FIXED: Accessibility Issues
 
-#### Color Contrast Problems:
+#### Color Contrast Problems (RESOLVED):
 
-| Element                       | Current           | WCAG Rating | Fix Needed                   |
-| ----------------------------- | ----------------- | ----------- | ---------------------------- |
-| `text-red-500` on white       | #ef4444           | AA ❌       | Use `text-red-700` (#b91c1c) |
-| `text-red-700` on `bg-red-50` | #b91c1c / #fef2f2 | AAA ✅      | Keep                         |
-| Error text                    | Current 4.5:1     | AA Pass     | Consider AAA (7:1)           |
+| Element                   | Current      | WCAG Rating | Status |
+| ------------------------- | ------------ | ----------- | ------ |
+| `text-red-800` on white   | #991b1b      | AAA ✅      | Fixed  |
+| `text-green-800` on white | #166534      | AAA ✅      | Fixed  |
+| `text-amber-900` on white | #78350f      | AAA ✅      | Fixed  |
+| Error text                | 7:1 contrast | AAA ✅      | Fixed  |
 
-#### Missing ARIA Labels:
+#### Missing ARIA Labels (RESOLVED):
 
-- Close buttons in modals (fixed in new Modal component)
-- Form sections need `aria-describedby` for error messages
-- Modal overlays need `aria-modal="true"` (native `<dialog>` provides this)
+- ✅ Close buttons in modals have proper aria-labels
+- ✅ Alert messages use `role="alert"`
+- ✅ Modal overlays use native `<dialog>` with automatic `aria-modal="true"`
 
-#### Focus Management:
+#### Focus Management (RESOLVED):
 
-- Modals using `fixed` divs don't trap focus ❌
-- New `Modal` component uses `<dialog>` which provides:
+- ✅ All modals now use `<dialog>` element which provides:
   - Automatic focus trap ✅
   - ESC key handling ✅
   - Backdrop click handling ✅
+  - Keyboard navigation ✅
 
-### 4. Components That Should Use Existing Components
+### 4. ✅ FIXED: Components That Should Use Existing Components
 
-#### Dialog Component Exists But Not Used:
+#### Dialog Component (RESOLVED):
 
-**File:** `/components/ui/Dialog.tsx` (uses native `<dialog>`)  
-**Not used in:**
+**Created:** `/components/ui/Modal.tsx` - Unified modal wrapper  
+**Now used in:**
 
-- AddressFormModal.tsx
-- PaymentMethodFormModal.tsx
-- SaveOrderInfoModal.tsx
+- ✅ AddressFormModal.tsx
+- ✅ PaymentMethodFormModal.tsx
+- ✅ SaveOrderInfoModal.tsx
 
-**Fix:** Refactor all modals to use new `Modal` component
+**All modals refactored** to use new `Modal` component
 
-#### AccountContent.tsx Already Uses Dialog:
+#### AccountContent.tsx (RESOLVED):
 
-**Line 556:** Uses `Dialog` for delete confirmation  
-**Should:** Use consistent `ConfirmDialog` component
+**Previously:** Used generic `Dialog` for delete confirmation  
+**Now:** Uses consistent `ConfirmDialog` component with danger variant
 
 ### 5. Client vs Server Components
 
@@ -110,41 +114,30 @@ These are currently client components but might work as server components:
 
 **Verdict:** Current client/server split is appropriate
 
-### 6. Code That Should Be Components
+### 6. ✅ FIXED: Code That Should Be Components
 
-#### Duplicate Error Display Pattern:
-
-```tsx
-// Repeated in 5+ files
-{
-  error && (
-    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-      <p className="text-red-800 text-sm">{error}</p>
-    </div>
-  );
-}
-```
-
-**Fix Needed:** Create`<ErrorAlert>` component:
+#### Duplicate Error Display Pattern (RESOLVED):
 
 ```tsx
-<ErrorAlert message={error} />
+// Was repeated in 5+ files - now replaced everywhere
+<Alert variant="error" message={error} />
 ```
 
-#### Duplicate Success Display Pattern:
+**Fix Applied:** Created `/components/ui/Alert.tsx` component with:
 
-```tsx
-// Repeated in 3+ files
-{
-  success && (
-    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-      <p className="text-green-800 text-sm">{message}</p>
-    </div>
-  );
-}
-```
+- WCAG AAA color contrast (7:1 ratio)
+- 4 variants: error, success, warning, info
+- Proper `role="alert"` for screen readers
+- Consistent styling across app
 
-**Fix Needed:** Create `<Alert>` component with variants
+#### Now Used In:
+
+- ✅ CheckoutForm.tsx
+- ✅ ContactInfoStep.tsx
+- ✅ ContactForm.tsx
+- ✅ AddressFormModal.tsx
+- ✅ PaymentMethodFormModal.tsx
+- ✅ SaveOrderInfoModal.tsx
 
 #### Form Field Pattern:
 
@@ -235,19 +228,21 @@ type Result<T, E = string> =
 
 ## Priority Order
 
-### Phase 1: High Impact (Do Now) ✅
+### Phase 1: High Impact ✅ COMPLETED
 
 1. ✅ Replace window.confirm with ConfirmDialog
-2. ✅ Create unified Modal component
-3. ⏳ Fix color contrast issues
-4. ⏳ Refactor modals to use Modal component
+2. ✅ Create unified Modal component (native `<dialog>`)
+3. ✅ Fix color contrast issues (WCAG AAA compliant)
+4. ✅ Refactor modals to use Modal component
 
-### Phase 2: Medium Impact (This Session)
+### Phase 2: Medium Impact ✅ COMPLETED
 
-5. Create Alert component (Error/Success messages)
-6. Create FormField component
-7. Extract phone utility functions
-8. Fix AccountContent to use ConfirmDialog
+5. ✅ Create Alert component (Error/Success/Warning/Info)
+6. ⏳ Create FormField component (deferred - low priority)
+7. ✅ Extract phone utility functions (5 functions created)
+8. ✅ Fix AccountContent to use ConfirmDialog
+9. ✅ Replace all inline alert displays with Alert component
+10. ✅ Fix orders.ts to use phone utilities
 
 ### Phase 3: Low Impact (Future)
 
@@ -258,17 +253,43 @@ type Result<T, E = string> =
 
 ---
 
-## Files to Refactor
+## Files Refactored ✅
 
-### Immediate:
+### Modals (All Complete):
 
-- [ ] AddressFormModal.tsx → Use Modal component
-- [ ] PaymentMethodFormModal.tsx → Use Modal component
-- [ ] SaveOrderInfoModal.tsx → Use Modal component
-- [ ] AccountContent.tsx → Use ConfirmDialog
+- ✅ AddressFormModal.tsx → Uses Modal component (225→170 lines, -55)
+- ✅ PaymentMethodFormModal.tsx → Uses Modal component (304→275 lines, -29)
+- ✅ SaveOrderInfoModal.tsx → Uses Modal component (186→172 lines, -14)
+- ✅ AccountContent.tsx → Uses ConfirmDialog
+- ✅ CheckoutForm.tsx → Uses ConfirmDialog and Alert
 
-### Create New Components:
+### New Components Created:
 
-- [ ] `/components/ui/Alert.tsx` (Error/Success/Warning/Info)
-- [ ] `/components/ui/FormField.tsx` (Label + Input wrapper)
-- [ ] `/lib/utils/phone.ts` (Phone utilities)
+- ✅ `/components/ui/Modal.tsx` - Native `<dialog>` wrapper with focus trap
+- ✅ `/components/ui/ConfirmDialog.tsx` - Accessible confirmation dialogs
+- ✅ `/components/ui/Alert.tsx` - Error/Success/Warning/Info messages (WCAG AAA)
+- ✅ `/lib/utils/phone.ts` - 5 phone utility functions
+
+### Alert Component Integration:
+
+- ✅ CheckoutForm.tsx
+- ✅ ContactInfoStep.tsx
+- ✅ ContactForm.tsx
+- ✅ AddressFormModal.tsx
+- ✅ PaymentMethodFormModal.tsx
+- ✅ SaveOrderInfoModal.tsx
+
+### Server Actions Updated:
+
+- ✅ orders.ts → Uses detectMobileMoneyProvider() and getPhoneLast4()
+
+## Impact Summary
+
+**Lines Removed:** ~200 lines of duplicate code eliminated
+**Improvements:**
+
+- Native `<dialog>` with automatic focus management
+- WCAG AAA color contrast (7:1 ratio)
+- Centralized phone utilities (single source of truth)
+- Consistent confirmation and alert patterns
+- Better accessibility and keyboard navigation
