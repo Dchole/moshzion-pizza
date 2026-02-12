@@ -16,6 +16,10 @@
  * 3. Add to Vercel: HUBTEL_CLIENT_ID, HUBTEL_CLIENT_SECRET
  */
 
+import { env, isDevelopment, isHubtelConfigured } from "@/lib/env";
+import { logger } from "@/lib/logger";
+import { isOTPRateLimited } from "@/lib/rate-limit";
+
 /**
  * Format Ghana phone number to international format (233XXXXXXXXX)
  * Accepts: 0244123456 or 244123456 or 233244123456
@@ -42,14 +46,13 @@ export function formatGhanaPhone(phone: string): string {
  * Get Hubtel Basic Auth credentials
  */
 function getHubtelAuth(): string | null {
-  const clientId = process.env.HUBTEL_CLIENT_ID;
-  const clientSecret = process.env.HUBTEL_CLIENT_SECRET;
-
-  if (!clientId || !clientSecret) {
+  if (!isHubtelConfigured) {
     return null;
   }
 
-  return Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+  return Buffer.from(
+    `${env.HUBTEL_CLIENT_ID}:${env.HUBTEL_CLIENT_SECRET}`
+  ).toString("base64");
 }
 
 /**
@@ -64,14 +67,23 @@ export async function sendOTP(phone: string): Promise<{
   error?: string;
 }> {
   try {
+    // Check rate limit
+    const rateLimitCheck = isOTPRateLimited(phone);
+    if (rateLimitCheck.limited) {
+      logger.warn("OTP rate limit exceeded", {
+        phone,
+        resetIn: rateLimitCheck.resetIn
+      });
+      return {
+        success: false,
+        error: `Too many OTP requests. Please try again in ${rateLimitCheck.resetIn} seconds.`
+      };
+    }
+
     // Development: Generate and log OTP
-    if (process.env.NODE_ENV === "development") {
+    if (isDevelopment) {
       const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-      console.log("\n=== OTP VERIFICATION (DEV MODE) ===");
-      console.log(`Phone: ${phone}`);
-      console.log(`OTP Code: ${otpCode}`);
-      console.log(`Valid for: 10 minutes`);
-      console.log("====================================\n");
+      logger.otp("send", phone, true, { code: otpCode, mode: "development" });
       return {
         success: true,
         requestId: `dev-${Date.now()}`,
@@ -90,7 +102,7 @@ export async function sendOTP(phone: string): Promise<{
 
     const formattedPhone = formatGhanaPhone(phone);
 
-    const senderId = process.env.HUBTEL_SENDER_ID;
+    const senderId = env.HUBTEL_SENDER_ID;
 
     const response = await fetch("https://api-otp.hubtel.com/otp/send", {
       method: "POST",
@@ -127,7 +139,7 @@ export async function sendOTP(phone: string): Promise<{
       prefix: data.data.prefix
     };
   } catch (error) {
-    console.error("OTP sending failed:", error);
+    logger.error("OTP sending failed", error, { phone });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to send OTP"
@@ -199,7 +211,7 @@ export async function verifyOTP(
       verified
     };
   } catch (error) {
-    console.error("OTP verification failed:", error);
+    logger.error("OTP verification failed", error, { requestId });
     return {
       success: false,
       verified: false,
@@ -271,7 +283,7 @@ export async function resendOTP(requestId: string): Promise<{
       prefix: data.data.prefix
     };
   } catch (error) {
-    console.error("OTP resend failed:", error);
+    logger.error("OTP resend failed", error, { requestId });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Failed to resend OTP"

@@ -2,9 +2,31 @@
 
 import { cookies } from "next/headers";
 import type { CartItem } from "@/types";
+import { z } from "zod";
+import { COOKIES, CART } from "@/lib/config";
 
-const CART_COOKIE_NAME = "cart";
-const MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+const CART_COOKIE_NAME = COOKIES.cart;
+const MAX_AGE = COOKIES.cartMaxAge;
+
+// Zod schema for cart item validation
+const cartItemSchema = z.object({
+  id: z.string(),
+  pizzaId: z.string(),
+  name: z.string(),
+  price: z.number().positive(),
+  size: z.enum(["Small", "Medium", "Large", "Mega"]),
+  toppings: z.array(z.string()),
+  quantity: z
+    .number()
+    .int()
+    .min(CART.minQuantityPerItem)
+    .max(CART.maxQuantityPerItem),
+  image: z.string()
+});
+
+const cartDataSchema = z.object({
+  items: z.array(cartItemSchema).max(CART.maxItems)
+});
 
 interface CartData {
   items: CartItem[];
@@ -19,8 +41,14 @@ async function getCartData(): Promise<CartData> {
   }
 
   try {
-    return JSON.parse(cartCookie.value);
-  } catch {
+    const parsed = JSON.parse(cartCookie.value);
+    const validated = cartDataSchema.parse(parsed);
+    return validated;
+  } catch (error) {
+    // If validation fails, return empty cart and clear invalid cookie
+    logger.warn("Invalid cart data detected, clearing cart", { error });
+    const cookieStore = await cookies();
+    cookieStore.delete(CART_COOKIE_NAME);
     return { items: [] };
   }
 }
@@ -42,6 +70,11 @@ export async function getCart(): Promise<CartData> {
 export async function addToCart(item: Omit<CartItem, "id">): Promise<CartData> {
   const cart = await getCartData();
 
+  // Check cart limits
+  if (cart.items.length >= CART.maxItems) {
+    throw new Error(`Cart cannot exceed ${CART.maxItems} items`);
+  }
+
   const existingIndex = cart.items.findIndex(
     i =>
       i.pizzaId === item.pizzaId &&
@@ -51,9 +84,19 @@ export async function addToCart(item: Omit<CartItem, "id">): Promise<CartData> {
   );
 
   if (existingIndex >= 0) {
-    cart.items[existingIndex].quantity += item.quantity;
+    const newQuantity = cart.items[existingIndex].quantity + item.quantity;
+    // Enforce max quantity per item
+    cart.items[existingIndex].quantity = Math.min(
+      newQuantity,
+      CART.maxQuantityPerItem
+    );
   } else {
-    cart.items.push({ ...item, id: crypto.randomUUID() });
+    // Validate and add new item
+    const validatedItem = cartItemSchema.parse({
+      ...item,
+      id: crypto.randomUUID()
+    });
+    cart.items.push(validatedItem);
   }
 
   await setCartData(cart);
@@ -78,7 +121,11 @@ export async function updateCartItemQuantity(
   } else {
     const item = cart.items.find(item => item.id === itemId);
     if (item) {
-      item.quantity = quantity;
+      // Enforce quantity limits
+      item.quantity = Math.min(
+        Math.max(quantity, CART.minQuantityPerItem),
+        CART.maxQuantityPerItem
+      );
     }
   }
 

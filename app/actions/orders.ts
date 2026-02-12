@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth";
 import type { CartItem, OrderItem } from "@/types";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 export interface CreateOrderInput {
   items: CartItem[];
@@ -141,12 +142,18 @@ export async function createOrder(input: CreateOrderInput) {
         }
       } catch (error) {
         // Log error but don't fail the order
-        console.error("Failed to save mobile money payment method:", error);
+        logger.error("Failed to save mobile money payment method", error);
       }
     }
 
     revalidatePath("/orders");
     revalidatePath("/account");
+
+    logger.order("created", order.id, {
+      userId: order.userId || "guest",
+      total: order.total,
+      itemCount: input.items.length
+    });
 
     return {
       success: true,
@@ -154,7 +161,7 @@ export async function createOrder(input: CreateOrderInput) {
       order
     };
   } catch (error) {
-    console.error("Error creating order:", error);
+    logger.error("Error creating order", error);
     return {
       success: false,
       error: "Failed to create order. Please try again."
@@ -186,7 +193,7 @@ export async function updateOrderPaymentStatus(
       order
     };
   } catch (error) {
-    console.error("Error updating payment status:", error);
+    logger.error("Error updating payment status", error, { orderId });
     return {
       success: false,
       error: "Failed to update payment status"
@@ -226,7 +233,7 @@ export async function getUserOrders() {
       orders
     };
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    logger.error("Error fetching orders", error, { userId: user?.id });
     return {
       success: false,
       error: "Failed to fetch orders",
@@ -237,14 +244,22 @@ export async function getUserOrders() {
 
 /**
  * Get a single order by ID
+ * Authorization is enforced at the database query level
  */
 export async function getOrderById(orderId: string) {
   try {
     const user = await getCurrentUser();
 
-    const order = await prisma.order.findUnique({
+    // Build query with authorization constraints
+    const order = await prisma.order.findFirst({
       where: {
-        id: orderId
+        id: orderId,
+        OR: [
+          // User owns this order
+          { userId: user?.id },
+          // Guest order (allow access only if no userId set)
+          { userId: null }
+        ]
       },
       include: {
         user: {
@@ -261,15 +276,7 @@ export async function getOrderById(orderId: string) {
     if (!order) {
       return {
         success: false,
-        error: "Order not found"
-      };
-    }
-
-    // Check if user owns this order (or it's a guest order)
-    if (order.userId && order.userId !== user?.id) {
-      return {
-        success: false,
-        error: "Unauthorized"
+        error: "Order not found or you don't have permission to view it"
       };
     }
 
@@ -278,7 +285,7 @@ export async function getOrderById(orderId: string) {
       order
     };
   } catch (error) {
-    console.error("Error fetching order:", error);
+    logger.error("Error fetching order", error, { orderId });
     return {
       success: false,
       error: "Failed to fetch order"
@@ -332,12 +339,14 @@ export async function cancelOrder(orderId: string) {
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
+    logger.order("cancelled", orderId, { userId: user?.id });
+
     return {
       success: true,
       order: updatedOrder
     };
   } catch (error) {
-    console.error("Error cancelling order:", error);
+    logger.error("Error cancelling order", error, { orderId });
     return {
       success: false,
       error: "Failed to cancel order"
@@ -358,12 +367,14 @@ export async function linkOrderToUser(orderId: string, userId: string) {
     revalidatePath("/orders");
     revalidatePath(`/orders/${orderId}`);
 
+    logger.order("updated", orderId, { linkedUserId: userId });
+
     return {
       success: true,
       order
     };
   } catch (error) {
-    console.error("Error linking order to user:", error);
+    logger.error("Error linking order to user", error, { orderId, userId });
     return {
       success: false,
       error: "Failed to link order"

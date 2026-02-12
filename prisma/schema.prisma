@@ -31,6 +31,8 @@ model User {
     addresses      Address[]
     paymentMethods PaymentMethod[]
 
+    @@index([phone])
+    @@index([createdAt])
     @@map("users")
 }
 
@@ -51,6 +53,8 @@ model Address {
     user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     orders Order[]
 
+    @@index([userId, isDefault])
+    @@index([userId, createdAt])
     @@map("addresses")
 }
 
@@ -69,6 +73,8 @@ model PaymentMethod {
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+    @@index([userId, isDefault])
+    @@index([userId, type])
     @@map("payment_methods")
 }
 
@@ -101,6 +107,10 @@ model Order {
     user    User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
     address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
 
+    @@index([userId, createdAt])
+    @@index([status, paymentStatus])
+    @@index([guestPhone])
+    @@index([createdAt])
     @@map("orders")
 }
 

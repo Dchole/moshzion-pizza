@@ -3,6 +3,8 @@
 import { z } from "zod";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
+import { logger } from "@/lib/logger";
 
 interface ActionResult {
   success: boolean;
@@ -24,8 +26,9 @@ export type AddressInput = z.infer<typeof addressSchema>;
 
 /**
  * Get all addresses for the current user
+ * Cached for the duration of the request
  */
-export async function getUserAddresses() {
+export const getUserAddresses = cache(async () => {
   try {
     const { getCurrentUser } = await import("@/lib/auth");
     const user = await getCurrentUser();
@@ -41,10 +44,10 @@ export async function getUserAddresses() {
 
     return addresses;
   } catch (error) {
-    console.error("Get addresses error:", error);
+    logger.error("Get addresses error", error);
     return [];
   }
-}
+});
 
 /**
  * Add a new address
@@ -89,7 +92,7 @@ export async function addAddress(data: AddressInput): Promise<ActionResult> {
       };
     }
 
-    console.error("Add address error:", error);
+    logger.error("Add address error", error);
     return {
       success: false,
       error: "Failed to add address"
@@ -153,7 +156,7 @@ export async function updateAddress(
       };
     }
 
-    console.error("Update address error:", error);
+    logger.error("Update address error", error);
     return {
       success: false,
       error: "Failed to update address"
@@ -196,7 +199,7 @@ export async function deleteAddress(addressId: string): Promise<ActionResult> {
 
     return { success: true };
   } catch (error) {
-    console.error("Delete address error:", error);
+    logger.error("Delete address error", error, { addressId: id });
     return {
       success: false,
       error: "Failed to delete address"

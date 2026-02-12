@@ -4,6 +4,8 @@ import type { NextAuthConfig } from "next-auth";
 import { phoneSchema } from "@/lib/schemas/auth";
 import { z } from "zod";
 import prisma from "@/lib/db";
+import { env } from "@/lib/env";
+import { logger } from "@/lib/logger";
 
 interface UserData {
   id: string;
@@ -50,7 +52,7 @@ async function validateUser(phone: string): Promise<UserData | null> {
     if (error instanceof z.ZodError) {
       return null;
     }
-    console.error("Validation error:", error);
+    logger.error("User validation error", error, { phone });
     throw error;
   }
 }

@@ -1,6 +1,9 @@
 "use server";
 
 import { z } from "zod";
+import { isContactFormRateLimited } from "@/lib/rate-limit";
+import { sanitizeText, sanitizeEmail } from "@/lib/sanitize";
+import { logger } from "@/lib/logger";
 
 const contactFormSchema = z.object({
   name: z
@@ -36,11 +39,35 @@ export async function submitContactForm(
   _prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
-  const data = {
+  const rawData = {
     name: formData.get("name"),
     email: formData.get("email"),
     subject: formData.get("subject"),
     message: formData.get("message")
+  };
+
+  // Rate limiting check (use email as identifier)
+  const email = String(rawData.email || "");
+  const rateLimitCheck = isContactFormRateLimited(email);
+
+  if (rateLimitCheck.limited) {
+    logger.warn("Contact form rate limit exceeded", { email });
+    return {
+      success: false,
+      errors: {
+        _form: [
+          `Too many submissions. Please try again in ${Math.ceil(rateLimitCheck.resetIn! / 60)} minutes.`
+        ]
+      }
+    };
+  }
+
+  // Sanitize inputs
+  const data = {
+    name: sanitizeText(String(rawData.name || "")),
+    email: sanitizeEmail(email),
+    subject: sanitizeText(String(rawData.subject || "")),
+    message: sanitizeText(String(rawData.message || ""))
   };
 
   // Validate form data
@@ -65,6 +92,11 @@ export async function submitContactForm(
     //   subject: result.data.subject,
     //   body: `From: ${result.data.name}\nEmail: ${result.data.email}\n\n${result.data.message}`
     // });
+
+    logger.info("Contact form submitted", {
+      from: result.data.email,
+      subject: result.data.subject
+    });
 
     return {
       success: true,

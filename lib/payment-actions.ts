@@ -3,6 +3,8 @@
 import { z } from "zod";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
+import { logger } from "@/lib/logger";
 
 interface ActionResult {
   success: boolean;
@@ -10,33 +12,37 @@ interface ActionResult {
   errors?: Record<string, string[]>;
 }
 
-const paymentMethodSchema = z.object({
-  type: z.enum(["Mobile Money", "Card"]),
-  provider: z.string().min(1, "Provider is required"),
-  last4: z.string().length(4, "Must be 4 digits"),
-  fullPhone: z.string().optional(),
-  name: z.string().optional(),
-  isDefault: z.boolean().default(false)
-}).refine(
-  (data) => {
-    // If Mobile Money, fullPhone is required and must match Ghana format
-    if (data.type === "Mobile Money") {
-      return data.fullPhone && /^(02|03|05)\d{8}$/.test(data.fullPhone);
+const paymentMethodSchema = z
+  .object({
+    type: z.enum(["Mobile Money", "Card"]),
+    provider: z.string().min(1, "Provider is required"),
+    last4: z.string().length(4, "Must be 4 digits"),
+    fullPhone: z.string().optional(),
+    name: z.string().optional(),
+    isDefault: z.boolean().default(false)
+  })
+  .refine(
+    data => {
+      // If Mobile Money, fullPhone is required and must match Ghana format
+      if (data.type === "Mobile Money") {
+        return data.fullPhone && /^(02|03|05)\d{8}$/.test(data.fullPhone);
+      }
+      return true;
+    },
+    {
+      message:
+        "Valid phone number required for Mobile Money (e.g., 0241234567)",
+      path: ["fullPhone"]
     }
-    return true;
-  },
-  {
-    message: "Valid phone number required for Mobile Money (e.g., 0241234567)",
-    path: ["fullPhone"],
-  }
-);
+  );
 
 export type PaymentMethodInput = z.infer<typeof paymentMethodSchema>;
 
 /**
  * Get all payment methods for the current user
+ * Cached for the duration of the request
  */
-export async function getUserPaymentMethods() {
+export const getUserPaymentMethods = cache(async () => {
   try {
     const { getCurrentUser } = await import("@/lib/auth");
     const user = await getCurrentUser();
@@ -47,18 +53,15 @@ export async function getUserPaymentMethods() {
 
     const paymentMethods = await prisma.paymentMethod.findMany({
       where: { userId: user.id },
-      orderBy: [
-        { isDefault: "desc" },
-        { createdAt: "desc" }
-      ]
+      orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }]
     });
 
     return paymentMethods;
   } catch (error) {
-    console.error("Get payment methods error:", error);
+    logger.error("Get payment methods error", error);
     return [];
   }
-}
+});
 
 /**
  * Add a new payment method

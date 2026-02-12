@@ -21,6 +21,8 @@ import type {
   HubtelPaymentResponse,
   HubtelPaymentStatusResponse
 } from "@/types";
+import { env, isDevelopment, isHubtelConfigured } from "@/lib/env";
+import { logger } from "@/lib/logger";
 
 const HUBTEL_API_BASE = "https://api.hubtel.com/v2";
 
@@ -28,14 +30,13 @@ const HUBTEL_API_BASE = "https://api.hubtel.com/v2";
  * Get Hubtel Basic Auth credentials
  */
 function getHubtelAuth(): string | null {
-  const clientId = process.env.HUBTEL_CLIENT_ID;
-  const clientSecret = process.env.HUBTEL_CLIENT_SECRET;
-
-  if (!clientId || !clientSecret) {
+  if (!isHubtelConfigured) {
     return null;
   }
 
-  return Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+  return Buffer.from(
+    `${env.HUBTEL_CLIENT_ID}:${env.HUBTEL_CLIENT_SECRET}`
+  ).toString("base64");
 }
 
 /**
@@ -46,8 +47,11 @@ export async function initiatePayment(
   request: HubtelReceiveMoneyRequest
 ): Promise<HubtelPaymentResponse> {
   // Development mode - simulate successful payment
-  if (process.env.NODE_ENV === "development") {
-    console.log("🔔 [DEV] Simulating Hubtel payment initiation:", request);
+  if (isDevelopment) {
+    logger.payment("initiate", request.clientReference, request.amount, {
+      mode: "development",
+      phone: request.customerMobileNumber
+    });
     return {
       status: "Success",
       message: "Payment initiated successfully (DEV MODE)",

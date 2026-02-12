@@ -4,9 +4,15 @@ import { z } from "zod";
 import { clearCart, getCart } from "./cart";
 import { createOrder, updateOrderPaymentStatus } from "./orders";
 import { UI_TIMING } from "@/lib/constants";
+import {
+  calculateOrderTotals,
+  VALIDATION,
+  PAYMENT_METHODS
+} from "@/lib/config";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserAddresses } from "@/lib/address-actions";
 import { initiatePayment, formatPhoneForHubtel } from "@/lib/hubtel-payment";
+import { env } from "@/lib/env";
 import prisma from "@/lib/db";
 
 const checkoutSchema = z
@@ -34,13 +40,13 @@ const checkoutSchema = z
           data.expiry &&
           data.cvc &&
           /^\d{16}$/.test(data.cardNumber.replace(/\s/g, "")) &&
-          /^(0[1-9]|1[0-2])\/\d{2}$/.test(data.expiry) &&
+          VALIDATION.expiryFormat.test(data.expiry) &&
           /^\d{3,4}$/.test(data.cvc) &&
           data.cardName.trim().length > 0
         );
       }
       if (data.paymentMethod === "mobile-money") {
-        return data.phoneNumber && /^0[235]\d{8}$/.test(data.phoneNumber);
+        return data.phoneNumber && VALIDATION.phoneRegex.test(data.phoneNumber);
       }
       return true;
     },
@@ -87,15 +93,12 @@ export async function processCheckout(formData: FormData) {
     // Get current user
     const user = await getCurrentUser();
 
-    // Calculate order totals
+    // Calculate order totals using centralized config
     const subtotal = cart.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
-    const deliveryFee = 5.0; // Fixed delivery fee
-    const taxRate = 0.1; // 10% tax
-    const tax = subtotal * taxRate;
-    const total = subtotal + deliveryFee + tax;
+    const { deliveryFee, tax, total } = calculateOrderTotals(subtotal);
 
     // Get address for authenticated users
     let addressId = validation.data.addressId;
@@ -158,7 +161,9 @@ export async function processCheckout(formData: FormData) {
         });
       } catch (error) {
         // Log error but don't fail the order
-        console.error("Failed to save delivery address:", error);
+        logger.error("Failed to save delivery address", error, {
+          userId: user.id
+        });
       }
     }
 
@@ -178,7 +183,7 @@ export async function processCheckout(formData: FormData) {
           customerName,
           customerMobileNumber: customerPhone,
           amount: total,
-          primaryCallbackUrl: `${process.env.NEXTAUTH_URL}/api/payments/hubtel/callback`,
+          primaryCallbackUrl: `${env.NEXTAUTH_URL}/api/payments/hubtel/callback`,
           description: `Pizza Order #${orderId.slice(0, 8)}`,
           clientReference: orderId
         });
@@ -186,10 +191,15 @@ export async function processCheckout(formData: FormData) {
         if (paymentResult.status === "Success") {
           // Payment initiated successfully
           // User will get mobile money prompt on their phone
-          console.log(`✓ Mobile money payment initiated for order ${orderId}`);
+          logger.payment("initiate", orderId, total, {
+            method: "mobile-money",
+            phone: customerPhone
+          });
         }
       } catch (paymentError) {
-        console.error("Hubtel payment error:", paymentError);
+        logger.error("Hubtel payment initiation failed", paymentError, {
+          orderId
+        });
         // Continue even if payment initiation fails - order is already created
       }
     } else if (validation.data.paymentMethod === "credit-card") {
