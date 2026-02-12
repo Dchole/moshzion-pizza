@@ -6,7 +6,7 @@
  * For now, uses console with proper formatting and context.
  */
 
-import { env, isDevelopment } from "@/lib/env";
+import { isDevelopment } from "@/lib/env";
 
 export enum LogLevel {
   DEBUG = "debug",

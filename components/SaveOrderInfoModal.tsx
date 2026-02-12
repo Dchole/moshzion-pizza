@@ -67,12 +67,9 @@ export function SaveOrderInfoModal({
 
   return (
     <Modal
-      isOpen={showModal}
+      open={showModal}
       onClose={handleSkip}
       title="Save Your Information"
-      icon={
-        <InfoOutlinedIcon className="text-blue-600" sx={{ fontSize: 32 }} />
-      }
       maxWidth="md"
     >
       <div className="space-y-6">

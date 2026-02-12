@@ -4,16 +4,13 @@ import { z } from "zod";
 import { clearCart, getCart } from "./cart";
 import { createOrder, updateOrderPaymentStatus } from "./orders";
 import { UI_TIMING } from "@/lib/constants";
-import {
-  calculateOrderTotals,
-  VALIDATION,
-  PAYMENT_METHODS
-} from "@/lib/config";
+import { calculateOrderTotals, VALIDATION } from "@/lib/config";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserAddresses } from "@/lib/address-actions";
 import { initiatePayment, formatPhoneForHubtel } from "@/lib/hubtel-payment";
 import { env } from "@/lib/env";
 import prisma from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 const checkoutSchema = z
   .object({
