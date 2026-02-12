@@ -53,7 +53,7 @@ export default async function OrderConfirmationPage({
         </div>
 
         {/* Order Details Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-brown-dark/10 p-6 mb-6">
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-brown-dark/10">
             <div>
               <p className="text-sm text-gray-600 font-open-sans">Order ID</p>
@@ -124,7 +124,7 @@ export default async function OrderConfirmationPage({
         </div>
 
         {/* Delivery Information */}
-        <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6 mb-6">
+        <div className="bg-white rounded-lg border border-brown-dark/10 p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <LocalShippingIcon className="text-brown-dark" />
             <h2 className="font-display text-xl text-brown-dark">
@@ -159,7 +159,7 @@ export default async function OrderConfirmationPage({
         </div>
 
         {/* Payment Status */}
-        <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-6 mb-8">
+        <div className="bg-white rounded-lg border border-brown-dark/10 p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <ReceiptIcon className="text-brown-dark" />
             <h2 className="font-display text-xl text-brown-dark">

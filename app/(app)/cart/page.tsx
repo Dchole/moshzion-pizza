@@ -32,7 +32,7 @@ export default async function CartPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm sticky top-4">
+            <div className="rounded-lg border border-gray-200 bg-white p-6 sticky top-4">
               <h2 className="font-display text-2xl text-brown-dark mb-4">
                 Order Summary
               </h2>

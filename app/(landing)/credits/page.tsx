@@ -102,7 +102,7 @@ export default function CreditsPage() {
           for their beautiful food photography that brings our menu to life.
         </p>
 
-        <div className="bg-white rounded-lg shadow-md p-6 sm:p-8">
+        <div className="bg-white rounded-lg p-6 sm:p-8">
           <h2 className="font-display text-2xl text-brown-dark mb-6">
             Pizza Images
           </h2>

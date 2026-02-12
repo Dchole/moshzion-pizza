@@ -94,7 +94,7 @@ export default async function OrdersPage() {
 
         {/* Orders List */}
         {orders.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border border-brown-dark/10 p-12 text-center">
+          <div className="bg-white rounded-lg border border-brown-dark/10 p-12 text-center">
             <ReceiptIcon
               sx={{ fontSize: 80 }}
               className="text-gray-300 mb-4 mx-auto"

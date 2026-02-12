@@ -154,7 +154,7 @@ export function CheckoutForm({
               </div>
             )}
 
-            <div className="bg-white rounded-lg p-6 border border-brown-dark/10 shadow-sm">
+            <div className="bg-white rounded-lg p-6 border border-brown-dark/10">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-open-sans font-semibold text-brown-dark">
                   Contact & Delivery Information
@@ -213,7 +213,7 @@ export function CheckoutForm({
           </div>
 
           <div className="hidden md:block">
-            <div className="sticky top-24 bg-white rounded-lg p-6 border border-brown-dark/10 shadow-sm">
+            <div className="sticky top-24 bg-white rounded-lg p-6 border border-brown-dark/10">
               <h3 className="font-open-sans font-semibold text-brown-dark mb-4">
                 Order Summary
               </h3>
@@ -299,7 +299,7 @@ export function CheckoutForm({
               </div>
             )}
 
-            <div className="bg-white rounded-lg p-4 border border-brown-dark/10 shadow-sm">
+            <div className="bg-white rounded-lg p-4 border border-brown-dark/10">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-open-sans font-medium text-brown-dark text-sm">
                   Delivery Details
@@ -321,7 +321,7 @@ export function CheckoutForm({
               </div>
             </div>
 
-            <div className="bg-white rounded-lg p-6 border border-brown-dark/10 shadow-sm">
+            <div className="bg-white rounded-lg p-6 border border-brown-dark/10">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-open-sans font-semibold text-brown-dark">
                   Payment Method
@@ -465,7 +465,7 @@ export function CheckoutForm({
           </div>
 
           <div className="hidden md:block">
-            <div className="sticky top-24 bg-white rounded-lg p-6 border border-brown-dark/10 shadow-sm">
+            <div className="sticky top-24 bg-white rounded-lg p-6 border border-brown-dark/10">
               <div className="flex items-center justify-between mb-4">
                 <span className="font-open-sans text-sm text-gray-600">
                   Order Summary
