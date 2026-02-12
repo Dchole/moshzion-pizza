@@ -30,7 +30,6 @@ export async function createOrder(input: CreateOrderInput) {
   try {
     const user = await getCurrentUser();
 
-    // Validate input
     if (!input.items || input.items.length === 0) {
       return {
         success: false,
@@ -38,7 +37,6 @@ export async function createOrder(input: CreateOrderInput) {
       };
     }
 
-    // For guest orders, require guest info
     if (
       !user &&
       (!input.guestName || !input.guestPhone || !input.guestAddress)
@@ -49,7 +47,6 @@ export async function createOrder(input: CreateOrderInput) {
       };
     }
 
-    // Convert CartItem[] to OrderItem[] format
     const orderItems: OrderItem[] = input.items.map(item => ({
       id: item.id,
       pizzaId: item.pizzaId,
@@ -61,7 +58,6 @@ export async function createOrder(input: CreateOrderInput) {
       image: item.image
     }));
 
-    // Determine payment status based on payment method
     const paymentStatus =
       input.paymentMethodType === "cash-on-delivery" ? "PENDING" : "PENDING";
 
@@ -93,17 +89,14 @@ export async function createOrder(input: CreateOrderInput) {
       }
     });
 
-    // Auto-save mobile money payment method for authenticated users
     if (
       user &&
       input.paymentMethodType === "mobile-money" &&
       input.mobileMoneyPhone
     ) {
       try {
-        // Detect provider from phone number
         const provider = detectMobileMoneyProvider(input.mobileMoneyPhone);
 
-        // Check if this payment method already exists
         const existingMethod = await prisma.paymentMethod.findFirst({
           where: {
             userId: user.id,
@@ -112,9 +105,7 @@ export async function createOrder(input: CreateOrderInput) {
           }
         });
 
-        // Only create if it doesn't exist
         if (!existingMethod) {
-          // Check if user has any default payment method
           const hasDefault = await prisma.paymentMethod.findFirst({
             where: {
               userId: user.id,
@@ -134,7 +125,6 @@ export async function createOrder(input: CreateOrderInput) {
           });
         }
       } catch (error) {
-        // Log error but don't fail the order
         logger.error("Failed to save mobile money payment method", error);
       }
     }
@@ -243,16 +233,10 @@ export async function getOrderById(orderId: string) {
   try {
     const user = await getCurrentUser();
 
-    // Build query with authorization constraints
     const order = await prisma.order.findFirst({
       where: {
         id: orderId,
-        OR: [
-          // User owns this order
-          { userId: user?.id },
-          // Guest order (allow access only if no userId set)
-          { userId: null }
-        ]
+        OR: [{ userId: user?.id }, { userId: null }]
       },
       include: {
         user: {
@@ -312,7 +296,6 @@ export async function cancelOrder(orderId: string) {
       };
     }
 
-    // Only allow cancellation if order is still pending or confirmed
     if (!["PENDING", "CONFIRMED"].includes(order.status)) {
       return {
         success: false,

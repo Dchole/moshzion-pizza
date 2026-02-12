@@ -51,7 +51,6 @@ export function PaymentMethodFormModal({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Update form when paymentMethod prop changes
   useEffect(() => {
     if (paymentMethod) {
       setFormData({
@@ -74,13 +73,11 @@ export function PaymentMethodFormModal({
     e.preventDefault();
     setError("");
 
-    // Auto-detect provider for Mobile Money using utility function
     let finalProvider = formData.provider;
     if (formData.type === PAYMENT_TYPES.MOBILE_MONEY && formData.fullPhone) {
       finalProvider = detectMobileMoneyProvider(formData.fullPhone);
     }
 
-    // Validate last4
     if (formData.last4.length !== 4) {
       setError("Last 4 digits must be exactly 4 characters");
       return;
@@ -101,7 +98,6 @@ export function PaymentMethodFormModal({
       if (result.success) {
         onSuccess?.();
         onClose();
-        // Reset form
         setFormData({
           type: PAYMENT_TYPES.MOBILE_MONEY,
           provider: "",
@@ -167,7 +163,6 @@ export function PaymentMethodFormModal({
                 onChange={e => {
                   const value = e.target.value.replace(/\D/g, "").slice(0, 10);
 
-                  // Auto-detect provider using utility function
                   const detectedProvider = detectMobileMoneyProvider(value);
 
                   setFormData({

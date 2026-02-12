@@ -69,20 +69,17 @@ export function AccountContent({ user }: AccountContentProps) {
     "firstName" | "lastName" | "phone" | null
   >(null);
 
-  // Modal states
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] =
     useState<PaymentMethodType | null>(null);
 
-  // Data states
   const [savedAddresses, setSavedAddresses] = useState<Address[] | null>(null);
   const [paymentMethods, setPaymentMethods] = useState<
     PaymentMethodType[] | null
   >(null);
 
-  // Confirm dialog state
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -92,18 +89,15 @@ export function AccountContent({ user }: AccountContentProps) {
 
   const isAuthenticated = !!user;
 
-  // Derived loading states
   const isLoadingAddresses = isAuthenticated && savedAddresses === null;
   const isLoadingPayments = isAuthenticated && paymentMethods === null;
 
-  // Fetch addresses
   useEffect(() => {
     if (isAuthenticated) {
       getUserAddresses().then(setSavedAddresses);
     }
   }, [isAuthenticated]);
 
-  // Fetch payment methods
   useEffect(() => {
     if (isAuthenticated) {
       getUserPaymentMethods().then(setPaymentMethods);
@@ -161,12 +155,10 @@ export function AccountContent({ user }: AccountContentProps) {
   };
 
   const handleAddressFormSuccess = async () => {
-    // Refresh addresses list
     const addresses = await getUserAddresses();
     setSavedAddresses(addresses);
   };
 
-  // Payment method handlers
   const handleAddPayment = () => {
     setSelectedPayment(null);
     setIsPaymentModalOpen(true);
@@ -196,7 +188,6 @@ export function AccountContent({ user }: AccountContentProps) {
   };
 
   const handlePaymentFormSuccess = async () => {
-    // Refresh payment methods list
     const methods = await getUserPaymentMethods();
     setPaymentMethods(methods);
   };

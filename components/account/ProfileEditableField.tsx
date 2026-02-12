@@ -52,9 +52,7 @@ export function ProfileEditableField({
       setSuccessMessage("");
 
       if (isPhoneField) {
-        // Phone update requires OTP
         if (!showOTP) {
-          // First step: send OTP to new phone
           const result = await sendPhoneUpdateOTP(editValue);
 
           if (!result.success) {
@@ -75,7 +73,6 @@ export function ProfileEditableField({
           return;
         }
 
-        // Second step: verify OTP and update
         const result = await updatePhone({
           newPhone: editValue,
           code: otpCode
@@ -94,12 +91,10 @@ export function ProfileEditableField({
           return;
         }
 
-        // Redirect immediately - message will show on sign-in page
         window.location.href = `/account?phoneUpdated=true&newPhone=${encodeURIComponent(editValue)}`;
         return;
       }
 
-      // Name field update
       const result = await updateProfile({ [field]: editValue });
 
       if (!result.success) {

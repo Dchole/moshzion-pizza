@@ -117,10 +117,9 @@ export function CheckoutForm({
             contactInfo.address !== originalData.address;
 
           if (hasNameChanged || hasPhoneChanged || hasAddressChanged) {
-            // Show confirm dialog instead of window.confirm
             setPendingOrderId(result.orderId);
             setShowSaveDialog(true);
-            return; // Wait for user response
+            return;
           }
         }
 

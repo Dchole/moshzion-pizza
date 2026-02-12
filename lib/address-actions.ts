@@ -26,7 +26,8 @@ export type AddressInput = z.infer<typeof addressSchema>;
 
 /**
  * Get all addresses for the current user
- * Cached for the duration of the request
+ * Cached for the duration of the request to optimize performance
+ * @returns Array of user addresses, ordered by default status and creation date
  */
 export const getUserAddresses = cache(async () => {
   try {
@@ -50,7 +51,10 @@ export const getUserAddresses = cache(async () => {
 });
 
 /**
- * Add a new address
+ * Add a new address for the current user
+ * Automatically unsets other defaults if this address is marked as default
+ * @param data - Address input data (label, street, city, state, zipCode, country, isDefault)
+ * @returns Action result with success status and optional error messages
  */
 export async function addAddress(data: AddressInput): Promise<ActionResult> {
   try {
@@ -66,7 +70,6 @@ export async function addAddress(data: AddressInput): Promise<ActionResult> {
 
     const validatedData = addressSchema.parse(data);
 
-    // If this is set as default, unset other defaults
     if (validatedData.isDefault) {
       await prisma.address.updateMany({
         where: { userId: user.id, isDefault: true },
@@ -102,6 +105,10 @@ export async function addAddress(data: AddressInput): Promise<ActionResult> {
 
 /**
  * Update an existing address
+ * Verifies ownership before updating, unsets other defaults if this is marked as default
+ * @param addressId - ID of the address to update
+ * @param data - Updated address data
+ * @returns Action result with success status and optional error messages
  */
 export async function updateAddress(
   addressId: string,
@@ -120,7 +127,6 @@ export async function updateAddress(
 
     const validatedData = addressSchema.parse(data);
 
-    // Verify ownership
     const existingAddress = await prisma.address.findUnique({
       where: { id: addressId }
     });
@@ -132,7 +138,6 @@ export async function updateAddress(
       };
     }
 
-    // If this is set as default, unset other defaults
     if (validatedData.isDefault) {
       await prisma.address.updateMany({
         where: { userId: user.id, isDefault: true, id: { not: addressId } },
@@ -166,6 +171,9 @@ export async function updateAddress(
 
 /**
  * Delete an address
+ * Verifies ownership before deletion to ensure users can only delete their own addresses
+ * @param addressId - ID of the address to delete
+ * @returns Action result with success status and optional error messages
  */
 export async function deleteAddress(addressId: string): Promise<ActionResult> {
   try {
@@ -179,7 +187,6 @@ export async function deleteAddress(addressId: string): Promise<ActionResult> {
       };
     }
 
-    // Verify ownership
     const existingAddress = await prisma.address.findUnique({
       where: { id: addressId }
     });

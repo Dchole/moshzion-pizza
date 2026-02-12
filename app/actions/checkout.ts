@@ -23,7 +23,6 @@ const checkoutSchema = z
     cvc: z.string().optional(),
     phoneNumber: z.string().optional(),
     addressId: z.string().optional(),
-    // Guest checkout fields
     guestName: z.string().optional(),
     guestPhone: z.string().optional(),
     guestAddress: z.string().optional()
@@ -78,7 +77,6 @@ export async function processCheckout(formData: FormData) {
       };
     }
 
-    // Get cart items
     const cart = await getCart();
     if (cart.items.length === 0) {
       return {
@@ -87,17 +85,14 @@ export async function processCheckout(formData: FormData) {
       };
     }
 
-    // Get current user
     const user = await getCurrentUser();
 
-    // Calculate order totals using centralized config
     const subtotal = cart.items.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
     const { deliveryFee, tax, total } = calculateOrderTotals(subtotal);
 
-    // Get address for authenticated users
     let addressId = validation.data.addressId;
     if (user && !addressId) {
       const addresses = await getUserAddresses();
@@ -105,12 +100,10 @@ export async function processCheckout(formData: FormData) {
       addressId = defaultAddress?.id;
     }
 
-    // Simulate payment processing delay
     await new Promise(resolve =>
       setTimeout(resolve, UI_TIMING.checkoutProcessingDelay)
     );
 
-    // Create the order
     const orderResult = await createOrder({
       items: cart.items,
       subtotal,
@@ -134,10 +127,8 @@ export async function processCheckout(formData: FormData) {
 
     const orderId = orderResult.orderId;
 
-    // Auto-save address for authenticated users if they used guest address
     if (user && validation.data.guestAddress && !addressId) {
       try {
-        // Check if user has any default address
         const hasDefaultAddress = await prisma.address.findFirst({
           where: {
             userId: user.id,
@@ -145,7 +136,6 @@ export async function processCheckout(formData: FormData) {
           }
         });
 
-        // Save the address
         await prisma.address.create({
           data: {
             userId: user.id,
@@ -157,25 +147,20 @@ export async function processCheckout(formData: FormData) {
           }
         });
       } catch (error) {
-        // Log error but don't fail the order
         logger.error("Failed to save delivery address", error, {
           userId: user.id
         });
       }
     }
 
-    // Process payment based on payment method
     if (
       validation.data.paymentMethod === "mobile-money" &&
       validation.data.phoneNumber
     ) {
       try {
-        // Get customer details
         const customerName = validation.data.guestName || "Customer";
-
         const customerPhone = formatPhoneForHubtel(validation.data.phoneNumber);
 
-        // Initiate Hubtel payment
         const paymentResult = await initiatePayment({
           customerName,
           customerMobileNumber: customerPhone,
@@ -186,8 +171,6 @@ export async function processCheckout(formData: FormData) {
         });
 
         if (paymentResult.status === "Success") {
-          // Payment initiated successfully
-          // User will get mobile money prompt on their phone
           logger.payment("initiate", orderId, total, {
             method: "mobile-money",
             phone: customerPhone
@@ -197,15 +180,11 @@ export async function processCheckout(formData: FormData) {
         logger.error("Hubtel payment initiation failed", paymentError, {
           orderId
         });
-        // Continue even if payment initiation fails - order is already created
       }
     } else if (validation.data.paymentMethod === "credit-card") {
-      // For credit cards, mark as paid immediately (in production, integrate real payment gateway)
       await updateOrderPaymentStatus(orderId, "PAID");
     }
-    // Cash on delivery stays as PENDING
 
-    // Clear cart after successful order
     await clearCart();
 
     return {

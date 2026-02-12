@@ -23,7 +23,6 @@ const paymentMethodSchema = z
   })
   .refine(
     data => {
-      // If Mobile Money, fullPhone is required and must match Ghana format
       if (data.type === "Mobile Money") {
         return data.fullPhone && /^(02|03|05)\d{8}$/.test(data.fullPhone);
       }
@@ -40,7 +39,8 @@ export type PaymentMethodInput = z.infer<typeof paymentMethodSchema>;
 
 /**
  * Get all payment methods for the current user
- * Cached for the duration of the request
+ * Cached for the duration of the request to optimize performance
+ * @returns Array of payment methods, ordered by default status and creation date
  */
 export const getUserPaymentMethods = cache(async () => {
   try {
@@ -64,7 +64,10 @@ export const getUserPaymentMethods = cache(async () => {
 });
 
 /**
- * Add a new payment method
+ * Add a new payment method for the current user
+ * Automatically unsets other defaults if this payment method is marked as default
+ * @param data - Payment method input (type, provider, last4, fullPhone for Mobile Money, name for cards, isDefault)
+ * @returns Action result with success status and optional error messages
  */
 export async function addPaymentMethod(
   data: PaymentMethodInput
@@ -82,7 +85,6 @@ export async function addPaymentMethod(
 
     const validatedData = paymentMethodSchema.parse(data);
 
-    // If this is set as default, unset other defaults
     if (validatedData.isDefault) {
       await prisma.paymentMethod.updateMany({
         where: { userId: user.id, isDefault: true },
@@ -118,6 +120,10 @@ export async function addPaymentMethod(
 
 /**
  * Update an existing payment method
+ * Verifies ownership before updating, unsets other defaults if this is marked as default
+ * @param paymentMethodId - ID of the payment method to update
+ * @param data - Updated payment method data
+ * @returns Action result with success status and optional error messages
  */
 export async function updatePaymentMethod(
   paymentMethodId: string,
@@ -136,7 +142,6 @@ export async function updatePaymentMethod(
 
     const validatedData = paymentMethodSchema.parse(data);
 
-    // Verify ownership
     const existingMethod = await prisma.paymentMethod.findUnique({
       where: { id: paymentMethodId }
     });
@@ -148,7 +153,6 @@ export async function updatePaymentMethod(
       };
     }
 
-    // If this is set as default, unset other defaults
     if (validatedData.isDefault) {
       await prisma.paymentMethod.updateMany({
         where: {
@@ -186,6 +190,9 @@ export async function updatePaymentMethod(
 
 /**
  * Delete a payment method
+ * Verifies ownership before deletion to ensure users can only delete their own payment methods
+ * @param paymentMethodId - ID of the payment method to delete
+ * @returns Action result with success status and optional error messages
  */
 export async function deletePaymentMethod(
   paymentMethodId: string
@@ -201,7 +208,6 @@ export async function deletePaymentMethod(
       };
     }
 
-    // Verify ownership
     const existingMethod = await prisma.paymentMethod.findUnique({
       where: { id: paymentMethodId }
     });

@@ -11,14 +11,10 @@ import { PAYMENT_PROVIDERS } from "@/lib/config";
  * @returns Provider name (MTN, Vodafone, AirtelTigo, or Mobile Money)
  */
 export function detectMobileMoneyProvider(phone: string): string {
-  // Remove all non-digits
   const digitsOnly = phone.replace(/\D/g, "");
-
-  // Get the prefix (last 10 digits for local format)
   const localNumber = digitsOnly.slice(-10);
   const prefix = localNumber.substring(0, 3);
 
-  // Detect provider based on prefix
   if (["024", "054", "055", "059"].includes(prefix)) {
     return PAYMENT_PROVIDERS.MTN;
   } else if (["020", "050"].includes(prefix)) {
@@ -36,20 +32,16 @@ export function detectMobileMoneyProvider(phone: string): string {
  * @returns Formatted 10-digit local number
  */
 export function formatPhoneNumber(phone: string): string {
-  // Remove all non-digits
   const digitsOnly = phone.replace(/\D/g, "");
 
-  // If it starts with 233, remove country code
   if (digitsOnly.startsWith("233")) {
     return "0" + digitsOnly.slice(3, 12);
   }
 
-  // If it doesn't start with 0, add it
   if (!digitsOnly.startsWith("0")) {
     return "0" + digitsOnly.slice(0, 9);
   }
 
-  // Return first 10 digits
   return digitsOnly.slice(0, 10);
 }
 
@@ -62,7 +54,6 @@ export function isValidGhanaPhone(phone: string): boolean {
   const digitsOnly = phone.replace(/\D/g, "");
   const localNumber = digitsOnly.slice(-10);
 
-  // Check if it matches Ghana format: 0[235]XXXXXXXX
   return /^0[235]\d{8}$/.test(localNumber);
 }
 

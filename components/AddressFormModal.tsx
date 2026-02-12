@@ -54,7 +54,6 @@ export function AddressFormModal({
       if (result.success) {
         onSuccess?.();
         onClose();
-        // Reset form
         setFormData({
           label: "",
           street: "",

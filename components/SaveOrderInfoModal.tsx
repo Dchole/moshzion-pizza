@@ -53,7 +53,6 @@ export function SaveOrderInfoModal({
         const result = await response.json();
 
         if (result.success) {
-          // Close modal and refresh to show authenticated state
           setShowModal(false);
           router.refresh();
         } else {

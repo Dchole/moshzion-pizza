@@ -43,21 +43,42 @@ class Logger {
     return `${prefix} ${message}`;
   }
 
+  /**
+   * Log debug information
+   * @param message - Debug message
+   * @param context - Additional context data
+   */
   debug(message: string, context?: LogContext): void {
     if (!this.shouldLog(LogLevel.DEBUG)) return;
     console.debug(this.formatMessage(LogLevel.DEBUG, message, context));
   }
 
+  /**
+   * Log informational messages
+   * @param message - Info message
+   * @param context - Additional context data
+   */
   info(message: string, context?: LogContext): void {
     if (!this.shouldLog(LogLevel.INFO)) return;
     console.info(this.formatMessage(LogLevel.INFO, message, context));
   }
 
+  /**
+   * Log warning messages
+   * @param message - Warning message
+   * @param context - Additional context data
+   */
   warn(message: string, context?: LogContext): void {
     if (!this.shouldLog(LogLevel.WARN)) return;
     console.warn(this.formatMessage(LogLevel.WARN, message, context));
   }
 
+  /**
+   * Log error messages with error object
+   * @param message - Error message
+   * @param error - Error object or unknown error
+   * @param context - Additional context data
+   */
   error(message: string, error?: Error | unknown, context?: LogContext): void {
     if (!this.shouldLog(LogLevel.ERROR)) return;
 
@@ -74,7 +95,11 @@ class Logger {
   }
 
   /**
-   * Log OTP-related events (in development, logs to console)
+   * Log OTP-related events
+   * @param action - The OTP action being performed (send, verify, or resend)
+   * @param phone - Phone number involved
+   * @param success - Whether the action was successful
+   * @param details - Additional context data
    */
   otp(
     action: "send" | "verify" | "resend",
@@ -90,6 +115,10 @@ class Logger {
 
   /**
    * Log payment-related events
+   * @param action - The payment action (initiate, success, or failed)
+   * @param orderId - Order ID associated with the payment
+   * @param amount - Payment amount in GHS
+   * @param details - Additional context data
    */
   payment(
     action: "initiate" | "success" | "failed",
@@ -108,6 +137,9 @@ class Logger {
 
   /**
    * Log order-related events
+   * @param action - The order action (created, updated, or cancelled)
+   * @param orderId - Order ID
+   * @param details - Additional context data
    */
   order(
     action: "created" | "updated" | "cancelled",
@@ -119,6 +151,9 @@ class Logger {
 
   /**
    * Log authentication events
+   * @param action - The auth action (login, logout, or register)
+   * @param userId - Optional user ID
+   * @param details - Additional context data
    */
   auth(
     action: "login" | "logout" | "register",
@@ -134,6 +169,8 @@ export const logger = new Logger();
 
 /**
  * Helper function to safely stringify errors for logging
+ * @param error - Error object or unknown error
+ * @returns Serialized error object with name, message, and stack
  */
 export function serializeError(error: unknown): Record<string, unknown> {
   if (error instanceof Error) {

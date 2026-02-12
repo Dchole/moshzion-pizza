@@ -29,14 +29,15 @@ interface ActionResult {
 
 /**
  * Send OTP to phone number via Hubtel OTP API
- * Creates user record if doesn't exist, stores Hubtel requestId
+ * Creates user record if doesn't exist, stores Hubtel requestId for later verification
+ * @param data - Phone number for OTP verification
+ * @returns Action result with success status and optional error messages
  */
 export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
   try {
     const validatedData = sendOTPSchema.parse(data);
     const { phone } = validatedData;
 
-    // Send OTP via Hubtel
     const otpResult = await sendHubtelOTP(phone);
 
     if (!otpResult.success || !otpResult.requestId || !otpResult.prefix) {
@@ -46,8 +47,7 @@ export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
       };
     }
 
-    // Store requestId and prefix in user record
-    const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await prisma.user.upsert({
       where: { phone },
@@ -93,14 +93,15 @@ export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
 
 /**
  * Verify OTP via Hubtel API and sign in user
- * If verification succeeds, marks phone as verified and signs user in
+ * If verification succeeds, marks phone as verified and signs user in automatically
+ * @param data - Phone number and OTP code to verify
+ * @returns Action result with success status, isNewAccount flag, and optional error messages
  */
 export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
   try {
     const validatedData = verifyOTPSchema.parse(data);
     const { phone, code } = validatedData;
 
-    // Get user's stored requestId and prefix
     const user = await prisma.user.findUnique({
       where: { phone },
       select: {
@@ -152,7 +153,6 @@ export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
       };
     }
 
-    // OTP verified successfully
     const isNewAccount = !user.isPhoneVerified;
     await prisma.user.update({
       where: { phone },
@@ -205,7 +205,9 @@ export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
 
 /**
  * Update user profile (firstName, lastName)
- * Only updates fields that are provided
+ * Only updates fields that are provided in the input data
+ * @param data - Profile update input with optional firstName and lastName
+ * @returns Action result with success status and optional error messages
  */
 export async function updateProfile(
   data: UpdateProfileInput
@@ -254,7 +256,10 @@ export async function updateProfile(
 }
 
 /**
- * Send OTP for phone update via Hubtel (stores requestId on current user)
+ * Send OTP for phone update via Hubtel
+ * Stores requestId on current user for later verification
+ * @param newPhone - New phone number to verify (must be valid Ghana format)
+ * @returns Action result with success status and optional error messages
  */
 export async function sendPhoneUpdateOTP(
   newPhone: string
@@ -286,7 +291,6 @@ export async function sendPhoneUpdateOTP(
       };
     }
 
-    // Send OTP via Hubtel to new phone number
     const otpResult = await sendHubtelOTP(newPhone);
 
     if (!otpResult.success || !otpResult.requestId || !otpResult.prefix) {
@@ -296,7 +300,6 @@ export async function sendPhoneUpdateOTP(
       };
     }
 
-    // Store requestId and prefix on current user
     const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await prisma.user.update({
@@ -326,8 +329,10 @@ export async function sendPhoneUpdateOTP(
 }
 
 /**
- * Update phone number (requires Hubtel OTP verification)
- * Verifies OTP via Hubtel, then updates phone
+ * Update phone number with OTP verification
+ * Verifies OTP via Hubtel, then updates phone and signs out user for fresh authentication
+ * @param data - New phone number and verification code
+ * @returns Action result with success status and optional error messages
  */
 export async function updatePhone(data: {
   newPhone: string;
@@ -359,7 +364,6 @@ export async function updatePhone(data: {
       };
     }
 
-    // Get stored requestId and prefix
     const userWithRequestId = await prisma.user.findUnique({
       where: { id: currentUser.id },
       select: {
@@ -404,7 +408,6 @@ export async function updatePhone(data: {
       };
     }
 
-    // Update phone number
     await prisma.user.update({
       where: { id: currentUser.id },
       data: {
@@ -438,14 +441,15 @@ export async function updatePhone(data: {
 
 /**
  * Resend OTP to phone number
- * Reuses existing requestId to resend the same OTP
+ * Reuses existing requestId to resend the same OTP without creating a new one
+ * @param data - Phone number for OTP resend
+ * @returns Action result with success status and optional error messages
  */
 export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
   try {
     const validatedData = sendOTPSchema.parse(data);
     const { phone } = validatedData;
 
-    // Get existing requestId
     const user = await prisma.user.findUnique({
       where: { phone },
       select: {
@@ -461,7 +465,6 @@ export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
       };
     }
 
-    // Resend via Hubtel
     const resendResult = await resendHubtelOTP(user.otpRequestId);
 
     if (
@@ -475,7 +478,6 @@ export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
       };
     }
 
-    // Update expiration time and prefix (in case it changed)
     const requestIdExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
     await prisma.user.update({
@@ -513,13 +515,18 @@ export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
   }
 }
 
+/**
+ * Sign out the current user and redirect to homepage
+ */
 export async function signOutUser() {
   await signOut({ redirectTo: "/" });
 }
 
 /**
- * Update user data from checkout
- * Parses full name, updates user profile, and updates/creates default address
+ * Update user data from checkout form
+ * Parses full name into firstName/lastName, updates user profile, and creates/updates default address
+ * @param data - Checkout form data with name, phone, and address
+ * @returns Action result with success status and optional error messages
  */
 export async function updateUserCheckoutData(data: {
   name: string;
@@ -537,12 +544,10 @@ export async function updateUserCheckoutData(data: {
       };
     }
 
-    // Parse name into firstName and lastName
     const nameParts = data.name.trim().split(/\s+/);
     const firstName = nameParts[0] || "";
     const lastName = nameParts.slice(1).join(" ") || "";
 
-    // Update user profile
     await prisma.user.update({
       where: { id: user.id },
       data: {
@@ -551,7 +556,6 @@ export async function updateUserCheckoutData(data: {
       }
     });
 
-    // Get user's default address
     const defaultAddress = await prisma.address.findFirst({
       where: {
         userId: user.id,
@@ -559,14 +563,12 @@ export async function updateUserCheckoutData(data: {
       }
     });
 
-    // Parse address (assuming format: "street, city, state")
     const addressParts = data.address.split(",").map(part => part.trim());
     const street = addressParts[0] || data.address;
     const city = addressParts[1] || "";
     const state = addressParts[2] || "";
 
     if (defaultAddress) {
-      // Update existing default address
       await prisma.address.update({
         where: { id: defaultAddress.id },
         data: {
@@ -576,7 +578,6 @@ export async function updateUserCheckoutData(data: {
         }
       });
     } else {
-      // Create new default address
       await prisma.address.create({
         data: {
           userId: user.id,
