@@ -133,6 +133,8 @@ export function CheckoutForm({
           }
         }
 
+        window.dispatchEvent(new Event("cart-updated"));
+
         router.push(`/order-confirmation?orderId=${result.orderId}`);
       } else {
         setError(result.message || "Checkout failed. Please try again.");
