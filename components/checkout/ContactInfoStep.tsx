@@ -3,7 +3,7 @@
  * Collects guest/user contact details before payment
  */
 
-import { Input } from "@/components/ui";
+import { Input, Alert } from "@/components/ui";
 
 interface ContactInfoStepProps {
   contactInfo: {
@@ -26,14 +26,7 @@ export function ContactInfoStep({
         Contact Information
       </h2>
 
-      {error && (
-        <div
-          className="bg-red-50 border border-red-200 rounded-lg p-4"
-          role="alert"
-        >
-          <p className="text-red-800 text-sm">{error}</p>
-        </div>
-      )}
+      {error && <Alert variant="error" message={error} />}
 
       <div className="space-y-4">
         <div>

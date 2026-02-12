@@ -9,7 +9,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { processCheckout } from "@/app/actions/checkout";
 import type { CartItem } from "@/types";
-import { Button } from "@/components/ui";
+import { Button, ConfirmDialog, Alert } from "@/components/ui";
 import PaymentIcon from "@mui/icons-material/Payment";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { calculateOrderTotals, VALIDATION } from "@/lib/config";
@@ -54,6 +54,8 @@ export function CheckoutForm({
   const [orderItems, setOrderItems] = useState<CartItem[]>(items);
   const [error, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
 
   const [contactInfo, setContactInfo] = useState({
     name: userData ? `${userData.firstName} ${userData.lastName}`.trim() : "",
@@ -115,24 +117,14 @@ export function CheckoutForm({
             contactInfo.address !== originalData.address;
 
           if (hasNameChanged || hasPhoneChanged || hasAddressChanged) {
-            const shouldUpdate = window.confirm(
-              "Your contact information has changed. Would you like to save these changes to your account?"
-            );
-
-            if (shouldUpdate) {
-              const { updateUserCheckoutData } =
-                await import("@/lib/auth-actions");
-              await updateUserCheckoutData({
-                name: contactInfo.name,
-                phone: contactInfo.phone,
-                address: contactInfo.address
-              });
-            }
+            // Show confirm dialog instead of window.confirm
+            setPendingOrderId(result.orderId);
+            setShowSaveDialog(true);
+            return; // Wait for user response
           }
         }
 
         window.dispatchEvent(new Event("cart-updated"));
-
         router.push(`/order-confirmation?orderId=${result.orderId}`);
       } else {
         setError(result.message || "Checkout failed. Please try again.");
@@ -140,56 +132,75 @@ export function CheckoutForm({
     });
   };
 
+  const handleSaveChanges = async () => {
+    const { updateUserCheckoutData } = await import("@/lib/auth-actions");
+    await updateUserCheckoutData({
+      name: contactInfo.name,
+      phone: contactInfo.phone,
+      address: contactInfo.address
+    });
+
+    if (pendingOrderId) {
+      window.dispatchEvent(new Event("cart-updated"));
+      router.push(`/order-confirmation?orderId=${pendingOrderId}`);
+    }
+  };
+
+  const handleSkipSave = () => {
+    if (pendingOrderId) {
+      window.dispatchEvent(new Event("cart-updated"));
+      router.push(`/order-confirmation?orderId=${pendingOrderId}`);
+    }
+  };
+
   const handleRemoveItem = (itemId: string) => {
     setOrderItems(prev => prev.filter(item => item.id !== itemId));
   };
 
   // Step 1: Contact Information
-  if (currentStep === 1) {
-    return (
-      <form
-        onSubmit={handleContinueToPayment}
-        className="grid gap-6 lg:grid-cols-[2fr_1fr]"
-      >
-        <ContactInfoStep
-          contactInfo={contactInfo}
-          error={error}
-          isPending={isPending}
-        />
+  const step1Content = (
+    <form
+      onSubmit={handleContinueToPayment}
+      className="grid gap-6 lg:grid-cols-[2fr_1fr]"
+    >
+      <ContactInfoStep
+        contactInfo={contactInfo}
+        error={error}
+        isPending={isPending}
+      />
 
-        <OrderSummary
-          items={orderItems}
-          subtotal={orderItems.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-          )}
-          deliveryFee={deliveryFee}
-          tax={tax}
-          total={orderTotal}
-          onRemoveItem={handleRemoveItem}
-          showRemoveButtons
-        />
+      <OrderSummary
+        items={orderItems}
+        subtotal={orderItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        )}
+        deliveryFee={deliveryFee}
+        tax={tax}
+        total={orderTotal}
+        onRemoveItem={handleRemoveItem}
+        showRemoveButtons
+      />
 
-        {/* Continue Button */}
-        <div className="lg:col-span-2 flex justify-end">
-          <Button
-            type="submit"
-            variant="primary"
-            color="beige"
-            disabled={isPending}
-            icon={<PaymentIcon sx={{ fontSize: 20 }} />}
-            iconPosition="right"
-            className="w-full sm:w-auto"
-          >
-            Continue to Payment
-          </Button>
-        </div>
-      </form>
-    );
-  }
+      {/* Continue Button */}
+      <div className="lg:col-span-2 flex justify-end">
+        <Button
+          type="submit"
+          variant="primary"
+          color="beige"
+          disabled={isPending}
+          icon={<PaymentIcon sx={{ fontSize: 20 }} />}
+          iconPosition="right"
+          className="w-full sm:w-auto"
+        >
+          Continue to Payment
+        </Button>
+      </div>
+    </form>
+  );
 
   // Step 2: Payment
-  return (
+  const step2Content = (
     <form action={handleSubmit} className="grid gap-6 lg:grid-cols-[2fr_1fr]">
       {/* Hidden contact info fields */}
       <input type="hidden" name="guestName" value={contactInfo.name} />
@@ -197,14 +208,7 @@ export function CheckoutForm({
       <input type="hidden" name="guestAddress" value={contactInfo.address} />
 
       <div className="space-y-6">
-        {error && (
-          <div
-            className="bg-red-50 border border-red-200 rounded-lg p-4"
-            role="alert"
-          >
-            <p className="text-red-800 text-sm">{error}</p>
-          </div>
-        )}
+        {error && <Alert variant="error" message={error} />}
 
         <PaymentMethodStep
           paymentMethod={paymentMethod}
@@ -252,5 +256,22 @@ export function CheckoutForm({
         </Button>
       </div>
     </form>
+  );
+  return (
+    <>
+      {currentStep === 1 ? step1Content : step2Content}
+
+      <ConfirmDialog
+        open={showSaveDialog}
+        onClose={handleSkipSave}
+        onConfirm={handleSaveChanges}
+        title="Save Contact Information?"
+        message="Your contact information has changed. Would you like to save these changes to your account for future orders?"
+        confirmText="Save Changes"
+        cancelText="Skip"
+        variant="info"
+        isLoading={isPending}
+      />
+    </>
   );
 }

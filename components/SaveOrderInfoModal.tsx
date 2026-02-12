@@ -2,9 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui";
+import { Button, Modal, Alert } from "@/components/ui";
 import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 interface SaveOrderInfoModalProps {
@@ -66,26 +65,18 @@ export function SaveOrderInfoModal({
     });
   };
 
-  if (!showModal) return null;
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full p-6 relative">
-        <button
-          onClick={handleSkip}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-          disabled={isPending}
-        >
-          <CloseIcon />
-        </button>
-
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <InfoOutlinedIcon className="text-blue-600" sx={{ fontSize: 32 }} />
-            <h2 className="font-display text-2xl text-brown-dark">
-              Save Your Information
-            </h2>
-          </div>
+    <Modal
+      isOpen={showModal}
+      onClose={handleSkip}
+      title="Save Your Information"
+      icon={
+        <InfoOutlinedIcon className="text-blue-600" sx={{ fontSize: 32 }} />
+      }
+      maxWidth="md"
+    >
+      <div className="space-y-6">
+        <div>
           <p className="text-gray-600 font-open-sans">
             We&apos;ll save your order details for faster checkouts next time.
             Create an account to track your orders and manage your information.
@@ -148,11 +139,7 @@ export function SaveOrderInfoModal({
               </p>
             </div>
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600 font-open-sans">{error}</p>
-              </div>
-            )}
+            {error && <Alert variant="error" message={error} />}
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
@@ -180,6 +167,6 @@ export function SaveOrderInfoModal({
           </form>
         )}
       </div>
-    </div>
+    </Modal>
   );
 }

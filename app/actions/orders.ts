@@ -6,6 +6,7 @@ import type { CartItem, OrderItem } from "@/types";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
+import { detectMobileMoneyProvider, getPhoneLast4 } from "@/lib/utils/phone";
 
 export interface CreateOrderInput {
   items: CartItem[];
@@ -98,17 +99,8 @@ export async function createOrder(input: CreateOrderInput) {
       input.mobileMoneyPhone
     ) {
       try {
-        // Detect provider from phone number prefix (Ghana)
-        const phonePrefix = input.mobileMoneyPhone.substring(0, 3);
-        let provider = "Mobile Money";
-
-        if (["024", "054", "055", "059"].includes(phonePrefix)) {
-          provider = "MTN";
-        } else if (["020", "050"].includes(phonePrefix)) {
-          provider = "Vodafone";
-        } else if (["027", "057", "026", "056"].includes(phonePrefix)) {
-          provider = "AirtelTigo";
-        }
+        // Detect provider from phone number
+        const provider = detectMobileMoneyProvider(input.mobileMoneyPhone);
 
         // Check if this payment method already exists
         const existingMethod = await prisma.paymentMethod.findFirst({
@@ -134,7 +126,7 @@ export async function createOrder(input: CreateOrderInput) {
               userId: user.id,
               type: "Mobile Money",
               provider,
-              last4: input.mobileMoneyPhone.slice(-4),
+              last4: getPhoneLast4(input.mobileMoneyPhone),
               fullPhone: input.mobileMoneyPhone,
               isDefault: !hasDefault // Set as default if no default exists
             }

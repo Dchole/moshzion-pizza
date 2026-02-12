@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { submitContactForm, ContactFormState } from "@/app/actions/contact";
-import { Button } from "@/components/ui";
+import { Button, Alert } from "@/components/ui";
 
 const initialState: ContactFormState = {
   success: false
@@ -17,15 +17,11 @@ export default function ContactForm() {
   return (
     <form action={formAction} className="space-y-6">
       {state.success && state.message && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800 text-sm">{state.message}</p>
-        </div>
+        <Alert variant="success" message={state.message} />
       )}
 
       {state.errors?._form && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800 text-sm">{state.errors._form[0]}</p>
-        </div>
+        <Alert variant="error" message={state.errors._form[0]} />
       )}
 
       <div>

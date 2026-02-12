@@ -23,7 +23,7 @@ import {
   getUserPaymentMethods,
   deletePaymentMethod
 } from "@/lib/payment-actions";
-import { Dialog } from "@/components/ui";
+import { ConfirmDialog } from "@/components/ui";
 
 interface User {
   id: string;
@@ -552,39 +552,16 @@ export function AccountContent({ user }: AccountContentProps) {
       />
 
       {/* Confirmation Dialog */}
-      <Dialog
+      <ConfirmDialog
         open={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
         onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
-        closeOnClickAway
-        className="rounded-lg shadow-2xl border-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm w-[min(320px, 100%)] p-0"
-      >
-        <div className="p-6">
-          <h3 className="text-xl font-display text-brown-dark mb-2">
-            {confirmDialog.title}
-          </h3>
-          <p className="text-gray-600 font-open-sans mb-6">
-            {confirmDialog.message}
-          </p>
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              color="brown"
-              className="flex-1"
-              onClick={() =>
-                setConfirmDialog(prev => ({ ...prev, isOpen: false }))
-              }
-            >
-              Cancel
-            </Button>
-            <button
-              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-open-sans font-medium transition-colors"
-              onClick={confirmDialog.onConfirm}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </Dialog>
+        variant="danger"
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
