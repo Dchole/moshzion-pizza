@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import type { CartItem } from "@/types";
 import { z } from "zod";
 import { COOKIES, CART } from "@/lib/config";
+import { logger } from "@/lib/logger";
 
 const CART_COOKIE_NAME = COOKIES.cart;
 const MAX_AGE = COOKIES.cartMaxAge;

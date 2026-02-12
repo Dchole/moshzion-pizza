@@ -199,7 +199,7 @@ export async function deleteAddress(addressId: string): Promise<ActionResult> {
 
     return { success: true };
   } catch (error) {
-    logger.error("Delete address error", error, { addressId: id });
+    logger.error("Delete address error", error, { addressId });
     return {
       success: false,
       error: "Failed to delete address"

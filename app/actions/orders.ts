@@ -233,7 +233,7 @@ export async function getUserOrders() {
       orders
     };
   } catch (error) {
-    logger.error("Error fetching orders", error, { userId: user?.id });
+    logger.error("Error fetching orders", error);
     return {
       success: false,
       error: "Failed to fetch orders",

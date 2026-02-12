@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import HomeIcon from "@mui/icons-material/Home";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ReportProblemIcon from "@mui/icons-material/ReportProblem";
@@ -22,13 +21,13 @@ export default function Error({ error, reset }: ErrorProps) {
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-secondary-beige to-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-secondary-beige flex items-center justify-center px-4">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-2xl shadow-lg border-2 border-brown-medium/20 p-8 md:p-12">
           {/* Pizza Icon */}
           <div className="flex justify-center mb-6">
             <div
-              className="relative w-32 h-32 rounded-full bg-gradient-to-br from-brown-light/20 to-brown-medium/20 flex items-center justify-center"
+              className="relative w-32 h-32 rounded-full bg-brown-light/20 flex items-center justify-center"
               aria-hidden="true"
             >
               <ReportProblemIcon
@@ -44,8 +43,8 @@ export default function Error({ error, reset }: ErrorProps) {
 
           {/* Description */}
           <p className="text-lg text-gray-700 text-center mb-8 font-open-sans">
-            We're sorry, but something went wrong while preparing your order.
-            Don't worry, your cart is safe!
+            We&apos;re sorry, but something went wrong while preparing your
+            order. Don&apos;t worry, your cart is safe!
           </p>
 
           {/* Error details (only in development) */}
