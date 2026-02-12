@@ -83,12 +83,12 @@ export default function Header({
     const colors = `${textColor} ${hoverColor}`;
 
     if (isActive) {
-      const activeBg = shouldUseDarkText ? "bg-brown-dark/10" : "bg-white/25";
+      const activeBg = shouldUseDarkText ? "bg-beige-light/30" : "bg-white/25";
       return `${base} ${colors} ${activeBg} scale-105`;
     }
 
     const hoverBg = shouldUseDarkText
-      ? "hover:bg-brown-dark/5"
+      ? "hover:bg-beige-light/30"
       : "hover:bg-white/15";
     return `${base} ${colors} ${hoverBg}`;
   };

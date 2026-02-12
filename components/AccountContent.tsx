@@ -23,6 +23,7 @@ import {
   getUserPaymentMethods,
   deletePaymentMethod
 } from "@/lib/payment-actions";
+import { Dialog } from "@/components/ui";
 
 interface User {
   id: string;
@@ -80,6 +81,14 @@ export function AccountContent({ user }: AccountContentProps) {
     PaymentMethodType[] | null
   >(null);
 
+  // Confirm dialog state
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({ isOpen: false, title: "", message: "", onConfirm: () => {} });
+
   const isAuthenticated = !!user;
 
   // Derived loading states
@@ -133,18 +142,21 @@ export function AccountContent({ user }: AccountContentProps) {
   };
 
   const handleDeleteAddress = async (addressId: string) => {
-    if (
-      confirm(
-        "Are you sure you want to delete this address? This action cannot be undone."
-      )
-    ) {
-      const result = await deleteAddress(addressId);
-      if (result.success) {
-        setSavedAddresses(prev => (prev || []).filter(a => a.id !== addressId));
-      } else {
-        alert(result.error || "Failed to delete address");
+    setConfirmDialog({
+      isOpen: true,
+      title: "Delete Address",
+      message:
+        "Are you sure you want to delete this address? This action cannot be undone.",
+      onConfirm: async () => {
+        const result = await deleteAddress(addressId);
+        if (result.success) {
+          setSavedAddresses(prev =>
+            (prev || []).filter(a => a.id !== addressId)
+          );
+        }
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
       }
-    }
+    });
   };
 
   const handleAddressFormSuccess = async () => {
@@ -165,18 +177,21 @@ export function AccountContent({ user }: AccountContentProps) {
   };
 
   const handleDeletePayment = async (paymentId: string) => {
-    if (
-      confirm(
-        "Are you sure you want to remove this payment method? This action cannot be undone."
-      )
-    ) {
-      const result = await deletePaymentMethod(paymentId);
-      if (result.success) {
-        setPaymentMethods(prev => (prev || []).filter(p => p.id !== paymentId));
-      } else {
-        alert(result.error || "Failed to remove payment method");
+    setConfirmDialog({
+      isOpen: true,
+      title: "Remove Payment Method",
+      message:
+        "Are you sure you want to remove this payment method? This action cannot be undone.",
+      onConfirm: async () => {
+        const result = await deletePaymentMethod(paymentId);
+        if (result.success) {
+          setPaymentMethods(prev =>
+            (prev || []).filter(p => p.id !== paymentId)
+          );
+        }
+        setConfirmDialog(prev => ({ ...prev, isOpen: false }));
       }
-    }
+    });
   };
 
   const handlePaymentFormSuccess = async () => {
@@ -201,7 +216,7 @@ export function AccountContent({ user }: AccountContentProps) {
 
         <div className="grid gap-6 lg:grid-cols-2">
           <section
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+            className="rounded-lg border border-gray-200 bg-white p-6"
             aria-labelledby="profile-heading"
           >
             <div className="mb-4 flex items-center gap-2">
@@ -262,7 +277,7 @@ export function AccountContent({ user }: AccountContentProps) {
             </div>
           </section>
           <section
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+            className="rounded-lg border border-gray-200 bg-white p-6"
             aria-labelledby="quick-actions-heading"
           >
             <div className="mb-4">
@@ -325,7 +340,7 @@ export function AccountContent({ user }: AccountContentProps) {
           </section>
 
           <section
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
+            className="rounded-lg border border-gray-200 bg-white p-6 lg:col-span-2"
             aria-labelledby="addresses-heading"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -419,7 +434,7 @@ export function AccountContent({ user }: AccountContentProps) {
             )}
           </section>
           <section
-            className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2"
+            className="rounded-lg border border-gray-200 bg-white p-6 lg:col-span-2"
             aria-labelledby="payment-heading"
           >
             <div className="mb-4 flex items-center justify-between">
@@ -535,6 +550,41 @@ export function AccountContent({ user }: AccountContentProps) {
         paymentMethod={selectedPayment}
         onSuccess={handlePaymentFormSuccess}
       />
+
+      {/* Confirmation Dialog */}
+      <Dialog
+        open={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
+        closeOnClickAway
+        className="rounded-lg shadow-2xl border-0 backdrop:bg-black/50 backdrop:backdrop-blur-sm w-[min(320px, 100%)] p-0"
+      >
+        <div className="p-6">
+          <h3 className="text-xl font-display text-brown-dark mb-2">
+            {confirmDialog.title}
+          </h3>
+          <p className="text-gray-600 font-open-sans mb-6">
+            {confirmDialog.message}
+          </p>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              color="brown"
+              className="flex-1"
+              onClick={() =>
+                setConfirmDialog(prev => ({ ...prev, isOpen: false }))
+              }
+            >
+              Cancel
+            </Button>
+            <button
+              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-open-sans font-medium transition-colors"
+              onClick={confirmDialog.onConfirm}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

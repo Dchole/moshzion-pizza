@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { submitContactForm, ContactFormState } from "@/app/actions/contact";
+import { Button } from "@/components/ui";
 
 const initialState: ContactFormState = {
   success: false
@@ -111,13 +112,15 @@ export default function ContactForm() {
         )}
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={isPending}
-        className="w-full bg-brown-dark text-white font-semibold px-6 py-3 rounded-lg hover:bg-brown-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        variant="primary"
+        color="brown"
+        fullWidth
       >
         {isPending ? "Sending..." : "Send Message"}
-      </button>
+      </Button>
 
       <p className="text-sm text-brown-medium/70 text-center">
         We typically respond within 24 hours

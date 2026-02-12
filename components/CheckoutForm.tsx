@@ -39,7 +39,6 @@ export function CheckoutForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  // Default payment method based on saved data
   const defaultPaymentMethod: PaymentMethod = hasCreditCard
     ? "credit-card"
     : userData?.phone
@@ -48,12 +47,10 @@ export function CheckoutForm({
 
   const [paymentMethod, setPaymentMethod] =
     useState<PaymentMethod>(defaultPaymentMethod);
-  const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [orderItems, setOrderItems] = useState<CartItem[]>(items);
   const [error, setError] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
 
-  // Store step 1 data
   const [contactInfo, setContactInfo] = useState({
     name: userData ? `${userData.firstName} ${userData.lastName}`.trim() : "",
     phone: userData?.phone || "",
@@ -62,14 +59,10 @@ export function CheckoutForm({
 
   const [originalData] = useState(userData);
 
-  const subtotal = orderItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
   const deliveryFee = 5.0;
   const taxRate = 0.1;
-  const tax = subtotal * taxRate;
-  const orderTotal = subtotal + deliveryFee + tax;
+  const tax = totalPrice * taxRate;
+  const orderTotal = totalPrice + deliveryFee + tax;
 
   const handleContinueToPayment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,7 +72,6 @@ export function CheckoutForm({
     const phone = formData.get("guestPhone") as string;
     const address = formData.get("guestAddress") as string;
 
-    // Basic validation
     if (!name || !phone || !address) {
       setError("Please fill in all fields");
       return;
@@ -110,7 +102,6 @@ export function CheckoutForm({
       console.log("Checkout result:", result);
 
       if (result.success && result.orderId) {
-        // Check if user data has changed and ask to update
         if (userId && originalData) {
           const currentName =
             `${originalData.firstName} ${originalData.lastName}`.trim();
@@ -267,7 +258,7 @@ export function CheckoutForm({
               <div className="border-t border-brown-dark/20 pt-4 space-y-2">
                 <div className="flex justify-between text-sm font-open-sans text-gray-700">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>${totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-open-sans text-gray-700">
                   <span>Delivery</span>
@@ -531,7 +522,7 @@ export function CheckoutForm({
               <div className="border-t border-brown-dark/20 pt-4 mb-6 space-y-2">
                 <div className="flex justify-between text-sm font-open-sans text-gray-700">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>${totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-open-sans text-gray-700">
                   <span>Delivery</span>

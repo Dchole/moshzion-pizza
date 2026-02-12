@@ -146,7 +146,6 @@ export function ProfileEditableField({
             onClick={onEdit}
             variant="ghost"
             color="brown"
-            className="text-brown-dark hover:bg-gray-200"
             aria-label={`Edit ${label.toLowerCase()}`}
             icon={<EditIcon fontSize="small" />}
           />

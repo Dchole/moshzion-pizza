@@ -50,15 +50,15 @@ const getVariantClasses = (
     outline: {
       white: "border-2 border-white text-white hover:bg-white/10",
       brown:
-        "border-2 border-brown-dark text-brown-dark hover:bg-brown-dark hover:text-white",
-      beige: "border-2 border-primary text-brown-dark hover:bg-primary",
+        "border-2 border-brown-dark text-brown-dark hover:bg-beige-light/30",
+      beige: "border-2 border-primary text-brown-dark hover:bg-beige-light/30",
       red: "border-2 border-(--newsletter-bg) text-(--newsletter-bg) hover:bg-(--newsletter-bg) hover:text-white"
     },
     ghost: {
       white: "bg-transparent text-white hover:bg-white/10",
       brown:
-        "bg-transparent border border-brown-medium text-brown-medium hover:bg-gray-50",
-      beige: "bg-transparent text-brown-dark hover:bg-(--primary-beige-hover)",
+        "bg-transparent border border-brown-medium text-brown-medium hover:bg-beige-light/30",
+      beige: "bg-transparent text-brown-dark hover:bg-beige-light/30",
       red: "bg-transparent text-(--newsletter-bg) hover:bg-red-50"
     }
   };

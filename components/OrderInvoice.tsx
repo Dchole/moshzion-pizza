@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui";
+import { IconButton } from "@/components/ui/IconButton";
 import PrintIcon from "@mui/icons-material/Print";
 import CloseIcon from "@mui/icons-material/Close";
 import type { OrderItem } from "@/types";
@@ -73,12 +74,15 @@ export function OrderInvoice({ order }: OrderInvoiceProps) {
                 >
                   Print
                 </Button>
-                <button
+                <IconButton
                   onClick={() => setShowInvoice(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <CloseIcon className="text-gray-600" />
-                </button>
+                  icon={<CloseIcon />}
+                  aria-label="Close invoice"
+                  variant="ghost"
+                  color="brown"
+                  size="md"
+                  className="rounded-lg"
+                />
               </div>
             </div>
 

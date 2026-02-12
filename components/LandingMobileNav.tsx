@@ -17,7 +17,7 @@ export default function LandingMobileNav({
 }: LandingMobileNavProps) {
   const getNavLinkClasses = (isActive: boolean, index: number) => {
     const base =
-      "block px-6 py-4 text-gray-900 hover:bg-gray-50 font-open-sans transition-colors duration-300 relative";
+      "block px-6 py-4 text-gray-900 hover:bg-beige-light/30 font-open-sans transition-colors duration-300 relative";
     const border = index < links.length - 1 ? "border-b border-gray-100" : "";
     const weight = isActive ? "font-bold" : "font-medium";
     const active = isActive

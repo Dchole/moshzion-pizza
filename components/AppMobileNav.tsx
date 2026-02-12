@@ -47,7 +47,7 @@ export default function AppMobileNav({
   onClose
 }: AppMobileNavProps) {
   const getNavLinkClasses = (isActive: boolean) => {
-    const base = `${textColor} ${hoverColor} py-3 px-4 rounded-lg font-open-sans transition-colors duration-300 hover:bg-brown-medium/10 flex items-center gap-3`;
+    const base = `${textColor} ${hoverColor} py-3 px-4 rounded-lg font-open-sans transition-colors duration-300 hover:bg-beige-light/30 flex items-center gap-3`;
     const weight = isActive ? "font-bold" : "font-medium";
 
     return `${base} ${weight}`;

@@ -102,7 +102,7 @@ export function FloatingCartButton() {
       <div className="flex items-center gap-1 rounded-tl-xl bg-primary border-2 border-primary border-r-0 border-b-0 p-1 shadow-[0_-2px_4px_rgba(0,0,0,0.15)]">
         <Link
           href="/cart"
-          className="relative flex items-center justify-center rounded-md p-2 hover:bg-[#E8D7C3] transition-colors"
+          className="relative flex items-center justify-center rounded-md p-2 hover:bg-beige-light/30 transition-colors"
           aria-label="Shopping cart"
         >
           <LocalMallIcon sx={{ fontSize: 20, color: "var(--text-dark)" }} />

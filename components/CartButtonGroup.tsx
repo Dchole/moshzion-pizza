@@ -79,7 +79,7 @@ export function CartButtonGroup({ showAccount = true }: CartButtonGroupProps) {
     <div className="flex items-center gap-1 rounded-xl bg-white border-2 border-primary p-1">
       <Link
         href="/cart"
-        className="relative flex items-center justify-center rounded-md p-2 hover:bg-gray-100 transition-colors"
+        className="relative flex items-center justify-center rounded-md p-2 hover:bg-beige-light/30 transition-colors"
         aria-label="Shopping cart"
       >
         <LocalMallIcon sx={{ fontSize: 20, color: "var(--text-dark)" }} />
