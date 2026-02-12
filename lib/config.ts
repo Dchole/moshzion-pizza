@@ -76,6 +76,24 @@ export const PAYMENT_METHODS = {
 } as const;
 
 /**
+ * Payment types for stored payment methods
+ */
+export const PAYMENT_TYPES = {
+  MOBILE_MONEY: "Mobile Money",
+  CARD: "Card"
+} as const;
+
+/**
+ * Mobile money providers in Ghana
+ */
+export const PAYMENT_PROVIDERS = {
+  MOBILE_MONEY: "Mobile Money",
+  MTN: "MTN",
+  VODAFONE: "Vodafone",
+  AIRTELTIGO: "AirtelTigo"
+} as const;
+
+/**
  * OTP configuration
  */
 export const OTP = {

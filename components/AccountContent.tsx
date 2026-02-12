@@ -24,6 +24,7 @@ import {
   deletePaymentMethod
 } from "@/lib/payment-actions";
 import { ConfirmDialog } from "@/components/ui";
+import { PAYMENT_TYPES } from "@/lib/config";
 
 interface User {
   id: string;
@@ -497,7 +498,8 @@ export function AccountContent({ user }: AccountContentProps) {
                       </div>
                       <div>
                         <h3 className="font-display text-lg text-brown-dark">
-                          {method.type === "Mobile Money" && method.fullPhone
+                          {method.type === PAYMENT_TYPES.MOBILE_MONEY &&
+                          method.fullPhone
                             ? method.fullPhone
                             : `${method.type} •••• ${method.last4}`}
                         </h3>

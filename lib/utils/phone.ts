@@ -3,6 +3,8 @@
  * Extracted to eliminate code duplication across modals and components
  */
 
+import { PAYMENT_PROVIDERS } from "@/lib/config";
+
 /**
  * Detect mobile money provider from Ghana phone number
  * @param phone - Phone number (with or without country code)
@@ -18,14 +20,14 @@ export function detectMobileMoneyProvider(phone: string): string {
 
   // Detect provider based on prefix
   if (["024", "054", "055", "059"].includes(prefix)) {
-    return "MTN";
+    return PAYMENT_PROVIDERS.MTN;
   } else if (["020", "050"].includes(prefix)) {
-    return "Vodafone";
+    return PAYMENT_PROVIDERS.VODAFONE;
   } else if (["027", "057", "026", "056"].includes(prefix)) {
-    return "AirtelTigo";
+    return PAYMENT_PROVIDERS.AIRTELTIGO;
   }
 
-  return "Mobile Money";
+  return PAYMENT_PROVIDERS.MOBILE_MONEY;
 }
 
 /**

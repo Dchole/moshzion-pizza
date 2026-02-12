@@ -5,6 +5,7 @@ import { Button, Modal, Alert } from "./ui";
 import { Input } from "./ui/Input";
 import { addPaymentMethod, updatePaymentMethod } from "@/lib/payment-actions";
 import { detectMobileMoneyProvider, getPhoneLast4 } from "@/lib/utils/phone";
+import { PAYMENT_TYPES, PAYMENT_PROVIDERS } from "@/lib/config";
 
 interface PaymentMethod {
   id: string;
@@ -30,14 +31,17 @@ export function PaymentMethodFormModal({
   onSuccess
 }: PaymentMethodFormModalProps) {
   const [formData, setFormData] = useState<{
-    type: "Mobile Money" | "Card";
+    type: typeof PAYMENT_TYPES.MOBILE_MONEY | typeof PAYMENT_TYPES.CARD;
     provider: string;
     last4: string;
     fullPhone: string;
     name: string;
     isDefault: boolean;
   }>({
-    type: (paymentMethod?.type as "Mobile Money" | "Card") || "Mobile Money",
+    type:
+      (paymentMethod?.type as
+        | typeof PAYMENT_TYPES.MOBILE_MONEY
+        | typeof PAYMENT_TYPES.CARD) || PAYMENT_TYPES.MOBILE_MONEY,
     provider: paymentMethod?.provider || "",
     last4: paymentMethod?.last4 || "",
     fullPhone: paymentMethod?.fullPhone || "",
@@ -51,7 +55,10 @@ export function PaymentMethodFormModal({
   useEffect(() => {
     if (paymentMethod) {
       setFormData({
-        type: (paymentMethod.type as "Mobile Money" | "Card") || "Mobile Money",
+        type:
+          (paymentMethod.type as
+            | typeof PAYMENT_TYPES.MOBILE_MONEY
+            | typeof PAYMENT_TYPES.CARD) || PAYMENT_TYPES.MOBILE_MONEY,
         provider: paymentMethod.provider || "",
         last4: paymentMethod.last4 || "",
         fullPhone: paymentMethod.fullPhone || "",
@@ -69,7 +76,7 @@ export function PaymentMethodFormModal({
 
     // Auto-detect provider for Mobile Money using utility function
     let finalProvider = formData.provider;
-    if (formData.type === "Mobile Money" && formData.fullPhone) {
+    if (formData.type === PAYMENT_TYPES.MOBILE_MONEY && formData.fullPhone) {
       finalProvider = detectMobileMoneyProvider(formData.fullPhone);
     }
 
@@ -96,7 +103,7 @@ export function PaymentMethodFormModal({
         onClose();
         // Reset form
         setFormData({
-          type: "Mobile Money",
+          type: PAYMENT_TYPES.MOBILE_MONEY,
           provider: "",
           last4: "",
           fullPhone: "",
@@ -132,19 +139,23 @@ export function PaymentMethodFormModal({
             onChange={e => {
               setFormData({
                 ...formData,
-                type: e.target.value as "Mobile Money" | "Card",
+                type: e.target.value as
+                  | typeof PAYMENT_TYPES.MOBILE_MONEY
+                  | typeof PAYMENT_TYPES.CARD,
                 provider: "" // Reset provider when type changes
               });
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             required
           >
-            <option value="Mobile Money">Mobile Money</option>
-            <option value="Card">Card</option>
+            <option value={PAYMENT_TYPES.MOBILE_MONEY}>
+              {PAYMENT_TYPES.MOBILE_MONEY}
+            </option>
+            <option value={PAYMENT_TYPES.CARD}>{PAYMENT_TYPES.CARD}</option>
           </select>
         </div>
 
-        {formData.type === "Mobile Money" ? (
+        {formData.type === PAYMENT_TYPES.MOBILE_MONEY ? (
           <>
             <div>
               <label className="block text-sm font-medium mb-1">
@@ -163,7 +174,7 @@ export function PaymentMethodFormModal({
                     ...formData,
                     fullPhone: value,
                     provider:
-                      detectedProvider !== "Mobile Money"
+                      detectedProvider !== PAYMENT_PROVIDERS.MOBILE_MONEY
                         ? detectedProvider
                         : "",
                     last4: getPhoneLast4(value)

@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 import { logger } from "@/lib/logger";
 import { detectMobileMoneyProvider, getPhoneLast4 } from "@/lib/utils/phone";
+import { PAYMENT_TYPES } from "@/lib/config";
 
 export interface CreateOrderInput {
   items: CartItem[];
@@ -106,7 +107,7 @@ export async function createOrder(input: CreateOrderInput) {
         const existingMethod = await prisma.paymentMethod.findFirst({
           where: {
             userId: user.id,
-            type: "Mobile Money",
+            type: PAYMENT_TYPES.MOBILE_MONEY,
             fullPhone: input.mobileMoneyPhone
           }
         });
@@ -124,7 +125,7 @@ export async function createOrder(input: CreateOrderInput) {
           await prisma.paymentMethod.create({
             data: {
               userId: user.id,
-              type: "Mobile Money",
+              type: PAYMENT_TYPES.MOBILE_MONEY,
               provider,
               last4: getPhoneLast4(input.mobileMoneyPhone),
               fullPhone: input.mobileMoneyPhone,
