@@ -7,6 +7,7 @@ import { UI_TIMING } from "@/lib/constants";
 import { getCurrentUser } from "@/lib/auth";
 import { getUserAddresses } from "@/lib/address-actions";
 import { initiatePayment, formatPhoneForHubtel } from "@/lib/hubtel-payment";
+import prisma from "@/lib/db";
 
 const checkoutSchema = z
   .object({
@@ -132,6 +133,34 @@ export async function processCheckout(formData: FormData) {
     }
 
     const orderId = orderResult.orderId;
+
+    // Auto-save address for authenticated users if they used guest address
+    if (user && validation.data.guestAddress && !addressId) {
+      try {
+        // Check if user has any default address
+        const hasDefaultAddress = await prisma.address.findFirst({
+          where: {
+            userId: user.id,
+            isDefault: true
+          }
+        });
+
+        // Save the address
+        await prisma.address.create({
+          data: {
+            userId: user.id,
+            label: "Delivery Address",
+            street: validation.data.guestAddress,
+            city: "Accra", // Default city
+            country: "Ghana",
+            isDefault: !hasDefaultAddress // Set as default if no default exists
+          }
+        });
+      } catch (error) {
+        // Log error but don't fail the order
+        console.error("Failed to save delivery address:", error);
+      }
+    }
 
     // Process payment based on payment method
     if (

@@ -120,6 +120,14 @@ export async function createOrder(input: CreateOrderInput) {
 
         // Only create if it doesn't exist
         if (!existingMethod) {
+          // Check if user has any default payment method
+          const hasDefault = await prisma.paymentMethod.findFirst({
+            where: {
+              userId: user.id,
+              isDefault: true
+            }
+          });
+
           await prisma.paymentMethod.create({
             data: {
               userId: user.id,
@@ -127,7 +135,7 @@ export async function createOrder(input: CreateOrderInput) {
               provider,
               last4: input.mobileMoneyPhone.slice(-4),
               fullPhone: input.mobileMoneyPhone,
-              isDefault: false // Don't auto-set as default
+              isDefault: !hasDefault // Set as default if no default exists
             }
           });
         }
