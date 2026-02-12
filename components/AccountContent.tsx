@@ -422,7 +422,7 @@ export function AccountContent({ user }: AccountContentProps) {
                         Edit
                       </Button>
                       <IconButton
-                        className="border border-red-300 text-red-600 hover:bg-red-50"
+                        variant="ghost"
                         aria-label={`Delete ${address.label} address`}
                         icon={<DeleteOutlineIcon fontSize="small" />}
                         onClick={() => handleDeleteAddress(address.id)}
@@ -522,7 +522,7 @@ export function AccountContent({ user }: AccountContentProps) {
                         Edit
                       </Button>
                       <IconButton
-                        className="border border-red-300 text-red-600 hover:bg-red-50"
+                        variant="ghost"
                         aria-label={`Remove ${method.type} ending in ${method.last4}`}
                         icon={<DeleteOutlineIcon fontSize="small" />}
                         onClick={() => handleDeletePayment(method.id)}
