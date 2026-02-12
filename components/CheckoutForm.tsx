@@ -60,13 +60,16 @@ export function CheckoutForm({
     address: userData?.address || ""
   });
 
-  // Store original data to detect changes
   const [originalData] = useState(userData);
 
-  const orderTotal = orderItems.reduce(
+  const subtotal = orderItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const deliveryFee = 5.0;
+  const taxRate = 0.1;
+  const tax = subtotal * taxRate;
+  const orderTotal = subtotal + deliveryFee + tax;
 
   const handleContinueToPayment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -218,17 +221,11 @@ export function CheckoutForm({
             </Button>
           </div>
 
-          {/* Order summary sidebar - same as before */}
           <div className="hidden md:block">
             <div className="sticky top-24 bg-white rounded-lg p-6 border border-brown-dark/10 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <span className="font-open-sans text-sm text-gray-600">
-                  Order Summary
-                </span>
-                <span className="font-display text-2xl text-brown-dark">
-                  ${orderTotal.toFixed(0)}
-                </span>
-              </div>
+              <h3 className="font-open-sans font-semibold text-brown-dark mb-4">
+                Order Summary
+              </h3>
 
               <div className="space-y-4 mb-6">
                 {orderItems.map(item => (
@@ -267,10 +264,24 @@ export function CheckoutForm({
                 ))}
               </div>
 
-              <div className="border-t border-brown-dark/20 pt-4">
-                <div className="flex justify-between font-display text-xl text-brown-dark">
-                  <span>Total</span>
-                  <span>${orderTotal.toFixed(0)}</span>
+              <div className="border-t border-brown-dark/20 pt-4 space-y-2">
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Delivery</span>
+                  <span>${deliveryFee.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Tax (10%)</span>
+                  <span>${tax.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-brown-dark/20 pt-2 mt-2">
+                  <div className="flex justify-between font-display text-xl text-brown-dark">
+                    <span>Total</span>
+                    <span>${orderTotal.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -281,7 +292,6 @@ export function CheckoutForm({
           action={handleSubmit}
           className="grid gap-6 lg:grid-cols-[2fr_1fr]"
         >
-          {/* Hidden fields to pass step 1 data */}
           <input type="hidden" name="guestName" value={contactInfo.name} />
           <input type="hidden" name="guestPhone" value={contactInfo.phone} />
           <input
@@ -298,7 +308,6 @@ export function CheckoutForm({
               </div>
             )}
 
-            {/* Contact summary */}
             <div className="bg-white rounded-lg p-4 border border-brown-dark/10 shadow-sm">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-open-sans font-medium text-brown-dark text-sm">
@@ -519,10 +528,24 @@ export function CheckoutForm({
                 ))}
               </div>
 
-              <div className="border-t border-brown-dark/20 pt-4 mb-6">
-                <div className="flex justify-between font-display text-xl text-brown-dark">
-                  <span>Total</span>
-                  <span>${orderTotal.toFixed(0)}</span>
+              <div className="border-t border-brown-dark/20 pt-4 mb-6 space-y-2">
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Delivery</span>
+                  <span>${deliveryFee.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm font-open-sans text-gray-700">
+                  <span>Tax (10%)</span>
+                  <span>${tax.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-brown-dark/20 pt-2 mt-2">
+                  <div className="flex justify-between font-display text-xl text-brown-dark">
+                    <span>Total</span>
+                    <span>${orderTotal.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
 
