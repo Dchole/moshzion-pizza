@@ -8,7 +8,8 @@ import { pluralize } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Our Menu - Moshzion Pizza",
-  description: "Browse our delicious selection of handcrafted pizzas. Order online for delivery or pickup in Accra, Ghana."
+  description:
+    "Browse our delicious selection of handcrafted pizzas. Order online for delivery or pickup in Accra, Ghana."
 };
 
 interface StorePageProps {

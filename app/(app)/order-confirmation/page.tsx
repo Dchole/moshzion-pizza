@@ -12,7 +12,8 @@ import HomeIcon from "@mui/icons-material/Home";
 
 export const metadata: Metadata = {
   title: "Order Confirmed - Moshzion Pizza",
-  description: "Your order has been confirmed. Thank you for choosing Moshzion Pizza!"
+  description:
+    "Your order has been confirmed. Thank you for choosing Moshzion Pizza!"
 };
 import type { OrderItem } from "@/types";
 

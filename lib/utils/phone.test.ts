@@ -59,7 +59,7 @@ describe("Phone Utilities", () => {
       const result1 = detectMobileMoneyProvider("233244123456");
       // Last 10 digits: 3244123456, prefix: 324 (not recognized)
       expect(result1).toBe(PAYMENT_PROVIDERS.MOBILE_MONEY);
-      
+
       // Alternative: test with properly formatted number
       expect(detectMobileMoneyProvider("0244123456")).toBe(
         PAYMENT_PROVIDERS.MTN

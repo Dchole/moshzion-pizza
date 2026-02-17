@@ -110,9 +110,14 @@ export async function initiatePayment(
       throw new Error(data.message || "Payment initiation failed");
     }
 
-    logger.payment("initiate", request.clientReference, data.Amount || request.amount, {
-      transactionId: data.TransactionId
-    });
+    logger.payment(
+      "initiate",
+      request.clientReference,
+      data.Amount || request.amount,
+      {
+        transactionId: data.TransactionId
+      }
+    );
     return {
       status: "Success",
       message: data.message || "Payment initiated",
