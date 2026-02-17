@@ -99,7 +99,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="text-center border-t border-white/10 pt-4">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-300">
               Images by talented photographers on{" "}
               <a
                 href="https://unsplash.com"

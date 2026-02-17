@@ -62,9 +62,9 @@ export function FeaturedPizzaCard({
 
           <div className="flex flex-col justify-between py-2">
             <div>
-              <h3 className="font-display text-2xl lg:text-3xl text-brown-dark mb-2">
+              <h2 className="font-display text-2xl lg:text-3xl text-brown-dark mb-2">
                 {pizza.name}
-              </h3>
+              </h2>
               <div className="flex items-baseline gap-2 mb-3">
                 <span className="text-xl lg:text-2xl text-(--price-strikethrough) line-through font-display">
                   ${FEATURED_CONFIG.originalPrice}

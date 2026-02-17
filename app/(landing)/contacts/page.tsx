@@ -23,7 +23,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
             Get in Touch
           </h1>
-          <p className="text-lg md:text-xl text-brown-medium max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-brown-dark max-w-3xl mx-auto leading-relaxed">
             Have a question, feedback, or special request? We&apos;d love to
             hear from you. Fill out the form below or reach out directly.
           </p>
@@ -52,9 +52,7 @@ export default function ContactPage() {
                     <div className="flex items-start gap-3">
                       <PhoneIcon className="text-brown-medium mt-1" />
                       <div>
-                        <p className="text-sm text-brown-medium/70 mb-1">
-                          Phone
-                        </p>
+                        <p className="text-sm text-brown-medium mb-1">Phone</p>
                         <a
                           href={`tel:${CONTACT_INFO.phone}`}
                           className="text-brown-dark hover:text-brown-medium transition-colors"
@@ -67,9 +65,7 @@ export default function ContactPage() {
                     <div className="flex items-start gap-3">
                       <EmailIcon className="text-brown-medium mt-1" />
                       <div>
-                        <p className="text-sm text-brown-medium/70 mb-1">
-                          Email
-                        </p>
+                        <p className="text-sm text-brown-medium mb-1">Email</p>
                         <a
                           href={`mailto:${CONTACT_INFO.email}`}
                           className="text-brown-dark hover:text-brown-medium transition-colors break-all"
@@ -82,7 +78,7 @@ export default function ContactPage() {
                     <div className="flex items-start gap-3">
                       <LocationOnIcon className="text-brown-medium mt-1" />
                       <div>
-                        <p className="text-sm text-brown-medium/70 mb-1">
+                        <p className="text-sm text-brown-medium mb-1">
                           Address
                         </p>
                         <p className="text-brown-dark">
@@ -94,7 +90,7 @@ export default function ContactPage() {
                     <div className="flex items-start gap-3">
                       <AccessTimeIcon className="text-brown-medium mt-1" />
                       <div>
-                        <p className="text-sm text-brown-medium/70 mb-1">
+                        <p className="text-sm text-brown-medium mb-1">
                           Business Hours
                         </p>
                         <p className="text-brown-dark">{BUSINESS_HOURS.days}</p>

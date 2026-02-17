@@ -179,7 +179,7 @@ export function PaymentMethodFormModal({
                 maxLength={10}
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 Enter your full mobile money number (10 digits)
                 {formData.provider && (
                   <span className="font-medium text-brown-dark ml-1">

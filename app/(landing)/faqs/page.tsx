@@ -158,8 +158,25 @@ const faqs = [
 ];
 
 export default function FAQsPage() {
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer
+      }
+    }))
+  };
+
   return (
     <main className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }}
+      />
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">

@@ -52,9 +52,35 @@ export default async function ProductPage({
 
   const hasDiscount = pizza.id === FEATURED_CONFIG.pizzaId;
   const originalPrice = hasDiscount ? FEATURED_CONFIG.originalPrice : null;
+  const siteUrl = process.env.NEXTAUTH_URL || "https://moshzion.vercel.app";
+
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: pizza.name,
+    description: pizza.description,
+    image: [`${siteUrl}${pizza.image}`],
+    brand: {
+      "@type": "Brand",
+      name: "Moshzion Pizza"
+    },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "GHS",
+      price: pizza.price.toFixed(2),
+      availability: "https://schema.org/InStock",
+      url: `${siteUrl}/product/${pizza.id}`
+    }
+  };
 
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productStructuredData)
+        }}
+      />
       <div className="mx-auto max-w-7xl lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:py-8">
           <div className="relative aspect-square overflow-hidden bg-gray-200 lg:rounded-lg">

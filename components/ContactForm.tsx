@@ -118,7 +118,7 @@ export default function ContactForm() {
         {isPending ? "Sending..." : "Send Message"}
       </Button>
 
-      <p className="text-sm text-brown-medium/70 text-center">
+      <p className="text-sm text-brown-medium text-center">
         We typically respond within 24 hours
       </p>
     </form>

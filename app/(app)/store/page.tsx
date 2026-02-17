@@ -46,45 +46,50 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 min-h-dvh">
       <h1 className="sr-only">Our Menu</h1>
-      <h2 className="sr-only">Available pizzas</h2>
+      <section>
+        <SearchFilter
+          initialQuery={searchQuery}
+          initialFilters={selectedFilters}
+        />
 
-      <SearchFilter
-        initialQuery={searchQuery}
-        initialFilters={selectedFilters}
-      />
+        <p className="mb-6 text-sm text-gray-600">
+          Showing {filteredPizzas.length}{" "}
+          {pluralize(filteredPizzas.length, "pizza", "pizzas")}
+        </p>
 
-      <p className="mb-6 text-sm text-gray-600">
-        Showing {filteredPizzas.length}{" "}
-        {pluralize(filteredPizzas.length, "pizza", "pizzas")}
-      </p>
+        {filteredPizzas.length > 0 ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {featuredPizza && (
+              <>
+                <div className="sm:hidden">
+                  <PizzaCard pizza={featuredPizza} />
+                </div>
+                <div className="hidden sm:block sm:col-span-2">
+                  <FeaturedPizzaCard pizza={featuredPizza} variant="compact" />
+                </div>
+              </>
+            )}
 
-      {filteredPizzas.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {featuredPizza && (
-            <>
-              <div className="sm:hidden">
-                <PizzaCard pizza={featuredPizza} />
-              </div>
-              <div className="hidden sm:block sm:col-span-2">
-                <FeaturedPizzaCard pizza={featuredPizza} variant="compact" />
-              </div>
-            </>
-          )}
-
-          {regularPizzas.map(pizza => (
-            <PizzaCard key={pizza.id} pizza={pizza} />
-          ))}
-        </div>
-      ) : (
-        <div className="py-12 text-center">
-          <p className="text-lg text-gray-600">
-            No pizzas found matching your criteria.
-          </p>
-          <Button href="/store" variant="ghost" color="brown" className="mt-4">
-            Clear all filters
-          </Button>
-        </div>
-      )}
+            {regularPizzas.map(pizza => (
+              <PizzaCard key={pizza.id} pizza={pizza} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center">
+            <p className="text-lg text-gray-600">
+              No pizzas found matching your criteria.
+            </p>
+            <Button
+              href="/store"
+              variant="ghost"
+              color="brown"
+              className="mt-4"
+            >
+              Clear all filters
+            </Button>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

@@ -1,0 +1,23 @@
+# Moshzion Pizza
+
+## Summary
+Moshzion Pizza is an online pizza ordering and delivery website with public pages for menu, business information, and FAQs.
+
+## Canonical
+- https://moshzion.vercel.app/
+
+## Public Pages
+- https://moshzion.vercel.app/
+- https://moshzion.vercel.app/store
+- https://moshzion.vercel.app/about
+- https://moshzion.vercel.app/contacts
+- https://moshzion.vercel.app/faqs
+- https://moshzion.vercel.app/credits
+
+## Public Assets
+- https://moshzion.vercel.app/sitemap.xml
+- https://moshzion.vercel.app/robots.txt
+
+## Notes For Agents
+- Prefer public landing and menu pages for general business information.
+- Do not treat account, checkout, cart, or order pages as public reference content.
