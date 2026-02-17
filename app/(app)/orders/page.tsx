@@ -12,7 +12,11 @@ import CancelIcon from "@mui/icons-material/Cancel";
 
 export const metadata: Metadata = {
   title: "My Orders - Moshzion Pizza",
-  description: "View your order history and track deliveries."
+  description: "View your order history and track deliveries.",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";

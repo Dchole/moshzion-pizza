@@ -76,6 +76,7 @@ export default function AppMobileNav({
                 key={link.href}
                 href={link.href}
                 onClick={onClose}
+                tabIndex={isOpen ? 0 : -1}
                 className={getNavLinkClasses(isActive)}
               >
                 {isActive && (

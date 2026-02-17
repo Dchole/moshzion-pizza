@@ -8,7 +8,11 @@ import { Button } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Shopping Cart - Moshzion Pizza",
-  description: "Review your order and proceed to checkout."
+  description: "Review your order and proceed to checkout.",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default async function CartPage() {

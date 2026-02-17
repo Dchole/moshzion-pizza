@@ -45,6 +45,9 @@ export default async function StorePage({ searchParams }: StorePageProps) {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 min-h-dvh">
+      <h1 className="sr-only">Our Menu</h1>
+      <h2 className="sr-only">Available pizzas</h2>
+
       <SearchFilter
         initialQuery={searchQuery}
         initialFilters={selectedFilters}

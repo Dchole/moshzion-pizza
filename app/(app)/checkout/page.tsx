@@ -8,7 +8,11 @@ import { getUserPaymentMethods } from "@/lib/payment-actions";
 
 export const metadata: Metadata = {
   title: "Checkout - Moshzion Pizza",
-  description: "Complete your order with our secure checkout."
+  description: "Complete your order with our secure checkout.",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default async function CheckoutPage() {

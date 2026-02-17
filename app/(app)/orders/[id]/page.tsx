@@ -12,7 +12,11 @@ import PaymentIcon from "@mui/icons-material/Payment";
 
 export const metadata: Metadata = {
   title: "Order Details - Moshzion Pizza",
-  description: "View order details, status, and invoice."
+  description: "View order details, status, and invoice.",
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 import type { OrderItem } from "@/types";
 

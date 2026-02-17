@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-primary">
+    <div className="min-h-screen bg-primary">
       <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-384 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display text-brown-dark mb-6">
@@ -179,6 +179,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
