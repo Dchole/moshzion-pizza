@@ -53,6 +53,7 @@ export default function LandingMobileNav({
               key={link.href}
               href={link.href}
               onClick={onClose}
+              tabIndex={isOpen ? 0 : -1}
               className={getNavLinkClasses(currentPath === link.href, index)}
             >
               {link.label}

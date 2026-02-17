@@ -50,9 +50,9 @@ export function PizzaCard({ pizza, className = "" }: PizzaCardProps) {
       </Link>
 
       <div className="mt-4 text-center">
-        <h4 className="font-display text-2xl text-brown-dark mb-1">
+        <h3 className="font-display text-2xl text-brown-dark mb-1">
           {pizza.name}
-        </h4>
+        </h3>
         <p className="text-lg font-display text-(--price-color)">
           ${pizza.price}
         </p>
