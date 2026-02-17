@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { linkOrderToUser } from "@/app/actions/orders";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
       message: "Account created successfully"
     });
   } catch (error) {
-    console.error("Save guest order error:", error);
+    logger.error("Save guest order error", error);
     return NextResponse.json(
       { success: false, message: "Failed to create account" },
       { status: 500 }

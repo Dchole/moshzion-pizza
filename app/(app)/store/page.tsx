@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { pizzas } from "@/lib/data";
 import { FEATURED_CONFIG } from "@/lib/constants";
 import { PizzaCard, Button } from "@/components/ui";
 import { FeaturedPizzaCard } from "@/components/FeaturedPizzaCard";
 import { SearchFilter } from "@/components/SearchFilter";
 import { pluralize } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "Our Menu - Moshzion Pizza",
+  description: "Browse our delicious selection of handcrafted pizzas. Order online for delivery or pickup in Accra, Ghana."
+};
 
 interface StorePageProps {
   searchParams: Promise<{

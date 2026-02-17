@@ -110,7 +110,7 @@ export async function addPaymentMethod(
       };
     }
 
-    console.error("Add payment method error:", error);
+    logger.error("Add payment method error", error);
     return {
       success: false,
       error: "Failed to add payment method"
@@ -180,7 +180,7 @@ export async function updatePaymentMethod(
       };
     }
 
-    console.error("Update payment method error:", error);
+    logger.error("Update payment method error", error);
     return {
       success: false,
       error: "Failed to update payment method"
@@ -227,7 +227,7 @@ export async function deletePaymentMethod(
 
     return { success: true };
   } catch (error) {
-    console.error("Delete payment method error:", error);
+    logger.error("Delete payment method error", error);
     return {
       success: false,
       error: "Failed to delete payment method"

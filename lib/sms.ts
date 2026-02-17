@@ -130,9 +130,10 @@ export async function sendOTP(phone: string): Promise<{
       throw new Error(`Hubtel OTP failed: ${data.message || "Unknown error"}`);
     }
 
-    console.log(`✓ OTP sent to ${phone} via Hubtel OTP API`);
-    console.log(`  RequestId: ${data.data.requestId}`);
-    console.log(`  Prefix: ${data.data.prefix}`);
+    logger.otp("send", phone, true, {
+      requestId: data.data.requestId,
+      prefix: data.data.prefix
+    });
     return {
       success: true,
       requestId: data.data.requestId,
@@ -204,7 +205,7 @@ export async function verifyOTP(
     const data = await response.json();
 
     const verified = data.code === "0000";
-    console.log(`✓ OTP verification: ${verified ? "Success" : "Failed"}`);
+    logger.otp("verify", requestId, verified, { code, verified });
 
     return {
       success: true,
@@ -276,7 +277,10 @@ export async function resendOTP(requestId: string): Promise<{
       );
     }
 
-    console.log(`✓ OTP resent successfully`);
+    logger.otp("resend", requestId, true, {
+      requestId: data.data.requestId,
+      prefix: data.data.prefix
+    });
     return {
       success: true,
       requestId: data.data.requestId,

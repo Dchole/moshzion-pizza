@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getUserOrders } from "@/app/actions/orders";
@@ -8,6 +9,11 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+
+export const metadata: Metadata = {
+  title: "My Orders - Moshzion Pizza",
+  description: "View your order history and track deliveries."
+};
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import type { OrderItem } from "@/types";

@@ -74,7 +74,12 @@ Open [http://localhost:3000](http://localhost:3000)
 
 - **app/** - Next.js 16 App Router pages and Server Actions
 - **components/** - Reusable React components
-- **lib/** - Utilities, data, and constants
+  - **ui/** - Shared UI components (Modal, ConfirmDialog, Alert)
+  - **account/** - Account management components
+- **lib/** - Utilities, server actions, and configuration
+  - **utils/** - Utility functions (phone number handling, etc.)
+  - **logger.ts** - Centralized logging utility
+  - **config.ts** - Business constants and payment providers
 - **types/** - TypeScript definitions
 - **public/assets/** - Static images, logos, and icons
 
@@ -94,21 +99,27 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## 🛠 Tech Stack
 
-- **Next.js 16** with App Router
+- **Next.js 16** with App Router and Turbopack
 - **React 19** with Server Components
 - **TypeScript 5** for type safety
 - **Tailwind CSS 4** for styling
 - **Zod** for runtime validation
+- **Prisma** ORM with PostgreSQL
+- **NextAuth.js 5** for authentication
+- **Vitest** + React Testing Library for testing
 - **Server Actions** for cart management (cookies-based)
 - **Custom Events** for real-time UI synchronization
 
 ## 📝 Available Scripts
 
 ```bash
-npm run dev      # Development server
-npm run build    # Build for production
-npm start        # Start production server
-npm run lint     # Run ESLint
+npm run dev          # Development server
+npm run build        # Build for production
+npm start            # Start production server
+npm run lint         # Run ESLint
+npm test             # Run unit tests with Vitest
+npm run test:ui      # Run tests with UI
+npm run test:coverage # Run tests with coverage report
 ```
 
 ## 🏗️ Architecture Highlights
@@ -128,10 +139,14 @@ npm run lint     # Run ESLint
 
 ### Code Quality
 
-- **Constants Management**: Centralized timing and threshold values
+- **UI Components**: Unified Modal, ConfirmDialog, and Alert components
+- **Constants Management**: Centralized payment types and provider constants
+- **Phone Utilities**: 4 utility functions for Ghana phone number handling
+- **Logger**: Structured logging with context-aware methods (OTP, payment, order, auth)
 - **Secure IDs**: `crypto.randomUUID()` for stable cart item identifiers
 - **Immutable Updates**: Pure functions for cart operations
 - **Form Validation**: Zod schemas with refinements for all payment methods
+- **WCAG AAA**: Color contrast ratios of 7:1 for accessibility
 
 ### Performance Optimizations
 
@@ -139,24 +154,29 @@ npm run lint     # Run ESLint
 - **Debounced Updates**: Strategic delays for smooth UI transitions
 - **Event-based Updates**: Minimal re-renders with targeted notifications
 - **Static Assets**: Optimized SVG logos and icons
+- **Code Deduplication**: ~200 lines eliminated through component reuse
+- **Tree-shaking**: Proper Material-UI icon imports for smaller bundles
 
 ## 🔮 Next Steps
 
-- Add user authentication and profiles
-- Integrate real payment gateway (Stripe/PayPal)
+- ~~Add user authentication and profiles~~ ✅ Implemented with NextAuth.js
+- ~~Integrate real payment gateway~~ ✅ Hubtel mobile money integration
 - Connect to backend API for order management
 - Implement order tracking system
 - Create admin dashboard for order management
 - Add email notifications for orders
 - Implement reviews and ratings system
+- Add comprehensive E2E tests with Playwright
 
 ## ♿ Accessibility
 
-- Semantic HTML5
-- ARIA labels
-- Keyboard navigation
-- Focus states
-- Screen reader friendly
+- Semantic HTML5 elements throughout
+- WCAG AAA color contrast (7:1 ratio) for all alerts and notifications
+- Comprehensive ARIA labels on interactive elements
+- Native `<dialog>` elements for modals with automatic focus management
+- Keyboard navigation support (ESC to close, Tab navigation)
+- Screen reader friendly with proper roles and labels
+- Focus trap in modals for keyboard users
 
 ---
 

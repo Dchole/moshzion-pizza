@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getOrderById } from "@/app/actions/orders";
@@ -8,6 +9,11 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import HomeIcon from "@mui/icons-material/Home";
+
+export const metadata: Metadata = {
+  title: "Order Confirmed - Moshzion Pizza",
+  description: "Your order has been confirmed. Thank you for choosing Moshzion Pizza!"
+};
 import type { OrderItem } from "@/types";
 
 interface OrderConfirmationPageProps {

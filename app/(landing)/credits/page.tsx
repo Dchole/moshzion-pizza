@@ -1,4 +1,10 @@
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Credits - Moshzion Pizza",
+  description: "Image and resource credits for the Moshzion Pizza website."
+};
 
 export default function CreditsPage() {
   const imageCredits = [

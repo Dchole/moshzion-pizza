@@ -45,6 +45,8 @@ export function Alert({
   message,
   className = ""
 }: AlertProps) {
+  if (!message) return null;
+  
   const style = variantStyles[variant];
   const Icon = style.icon;
 

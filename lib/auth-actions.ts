@@ -14,6 +14,7 @@ import type {
 } from "@/lib/schemas/auth";
 import { z } from "zod";
 import prisma from "@/lib/db";
+import { logger } from "@/lib/logger";
 import {
   sendOTP as sendHubtelOTP,
   verifyOTP as verifyHubtelOTP,
@@ -83,7 +84,7 @@ export async function sendOTP(data: SendOTPInput): Promise<ActionResult> {
       };
     }
 
-    console.error("Send OTP error:", error);
+    logger.error("Send OTP error", error);
     return {
       success: false,
       error: "Failed to send verification code. Please try again."
@@ -195,7 +196,7 @@ export async function verifyOTP(data: VerifyOTPInput): Promise<ActionResult> {
       };
     }
 
-    console.error("Verify OTP error:", error);
+    logger.error("Verify OTP error", error);
     return {
       success: false,
       error: "An error occurred during verification"
@@ -247,7 +248,7 @@ export async function updateProfile(
       };
     }
 
-    console.error("Update profile error:", error);
+    logger.error("Update profile error", error);
     return {
       success: false,
       error: "An error occurred while updating your profile"
@@ -320,7 +321,7 @@ export async function sendPhoneUpdateOTP(
       };
     }
 
-    console.error("Send phone update OTP error:", error);
+    logger.error("Send phone update OTP error", error);
     return {
       success: false,
       error: "Failed to send verification code. Please try again."
@@ -431,7 +432,7 @@ export async function updatePhone(data: {
       };
     }
 
-    console.error("Update phone error:", error);
+    logger.error("Update phone error", error);
     return {
       success: false,
       error: "An error occurred while updating your phone number"
@@ -507,7 +508,7 @@ export async function resendOTP(data: SendOTPInput): Promise<ActionResult> {
       };
     }
 
-    console.error("Resend OTP error:", error);
+    logger.error("Resend OTP error", error);
     return {
       success: false,
       error: "Failed to resend verification code. Please try again."
@@ -592,7 +593,7 @@ export async function updateUserCheckoutData(data: {
 
     return { success: true };
   } catch (error) {
-    console.error("Update checkout data error:", error);
+    logger.error("Update checkout data error", error);
     return {
       success: false,
       error: "Failed to update your information"

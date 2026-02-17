@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getOrderById } from "@/app/actions/orders";
@@ -8,6 +9,11 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PaymentIcon from "@mui/icons-material/Payment";
+
+export const metadata: Metadata = {
+  title: "Order Details - Moshzion Pizza",
+  description: "View order details, status, and invoice."
+};
 import type { OrderItem } from "@/types";
 
 interface OrderDetailsPageProps {

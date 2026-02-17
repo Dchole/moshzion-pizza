@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { getCart } from "@/app/actions/cart";
 import { EmptyCartState } from "@/components/EmptyCartState";
 import { CheckoutForm } from "@/components/CheckoutForm";
 import { getUserProfile } from "@/lib/auth";
 import { getUserAddresses } from "@/lib/address-actions";
 import { getUserPaymentMethods } from "@/lib/payment-actions";
+
+export const metadata: Metadata = {
+  title: "Checkout - Moshzion Pizza",
+  description: "Complete your order with our secure checkout."
+};
 
 export default async function CheckoutPage() {
   const cart = await getCart();

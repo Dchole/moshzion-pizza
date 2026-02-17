@@ -103,14 +103,16 @@ export async function initiatePayment(
     const data = await response.json();
 
     if (!response.ok) {
-      console.error(
-        `Hubtel payment initiation failed (${response.status}):`,
-        data
-      );
+      logger.payment("failed", request.clientReference, request.amount, {
+        status: response.status,
+        error: data.message || "Payment initiation failed"
+      });
       throw new Error(data.message || "Payment initiation failed");
     }
 
-    console.log(`✓ Payment initiated via Hubtel: ${request.clientReference}`);
+    logger.payment("initiate", request.clientReference, data.Amount || request.amount, {
+      transactionId: data.TransactionId
+    });
     return {
       status: "Success",
       message: data.message || "Payment initiated",
@@ -128,7 +130,9 @@ export async function initiatePayment(
       }
     };
   } catch (error) {
-    console.error("Hubtel payment error:", error);
+    logger.error("Hubtel payment error", error, {
+      clientReference: request.clientReference
+    });
     throw error;
   }
 }
@@ -180,10 +184,11 @@ export async function checkPaymentStatus(
     const data = await response.json();
 
     if (!response.ok) {
-      console.error(
-        `Hubtel payment status check failed (${response.status}):`,
-        data
-      );
+      logger.error("Hubtel payment status check failed", {
+        clientReference,
+        status: response.status,
+        error: data.message || "Payment status check failed"
+      });
       throw new Error(data.message || "Payment status check failed");
     }
 
@@ -200,7 +205,7 @@ export async function checkPaymentStatus(
       }
     };
   } catch (error) {
-    console.error("Hubtel payment status error:", error);
+    logger.error("Hubtel payment status error", error, { clientReference });
     throw error;
   }
 }
@@ -218,8 +223,7 @@ export function verifyWebhookSignature(
     return true;
   }
 
-  // TODO: Implement signature verification based on Hubtel docs
-  console.warn("Webhook signature verification not implemented");
+  logger.warn("Webhook signature verification not implemented");
   return true;
 }
 

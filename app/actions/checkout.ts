@@ -202,7 +202,7 @@ export async function processCheckout(formData: FormData) {
         : undefined
     };
   } catch (error) {
-    console.error("Checkout error:", error);
+    logger.error("Checkout error", error);
     return {
       success: false,
       message: "An error occurred during checkout. Please try again."

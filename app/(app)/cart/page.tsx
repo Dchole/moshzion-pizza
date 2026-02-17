@@ -1,9 +1,15 @@
+import { Metadata } from "next";
 import { getCart } from "@/app/actions/cart";
 import PaymentIcon from "@mui/icons-material/Payment";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { CartItems } from "@/components/CartItems";
 import { EmptyCartState } from "@/components/EmptyCartState";
 import { Button } from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Shopping Cart - Moshzion Pizza",
+  description: "Review your order and proceed to checkout."
+};
 
 export default async function CartPage() {
   const cart = await getCart();
